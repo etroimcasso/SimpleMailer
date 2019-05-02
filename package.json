@@ -4,11 +4,14 @@
   "private": true,
   "dependencies": {
     "dotenv": "^7.0.0",
+    "draft-js": "^0.10.5",
     "express": "^4.16.4",
     "express-force-ssl": "^0.3.2",
     "mongoose": "^5.5.5",
+    "nodemailer": "^6.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-draft-wysiwyg": "^1.13.2",
     "react-scripts": "3.0.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0"
