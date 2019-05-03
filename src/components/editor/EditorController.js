@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
+import { convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 export default class EditorController extends Component {
@@ -12,6 +13,8 @@ export default class EditorController extends Component {
     	this.setState({
       		editorState,
     	});
+
+    	this.props.handleEditorContentChange(convertToRaw(this.state.editorState.getCurrentContent()))
   	};
 
 
@@ -20,7 +23,7 @@ export default class EditorController extends Component {
 
 		return(
 			<div>
-			
+
 				<Editor
   					editorState={editorState}
   					toolbarClassName="toolbarClassName"

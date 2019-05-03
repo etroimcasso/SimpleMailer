@@ -5,6 +5,7 @@
   "dependencies": {
     "dotenv": "^7.0.0",
     "draft-js": "^0.10.5",
+    "draftjs-to-html": "^0.8.4",
     "express": "^4.16.4",
     "express-force-ssl": "^0.3.2",
     "mongoose": "^5.5.5",

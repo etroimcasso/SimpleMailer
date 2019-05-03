@@ -57,7 +57,7 @@ server.listen(process.env.HTTPS_PORT,() => {
 //SOCKET SERVER
 io.on('connection', (client) => {
 	client.on('sendEmail', (message) => {
-		console.log(`recipients: ${receivers}`)
+		console.log(`Sending mail to ${message.receiverEmails}`)
 		const emailMessage = {
 			senderName: message.senderName , 
 			senderEmail: message.senderEmail,

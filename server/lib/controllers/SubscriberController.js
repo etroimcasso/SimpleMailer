@@ -44,21 +44,24 @@ module.exports = {
 
 	},
 
-	listSubscribers: (callback) => {
-
+	listAllSubscribers: (callback) => {
+		Subscriber.find({}, (error, subscribers) => {
+			if (error) return (error, false)
+			return callback(null, subscribers)
+		})
 	},
 
 	getSubscriber: (subscriberId, callback) => {
-		Subscriber.findOne({ _id: subscriberId }, (error, item) => {
+		Subscriber.findOne({ _id: subscriberId }, (error, subscriber) => {
 			if (error) return (error, false)
-			return callback(null, item)
+			return callback(null, subscriber)
 		})
 	},
 
 	getSubscriberByEmail: (subscriberEmail, callback) => {
-		Subscriber.findOne({ email: subscriberEmail }, (error, item) => {
+		Subscriber.findOne({ email: subscriberEmail }, (error, subscriber) => {
 			if (error) return (error, false)
-			return callback(null, item)
+			return callback(null, subscriber)
 		})
 	}
 
