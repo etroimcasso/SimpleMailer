@@ -5,6 +5,9 @@ import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import openSocket from 'socket.io-client';
+
+import { Container, Button, Icon } from 'semantic-ui-react';
+
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
@@ -16,6 +19,12 @@ const sendMailer = (message, callback) => {
 } 
 
 
+
+// Styles
+
+const editorContainerStyle = {
+	borderStyle: 'solid'
+}
 
 export default class SimpleMailController extends Component {
 	state = {
@@ -52,7 +61,6 @@ export default class SimpleMailController extends Component {
 		}
 		
 		sendMailer(message, (error, results) => {
-
 		})
 
 	}
@@ -63,15 +71,31 @@ export default class SimpleMailController extends Component {
 		return(
 			<div>
 				This component will handle communications with the server between the Editor and the rest
-				<button onClick={this.handleSubmitButtonClick}>Send Mail</button>
-				<Editor
+				<SendEmailButton onClick={this.handleSubmitButtonClick} />
+				<Container style={editorContainerStyle}>
+					<Editor
   					editorState={editorState}
   					toolbarClassName="toolbarClassName"
   					wrapperClassName="wrapperClassName"
   					editorClassName="editorClassName"
   					onEditorStateChange={this.onEditorStateChange}
-				/>
+					/>
+				</Container>
 			</div>
 		)
+	}
+}
+
+class SendEmailButton extends Component {
+	render() {
+
+		return(
+			<Button icon labelPosition='right' onClick={this.props.onClick}>
+				<Icon name="send" />
+				Send Mailer
+			</Button>
+		)
+
+
 	}
 }
