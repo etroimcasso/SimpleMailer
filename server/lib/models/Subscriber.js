@@ -1,3 +1,4 @@
+require('dotenv').config();
 var mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -23,4 +24,4 @@ const schema = new Schema({
 	},
 })
 
-module.exports = mongoose.model('Subscriber', schema);
+module.exports = mongoose.model(process.env.MONGO_COLLECTION_SINGULAR, schema);

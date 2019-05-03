@@ -6,7 +6,7 @@ import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import openSocket from 'socket.io-client';
 
-import { Container, Button, Icon } from 'semantic-ui-react';
+import { Container, Button, Icon, Input } from 'semantic-ui-react';
 
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
@@ -21,14 +21,14 @@ const sendMailer = (message, callback) => {
 
 
 // Styles
-
 const editorContainerStyle = {
 	borderStyle: 'solid'
 }
 
 export default class SimpleMailController extends Component {
 	state = {
-		editorState: EditorState.createEmpty()
+		editorState: EditorState.createEmpty(),
+		subject: ""
 	}
 
 	componentDidMount = () => {
@@ -52,7 +52,7 @@ export default class SimpleMailController extends Component {
 			receiverEmails: null,
 			ccReceivers: null,
 			bccReceivers: null,
-			subject: "Test HTML Email",
+			subject: this.state.subject,
 			messageText: plainText,
 			html: htmlText,
 			attachments: null,
@@ -65,13 +65,22 @@ export default class SimpleMailController extends Component {
 
 	}
 
+	handleInputChange = (name, value) => {
+		this.setState({
+			[name]: value
+		})
+	}
+
 	render() {
-		const { editorState } = this.state
+		const { editorState, subject } = this.state
+
+		const inputValid = (editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3)
 
 		return(
 			<div>
 				This component will handle communications with the server between the Editor and the rest
-				<SendEmailButton onClick={this.handleSubmitButtonClick} />
+				<SubjectInput value={subject} onChange={this.handleInputChange} />
+				<SendEmailButton onClick={this.handleSubmitButtonClick} disabled={!inputValid}/>
 				<Container style={editorContainerStyle}>
 					<Editor
   					editorState={editorState}
@@ -88,14 +97,23 @@ export default class SimpleMailController extends Component {
 
 class SendEmailButton extends Component {
 	render() {
-
+		const { disabled } = this.props
 		return(
-			<Button icon labelPosition='right' onClick={this.props.onClick}>
+			<Button icon labelPosition='right' onClick={this.props.onClick} disabled={disabled}>
 				<Icon name="send" />
 				Send Mailer
 			</Button>
 		)
 
 
+	}
+}
+
+class SubjectInput extends Component {
+	render() {
+		const { value, onChange } = this.props
+		return (
+			<Input label="Subject" name="subject" value={value} onChange={(event) => this.props.onChange(event.target.name, event.target.value)} />
+		)
 	}
 }

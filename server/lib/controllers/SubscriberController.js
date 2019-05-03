@@ -1,3 +1,4 @@
+require('dotenv').config();
 //Mongoose
 const mongoose = require('mongoose')
 //Subscriber schema
