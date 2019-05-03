@@ -64,6 +64,13 @@ module.exports = {
 			if (error) return (error, false)
 			return callback(null, subscriber)
 		})
+	},
+
+	getSubscriberCount: (callback) => {
+		Subscriber.count({}, (error, count) => {
+			if (error) return (error, false)
+			return callback(null, count)
+		})
 	}
 
 }

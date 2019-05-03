@@ -159,4 +159,10 @@ io.on('connection', (client) => {
 		})
 	})
 
+	client.on('getSubscriberCount', () => {
+		SubscriberController.getSubscriberCount((error, count) => {
+			console.log(`Subscribers Total: ${count}`)
+		})
+	})
+
 });

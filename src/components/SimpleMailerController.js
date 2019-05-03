@@ -52,6 +52,8 @@ export default class SimpleMailController extends Component {
 				connection: false
 			})
 		})
+
+		socket.emit('getSubscriberCount')
 	}
 
 	 onEditorStateChange = (editorState) => {
