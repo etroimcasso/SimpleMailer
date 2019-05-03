@@ -28,3 +28,8 @@ certs/
 
 #mailerContent
 mailerContent/*
+
+#hostname at src/config/hostname
+# this file is referenced for frontend and server string usage of the hostname
+# In later editions, will be configured by a config interface
+src/config/hostname.js

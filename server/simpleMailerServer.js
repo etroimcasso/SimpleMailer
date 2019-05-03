@@ -11,6 +11,7 @@ const port = process.env.S_PORT;
 const Emailer = require('./lib/Emailer')
 //const socketController = require('./lib/SocketController')
 const SubscriberController = require('./lib/controllers/SubscriberController')
+const ServerStrings = require('./config/ServerStrings')
 
 app.set('forceSSLOptions', {
   httpsPort: process.env.HTTPS_PORT
@@ -52,12 +53,25 @@ server.listen(process.env.HTTPS_PORT,() => {
 	console.log(`Listening on port ${process.env.HTTPS_PORT}`)
 })
 
-
+const sendEmail = (message, callback) => {
+	Emailer.sendEmail(message, (error, info) => {
+			var resultError = ""
+			if (error) {
+				console.error(`Could not send email - error: ${error}`)
+				resultError = "Count not send email"
+			} else {
+				console.log(`Successfully sent email to ${message.receiverEmails}`)
+				resultError = false
+			}
+			callback(resultError)
+		})
+}
 
 //SOCKET SERVER
 io.on('connection', (client) => {
 	client.on('sendEmail', (message) => {
 		console.log(`Sending mail to ${message.receiverEmails}`)
+
 		const emailMessage = {
 			senderName: message.senderName , 
 			senderEmail: message.senderEmail,
@@ -71,17 +85,45 @@ io.on('connection', (client) => {
 			attachments: message.attachments
 		}
 
-		Emailer.sendEmail(emailMessage, (error, info) => {
-				var resultError = ""
-				if (error) {
-					console.error(`Could not send email - error: ${error}`)
-					resultError = "Count not send email"
-				} else {
-					console.log("Successfully sent email")
-					resultError = false
+		sendEmail(emailMessage, (resultError) => {
+			client.emit('sendEmailResults', resultError)
+		})
+	})
+
+	client.on('sendMailer', (message) => {
+		//Get all subscribers
+
+
+		//1. Send process.env.EMAILER_MAXSEND # of emails
+		//2. Wait process.env.EMAILER_WAITMS # of ms
+		//3. return to 1. 
+
+
+		SubscriberController.getAllSubscribers((error, subscribers) => {
+			console.log(subscribers[0])
+			for (var i = 0; i < subscribers.length; i++) {
+				const subscriber = subscribers[i]
+				//Construct message with subscriber as recipient
+				//Only the messageText, html, attachments, receiver, and subject should be modifiable here
+				const emailMessage = {
+					senderName: process.env.EMAIL_USER, 
+					senderEmail: process.env.EMAIL_USER,
+					replyTo: process.env.EMAIL_USER,
+					receiverEmails: subscriber.email,
+					ccReceivers: null,
+					bccReceivers: null,
+					subject: message.subject,
+					messageText: `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`,
+					html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
+					attachments: message.attachments
 				}
-				client.emit('sendEmailResults', resultError)
-			})
+				sendEmail(emailMessage, (resultError) => {
+					client.emit('sendEmailResults', resultError)
+				})
+	
+				//Add unsubscribe link to bottom
+			}		
+		})
 	})
 
 	//Tests the email's connection
@@ -103,6 +145,12 @@ io.on('connection', (client) => {
 				}
 			}
 			client.emit('testEmailResults', resultError)
+		})
+	})
+
+	client.on('getAllSubscribers', () => {
+		SubscriberController.getAllSubscribers((error, subscribers) => {
+			console.log(subscribers)
 		})
 	})
 

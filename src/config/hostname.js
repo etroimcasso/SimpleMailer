@@ -1,3 +1,4 @@
 module.exports = {
-	opensocket: 'localhost:3001'
+	opensocket: 'https://ericpc.tomas.so:3001',
+	unsubscribeHost: 'https://rx4pain.app'
 }

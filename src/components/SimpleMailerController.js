@@ -12,13 +12,17 @@ const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
 const sendMailer = (message, callback) => {
 	socket.on('sendEmailResults', results => callback(null, results))
-	socket.emit('sendEmail', message)
+	socket.emit('sendMailer', message)
 } 
+
 
 
 export default class SimpleMailController extends Component {
 	state = {
 		editorState: EditorState.createEmpty()
+	}
+
+	componentDidMount = () => {
 	}
 
 	 onEditorStateChange = (editorState) => {
@@ -34,16 +38,16 @@ export default class SimpleMailController extends Component {
 		const htmlText = convertRawEditorContentToHTML(rawContent)
 
 		const message = {
-			senderEmail: "support@rx4pain.app",
-			senderName: "support@rx4pain.app",
-			receiverEmails: "eric.tomasso@gmail.com",
+			senderEmail: null,
+			senderName: null,
+			receiverEmails: null,
 			ccReceivers: null,
 			bccReceivers: null,
 			subject: "Test HTML Email",
 			messageText: plainText,
 			html: htmlText,
 			attachments: null,
-			replyTo: "support@rx4pain.app"
+			replyTo: null
 
 		}
 		

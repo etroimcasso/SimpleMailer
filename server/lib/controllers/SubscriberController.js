@@ -44,7 +44,7 @@ module.exports = {
 
 	},
 
-	listAllSubscribers: (callback) => {
+	getAllSubscribers: (callback) => {
 		Subscriber.find({}, (error, subscribers) => {
 			if (error) return (error, false)
 			return callback(null, subscribers)
