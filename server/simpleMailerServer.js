@@ -123,10 +123,10 @@ io.on('connection', (client) => {
 						attachments: message.attachments
 					}
 					sendEmail(emailMessage, (resultError) => {
-						client.emit('sendMailerResults', resultError, subscriber.email )
+						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email )
 					})					
-					//Add unsubscribe link to bottom
-				}	
+				}
+				client.emit('sendMailerFinished')
 			}
 		})
 	})
