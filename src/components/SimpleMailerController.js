@@ -14,24 +14,44 @@ const socket = openSocket(hostname.opensocket);
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
 const sendMailer = (message, callback) => {
-	socket.on('sendEmailResults', results => callback(null, results))
+	socket.on('sendMailerResults', (error, subscriberEmail) => callback(error, subscriberEmail))
 	socket.emit('sendMailer', message)
 } 
 
 
-
 // Styles
-const editorContainerStyle = {
-	borderStyle: 'solid'
+const styles = {
+	solidBorder: {
+		borderStyle: 'solid'
+	},
+	fullWidth: {
+		width: '100%'
+	},
 }
+
+
 
 export default class SimpleMailController extends Component {
 	state = {
 		editorState: EditorState.createEmpty(),
-		subject: ""
+		subject: "",
+		connection: false,
+		mailerBeingSent: false,
+		mailerResult: []
 	}
 
 	componentDidMount = () => {
+		socket.on('connect', () => {
+			this.setState({
+				connection: true
+			})
+		})
+
+		socket.on('disconnect', () => {
+			this.setState({
+				connection: false
+			})
+		})
 	}
 
 	 onEditorStateChange = (editorState) => {
@@ -45,6 +65,8 @@ export default class SimpleMailController extends Component {
 		const rawContent = convertToRaw(currentContent)
 		const plainText = currentContent.getPlainText() //Plain Text
 		const htmlText = convertRawEditorContentToHTML(rawContent)
+
+		this.setState({ mailerBeingSent: true })
 
 		const message = {
 			senderEmail: null,
@@ -60,7 +82,15 @@ export default class SimpleMailController extends Component {
 
 		}
 		
-		sendMailer(message, (error, results) => {
+		sendMailer(message, (error, subscriberEmail) => {
+			console.log(error)
+			console.log(subscriberEmail)
+			this.setState({
+				mailerResult: this.state.mailerResult.concat({
+					email: subscriberEmail,
+					error: error
+				})
+			})
 		})
 
 	}
@@ -71,17 +101,36 @@ export default class SimpleMailController extends Component {
 		})
 	}
 
-	render() {
-		const { editorState, subject } = this.state
+	renderMailerResults = () => {
+		this.state.mailerResult.map((item) => {
+			const email = item.email
+			if (!item.error) {
+				return (
+					<div>{`Sent email to ${email}`}</div>
+				)
+			} else {
+				return (
+					<div>{`Could not email ${email}`}</div>
+				)
+			}
+		})
+	}
 
-		const inputValid = (editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3)
+	render() {
+		const { editorState, subject, connection, mailerBeingSent } = this.state
+
+		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3 && connection
 
 		return(
-			<div>
-				This component will handle communications with the server between the Editor and the rest
-				<SubjectInput value={subject} onChange={this.handleInputChange} />
+			<Container>
+				{ !connection &&
+					<div>
+						<NoConnectionWarning />
+					</div>
+				}
+				<SubjectInput value={subject} style={Object.assign(styles.fullWidth)} onChange={this.handleInputChange} />
 				<SendEmailButton onClick={this.handleSubmitButtonClick} disabled={!inputValid}/>
-				<Container style={editorContainerStyle}>
+				<Container style={Object.assign(styles.solidBorder)}>
 					<Editor
   					editorState={editorState}
   					toolbarClassName="toolbarClassName"
@@ -89,8 +138,12 @@ export default class SimpleMailController extends Component {
   					editorClassName="editorClassName"
   					onEditorStateChange={this.onEditorStateChange}
 					/>
+						<div>
+							{this.renderMailerResults}
+						</div>
+				
 				</Container>
-			</div>
+			</Container>
 		)
 	}
 }
@@ -114,6 +167,14 @@ class SubjectInput extends Component {
 		const { value, onChange } = this.props
 		return (
 			<Input label="Subject" name="subject" value={value} onChange={(event) => this.props.onChange(event.target.name, event.target.value)} />
+		)
+	}
+}
+
+class NoConnectionWarning extends Component {
+	render() {
+		return (
+			<span>No Network Connection</span>
 		)
 	}
 }

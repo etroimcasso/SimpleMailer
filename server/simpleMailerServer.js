@@ -123,7 +123,7 @@ io.on('connection', (client) => {
 						attachments: message.attachments
 					}
 					sendEmail(emailMessage, (resultError) => {
-						client.emit('sendEmailResults', resultError)
+						client.emit('sendMailerResults', resultError, subscriber.email )
 					})					
 					//Add unsubscribe link to bottom
 				}	
@@ -136,7 +136,7 @@ io.on('connection', (client) => {
 	client.on('testEmail', () => {
 		Emailer.testConnection(function(error, success) {
 			console.log("attempt to verify smtp")
-			var resultError = ""
+			var resultError = false
 			if (error != null) {
 				console.debug('Cannot connect to SMTP server')
 				resultError = "Cannot Connect to SMTP server"
