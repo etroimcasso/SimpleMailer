@@ -54,7 +54,11 @@ server.listen(process.env.HTTPS_PORT,() => {
 })
 
 const sendEmail = (message, callback) => {
-	Emailer.sendEmail(message, (error, info) => {
+	if (message.subject.length < 1 || message.messageText.length < 1) {
+		//True signifies an error
+		client.emit('sendEmailResults', true)
+	} else {
+		Emailer.sendEmail(message, (error, info) => {
 			var resultError = ""
 			if (error) {
 				console.error(`Could not send email - error: ${error}`)
@@ -65,13 +69,13 @@ const sendEmail = (message, callback) => {
 			}
 			callback(resultError)
 		})
+	}
 }
 
 //SOCKET SERVER
 io.on('connection', (client) => {
 	client.on('sendEmail', (message) => {
 		console.log(`Sending mail to ${message.receiverEmails}`)
-
 		const emailMessage = {
 			senderName: message.senderName , 
 			senderEmail: message.senderEmail,
@@ -83,8 +87,7 @@ io.on('connection', (client) => {
 			messageText: message.messageText,
 			html: message.html,
 			attachments: message.attachments
-		}
-
+		}	
 		sendEmail(emailMessage, (resultError) => {
 			client.emit('sendEmailResults', resultError)
 		})
@@ -100,29 +103,31 @@ io.on('connection', (client) => {
 
 
 		SubscriberController.getAllSubscribers((error, subscribers) => {
-			console.log(subscribers[0])
-			for (var i = 0; i < subscribers.length; i++) {
-				const subscriber = subscribers[i]
-				//Construct message with subscriber as recipient
-				//Only the messageText, html, attachments, receiver, and subject should be modifiable here
-				const emailMessage = {
-					senderName: process.env.EMAIL_USER, 
-					senderEmail: process.env.EMAIL_USER,
-					replyTo: process.env.EMAIL_USER,
-					receiverEmails: subscriber.email,
-					ccReceivers: null,
-					bccReceivers: null,
-					subject: message.subject,
-					messageText: `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`,
-					html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
-					attachments: message.attachments
-				}
-				sendEmail(emailMessage, (resultError) => {
-					client.emit('sendEmailResults', resultError)
-				})
-	
-				//Add unsubscribe link to bottom
-			}		
+			if (subscribers.length < 1) {
+				client.emit('sendEmailResults', "No subscribers")
+			} else{
+				for (var i = 0; i < subscribers.length; i++) {
+					const subscriber = subscribers[i]
+					//Construct message with subscriber as recipient
+					//Only the messageText, html, attachments, receiver, and subject should be modifiable here
+					const emailMessage = {
+						senderName: process.env.EMAIL_USER, 
+						senderEmail: process.env.EMAIL_USER,
+						replyTo: process.env.EMAIL_USER,
+						receiverEmails: subscriber.email,
+						ccReceivers: null,
+						bccReceivers: null,
+						subject: message.subject,
+						messageText: `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`,
+						html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
+						attachments: message.attachments
+					}
+					sendEmail(emailMessage, (resultError) => {
+						client.emit('sendEmailResults', resultError)
+					})					
+					//Add unsubscribe link to bottom
+				}	
+			}
 		})
 	})
 
