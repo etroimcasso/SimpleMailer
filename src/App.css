@@ -43,8 +43,12 @@
   border-style: solid;
   border-width: 1px;
   border-color: #A0A0A0;
-  border-radius: 12px;
-  margin: 5px;
+  border-radius: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 body {

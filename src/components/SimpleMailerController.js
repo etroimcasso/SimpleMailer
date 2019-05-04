@@ -7,7 +7,9 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
 import openSocket from 'socket.io-client';
 
-import { Container, Button, Icon, Input, Segment } from 'semantic-ui-react';
+import { Container, Input, Segment } from 'semantic-ui-react';
+import SendEmailButton from './bits/SendEmailButton';
+import MailingProgressModal from './MailingProgressModal'
 
 
 const hostname = require('../config/hostname.js');
@@ -15,15 +17,16 @@ const socket = openSocket(hostname.opensocket);
 
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
-const sendMailer = (message, callback) => {
-	socket.on('sendMailerFinished', (error, subscriberEmail) => callback(error, subscriberEmail))
+const sendMailer = (message) => {
 	socket.emit('sendMailer', message)
 } 
 
+/*
 const getSubscriberCount = (callback) => {
 	socket.on('getSubscriberCountResult', (error, count) => callback(error ,count))
 	socket.emit('getSubscriberCount')
 }
+*/
 
 // Styles
 const styles = {
@@ -46,21 +49,32 @@ export default class SimpleMailController extends Component {
 		subject: "",
 		mailerBeingSent: false,
 		allMailSent: false,
-		mailerResults: []
+		mailerResults: [],
+		totalSubscribers: 0,
+		currentSubscriberNumber: 0,
+		mailerProgressModalOpen: false,
 	}
 
 	componentDidMount = () => {
 		
 
-		socket.on('mailerSendToSubscriberResult', (error, email) => {
+		socket.on('mailerSendToSubscriberResult', (error, email, totalSubscribers, currentSubscriberNumber) => {
 			this.setState({
 				mailerResults: this.state.mailerResults.concat({
 					email: email,
 					error: error
-				})
+				}),
+				totalSubscribers: totalSubscribers,
+				currentSubscriberNumber: currentSubscriberNumber,
 			})
 		})
+		socket.on('sendMailerFinished', () => {
+			this.setState({ 
+				mailerBeingSent: false,
+				allMailSent: true,
+			})
 
+		})
 		/*
 		getSubscriberCount((error, count) => {
 			if (!error) {
@@ -85,7 +99,10 @@ export default class SimpleMailController extends Component {
 
 		this.setState({ 
 			mailerBeingSent: true,
-			mailerResults: []
+			mailerResults: [],
+			allMailSent: false,
+			currentSubscriberNumber: 0,
+			mailerProgressModalOpen: true
 			 })
 
 		const message = {
@@ -103,9 +120,7 @@ export default class SimpleMailController extends Component {
 		}
 		
 		sendMailer(message, (error, subscriberEmail) => {
-			if (!error) {
-				this.setState({ mailerBeingSent: false })
-			}
+
 		})
 
 	}
@@ -118,19 +133,35 @@ export default class SimpleMailController extends Component {
 
 
 	render() {
-		const { editorState, subject, mailerBeingSent, mailerResults } = this.state
+		const { editorState, 
+				subject, 
+				mailerBeingSent, 
+				mailerResults, 
+				allMailSent, 
+				mailerProgressModalOpen,
+				totalSubscribers, 
+				currentSubscriberNumber, } = this.state
+
 		const { connection } = this.props
 
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3 && connection
 
 		return(
 				<Container style={{height: '100%'}}>
+					<MailingProgressModal 
+					mailerResults={mailerResults} 
+					mailerBeingSent={mailerBeingSent}
+					allMailSent={allMailSent}
+					totalSubscribers={totalSubscribers}
+					currentSubscriberNumber={currentSubscriberNumber}
+					open={mailerProgressModalOpen}
+					 />
 					<FlexView>
 						<FlexView column grow>
 							<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
 						</FlexView>
 						<FlexView column style={{paddingTop: '1px' }}>
-							<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid}/>
+							<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid} />
 						</FlexView>
 					</FlexView>
 					<Segment style={styles.fullHeight}>
@@ -142,60 +173,8 @@ export default class SimpleMailController extends Component {
   						onEditorStateChange={this.onEditorStateChange}
 						/>
 					</Segment>
-					{ mailerBeingSent &&
-						<MailingInProgressIndicator />
-					}
-					<MailerResults items={mailerResults} />
 				</Container>
 		)
-	}
-}
-
-class MailingInProgressIndicator extends Component {
-
-	render() {
-		return (
-			<div></div>
-		)
-	}
-}
-
-class MailerResults extends Component {
-	renderMailerResults = (item) => {
-		const email = item.email
-		if (!item.error) {
-			return (
-				<div>{`Sent email to ${email}`}</div>
-			)
-		} else {
-			return (
-				<div>{`Could not email ${email}`}</div>
-			)
-		}
-	}
-
-	render() {
-		const { items } = this.props
-		return (
-			<Container>
-				{items.map(item => this.renderMailerResults(item))}
-			</Container>
-		)
-	}
-}
-
-
-class SendEmailButton extends Component {
-	render() {
-		const { disabled, attached } = this.props
-		return(
-			<Button icon attached={attached} labelPosition='right' onClick={this.props.onClick} disabled={disabled}>
-				<Icon name="send" />
-				Send Mailer
-			</Button>
-		)
-
-
 	}
 }
 
@@ -203,7 +182,8 @@ class SubjectInput extends Component {
 	render() {
 		const { value, onChange, style, fluid } = this.props
 		return (
-			<Input fluid={fluid} label="Subject" name="subject" value={value} style={style} onChange={(event) => this.props.onChange(event.target.name, event.target.value)} />
+			<Input fluid={fluid} label="Subject" name="subject" value={value} style={style} onChange={(event) => onChange(event.target.name, event.target.value)} />
 		)
 	}
 }
+

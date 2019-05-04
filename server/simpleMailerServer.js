@@ -123,7 +123,7 @@ io.on('connection', (client) => {
 						attachments: message.attachments
 					}
 					sendEmail(emailMessage, (resultError) => {
-						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email )
+						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email, subscribers.length, (i + 1) )
 					})					
 				}
 				client.emit('sendMailerFinished')
