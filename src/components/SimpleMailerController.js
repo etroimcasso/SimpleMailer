@@ -4,9 +4,11 @@ import draftToHtml from 'draftjs-to-html';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import FlexView from 'react-flexview';
 import openSocket from 'socket.io-client';
 
-import { Container, Button, Icon, Input } from 'semantic-ui-react';
+import { Container, Button, Icon, Input, Segment } from 'semantic-ui-react';
+
 
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
@@ -31,6 +33,9 @@ const styles = {
 	fullWidth: {
 		width: '100%'
 	},
+	fullHeight: {
+		height: '100%'
+	},
 }
 
 
@@ -39,24 +44,13 @@ export default class SimpleMailController extends Component {
 	state = {
 		editorState: EditorState.createEmpty(),
 		subject: "",
-		connection: false,
 		mailerBeingSent: false,
 		allMailSent: false,
 		mailerResults: []
 	}
 
 	componentDidMount = () => {
-		socket.on('connect', () => {
-			this.setState({
-				connection: true
-			})
-		})
-
-		socket.on('disconnect', () => {
-			this.setState({
-				connection: false
-			})
-		})
+		
 
 		socket.on('mailerSendToSubscriberResult', (error, email) => {
 			this.setState({
@@ -67,11 +61,13 @@ export default class SimpleMailController extends Component {
 			})
 		})
 
+		/*
 		getSubscriberCount((error, count) => {
 			if (!error) {
 
 			}
 		})
+		*/
 
 	}
 
@@ -122,30 +118,44 @@ export default class SimpleMailController extends Component {
 
 
 	render() {
-		const { editorState, subject, connection, mailerBeingSen, mailerResults } = this.state
+		const { editorState, subject, mailerBeingSent, mailerResults } = this.state
+		const { connection } = this.props
 
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3 && connection
 
 		return(
-			<Container>
-				{ !connection &&
-					<div>
-						<NoConnectionWarning />
-					</div>
-				}
-				<SubjectInput value={subject} style={Object.assign(styles.fullWidth)} onChange={this.handleInputChange} />
-				<SendEmailButton onClick={this.handleSubmitButtonClick} disabled={!inputValid}/>
-				<Container style={Object.assign(styles.solidBorder)}>
-					<Editor
-  					editorState={editorState}
-  					toolbarClassName="toolbarClassName"
-  					wrapperClassName="wrapperClassName"
-  					editorClassName="editorClassName"
-  					onEditorStateChange={this.onEditorStateChange}
-					/>
+				<Container style={{height: '100%'}}>
+					<FlexView>
+						<FlexView column grow>
+							<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
+						</FlexView>
+						<FlexView column style={{paddingTop: '1px' }}>
+							<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid}/>
+						</FlexView>
+					</FlexView>
+					<Segment style={styles.fullHeight}>
+						<Editor
+  						editorState={editorState}
+  						toolbarClassName="editorToolbar"
+  						wrapperClassName="editorWrapper"
+  						editorClassName="editorEditor"
+  						onEditorStateChange={this.onEditorStateChange}
+						/>
+					</Segment>
+					{ mailerBeingSent &&
+						<MailingInProgressIndicator />
+					}
+					<MailerResults items={mailerResults} />
 				</Container>
-				<MailerResults items={mailerResults} />
-			</Container>
+		)
+	}
+}
+
+class MailingInProgressIndicator extends Component {
+
+	render() {
+		return (
+			<div></div>
 		)
 	}
 }
@@ -173,11 +183,13 @@ class MailerResults extends Component {
 		)
 	}
 }
+
+
 class SendEmailButton extends Component {
 	render() {
-		const { disabled } = this.props
+		const { disabled, attached } = this.props
 		return(
-			<Button icon labelPosition='right' onClick={this.props.onClick} disabled={disabled}>
+			<Button icon attached={attached} labelPosition='right' onClick={this.props.onClick} disabled={disabled}>
 				<Icon name="send" />
 				Send Mailer
 			</Button>
@@ -189,17 +201,9 @@ class SendEmailButton extends Component {
 
 class SubjectInput extends Component {
 	render() {
-		const { value, onChange } = this.props
+		const { value, onChange, style, fluid } = this.props
 		return (
-			<Input label="Subject" name="subject" value={value} onChange={(event) => this.props.onChange(event.target.name, event.target.value)} />
-		)
-	}
-}
-
-class NoConnectionWarning extends Component {
-	render() {
-		return (
-			<span>No Network Connection</span>
+			<Input fluid={fluid} label="Subject" name="subject" value={value} style={style} onChange={(event) => this.props.onChange(event.target.name, event.target.value)} />
 		)
 	}
 }
