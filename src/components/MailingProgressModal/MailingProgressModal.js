@@ -37,8 +37,8 @@ export default class MailingProgressModal extends Component {
 					<MailerResultsList items={mailerResults} />
 				</Modal.Content>
 				<Modal.Actions>
-					<Button primary inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? "green": null}>
-					Continue
+					<Button inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? "green": null}>
+					{(allMailSent) ? UIStrings.MailerModal.OKButtonText : UIStrings.MailerModal.OKButtonWaitText }
 					</Button>
 				</Modal.Actions>
 			</Modal>

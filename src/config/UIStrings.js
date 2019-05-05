@@ -9,7 +9,9 @@ module.exports = {
 	},
 	MailerModal: {
 		InProgress: 'Sending Mailer',
-		Completed: 'Mailer Sent'
+		Completed: 'Mailer Sent',
+		OKButtonText: 'Continue',
+		OKButtonWaitText: "Please Wait..."
 	},
 	MailerResults: {
 		Failure: "Could not email ",
