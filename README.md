@@ -87,8 +87,5 @@ SimpleMailer provides links for adding and removing subscribers. These links are
 and    
 
 >/unubscribe/subscriberEmail/subscriberId      
+
 The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers
-
-
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
