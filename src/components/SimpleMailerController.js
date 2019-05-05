@@ -6,7 +6,6 @@ import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
 import openSocket from 'socket.io-client';
-
 import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
@@ -32,7 +31,7 @@ const getAllSubscribers = (callback) => {
 }
 
 //Used to reconnect when componentDid/WillMount connections didn't take the first time
-const startReconnectionTimer = (callback) => setTimeout(() => callback(), 3000)
+const startReconnectionTimer = callback => setTimeout(() => callback(), 3000)
 
 // Styles
 const styles = {
