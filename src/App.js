@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
@@ -28,6 +28,6 @@ export default class App extends Component {
 const AddSubscriberBridge = ({ match }) => {
 	socket.emit('addSubscriber', match.params.email)
 	return(
-		<span>Added {match.params.email}</span>
+		<Redirect to="/" />
 	)
 } 
