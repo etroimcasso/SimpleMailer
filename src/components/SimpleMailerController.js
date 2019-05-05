@@ -31,11 +31,7 @@ const getAllSubscribers = (callback) => {
 	socket.emit('getAllSubscribers')
 }
 
-const startReconnectionTimer = (callback) => {
-
-		setTimeout(() => callback(), 3000)
-
-	}
+const startReconnectionTimer = (callback) => setTimeout(() => callback(), 3000)
 
 // Styles
 const styles = {
