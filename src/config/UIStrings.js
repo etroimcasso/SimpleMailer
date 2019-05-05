@@ -1,4 +1,5 @@
 module.exports = {
+	LoadingSubscribers: "Loading Subscriber List",
 	TopBar: {
 		ConnectionStatusPopupHeaderText: 'Connection Status',
 		ConnectionText: "",

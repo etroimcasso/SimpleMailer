@@ -7,7 +7,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
 import openSocket from 'socket.io-client';
 
-import { Container, Input, Segment } from 'semantic-ui-react';
+import { Container, Input, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
@@ -15,6 +15,8 @@ import SubscribersDisplay from './SubscribersDisplay';
 
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
+
+const UIStrings = require('../config/UIStrings');
 
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
@@ -51,6 +53,7 @@ export default class SimpleMailController extends Component {
 		//allMailSent: false,
 		mailerResults: [],
 		mailerProgressModalOpen: false,
+		subscribersLoaded: false,
 		subscribersList: []
 	}
 
@@ -77,7 +80,8 @@ export default class SimpleMailController extends Component {
 		getAllSubscribers((error, subscribers) => {
 			if (!error) {
 				this.setState({
-					subscribersList: JSON.parse(subscribers)
+					subscribersList: JSON.parse(subscribers),
+					subscribersLoaded: true
 				})
 
 			}
@@ -85,7 +89,7 @@ export default class SimpleMailController extends Component {
 
 	}
 
-	 onEditorStateChange = (editorState) => {
+	onEditorStateChange = (editorState) => {
     	this.setState({
       		editorState,
     	});
@@ -147,7 +151,8 @@ export default class SimpleMailController extends Component {
 				mailerResults, 
 				//allMailSent, 
 				mailerProgressModalOpen,
-				subscribersList
+				subscribersList,
+				subscribersLoaded
 				 } = this.state
 
 		const { connection } = this.props
@@ -174,11 +179,12 @@ export default class SimpleMailController extends Component {
 								</FlexView>
 							</FlexView>
 						</Segment>
-						<FlexView haAlignContent="left" style={styles.fullWidth}>
-							<Segment fluid basic style={styles.fullWidth}>
-								<SubscribersDisplay subscribers={subscribersList} />
-							</Segment>
-						</FlexView>
+						<Segment fluid style={styles.fullWidth}>
+							<Dimmer  active={!subscribersLoaded}>
+								<Loader active={!subscribersLoaded} inline>{UIStrings.LoadingSubscribers}</Loader>
+							</Dimmer>
+							<SubscribersDisplay subscribers={subscribersList} />
+						</Segment>
 						<Segment style={styles.fullHeight}>
 							<Editor
   							editorState={editorState}

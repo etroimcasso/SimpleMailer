@@ -19,7 +19,9 @@ export default class MailingProgressIndicator extends Component {
 			progress="ratio" 
 			active={!allMailSent}
 			success={allMailSent}
-			attached={attached} />
+			attached={attached} 
+			indicating
+			size="large" />
 		)
 	}
 }

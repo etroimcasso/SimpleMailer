@@ -6,8 +6,8 @@ const styles = {
 	leftAlignedText: {
 		textAlign: 'left'
 	},
-	maxHeight: {
-		maxHeight: '300px'
+	height: {
+		height: '150px'
 	},
 	autoYOverflow: {
 		overflowY:'auto'
@@ -35,9 +35,10 @@ export default class SubscribersDisplay extends Component {
 		return (
 			<Accordion fluid style={styles.leftAlignedText}>
 				<Accordion.Title index={0} active={active} onClick={this.toggleAccordion}>
-					{dropdownIcon} Subscribers
+					{dropdownIcon} Subscribers 
+					<Label circular>{subscribers.length}</Label>
 				</Accordion.Title>
-				<Accordion.Content active={active}>
+				<Accordion.Content active={active} style={styles.height}>
 					<SubscribersList subscribers={subscribers} />
 				</Accordion.Content>
 			</Accordion>
@@ -50,7 +51,7 @@ class SubscribersList extends Component {
 	render() {
 		const { subscribers } = this.props
 		return(
-			<List relaxed style={Object.assign(styles.maxHeight, styles.leftAlignedText, styles.autoYOverflow, styles.fullWidth)}>
+			<List relaxed divided style={Object.assign(styles.leftAlignedText, styles.fullWidth)} size="small">
 				{(subscribers.length > 0) ? subscribers.map((subscriber, index) => <SubscribersListItem key={index} subscriber={subscriber} />) 
 				: <span>There are no subscribers</span> }
 			</List>

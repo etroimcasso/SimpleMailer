@@ -33,7 +33,7 @@ export default class MailingProgressModal extends Component {
 				</Modal.Header>
 				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent}/>
 				<MailerResultsList items={mailerResults} />
-				<Button basic disabled={!allMailSent} onClick={this.props.handleConfirmClick}>Continue</Button>
+				<Button inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? "green": null}>Continue</Button>
 			</Modal>
 		)
 	}
