@@ -25,12 +25,13 @@ const sendMailer = (message) => {
 	socket.emit('sendMailer', message)
 } 
 
-
+//Loads the subscribersList state with data
 const getAllSubscribers = (callback) => {
 	socket.on('getAllSubscribersResult', (error, subscribers) => callback(error, subscribers))
 	socket.emit('getAllSubscribers')
 }
 
+//Used to reconnect when componentDid/WillMount connections didn't take the first time
 const startReconnectionTimer = (callback) => setTimeout(() => callback(), 3000)
 
 // Styles
@@ -60,6 +61,10 @@ export default class SimpleMailController extends Component {
 		subscribersList: []
 	}
 
+	componentWillMount = () => {
+		this.getAllSubscribers()
+	}
+
 	componentDidMount = () => {
 
 		socket.on('mailerSendToSubscriberResult', (error, email) => {
@@ -87,7 +92,6 @@ export default class SimpleMailController extends Component {
 			})
 		})
 		
-		this.getAllSubscribers()
 
 	}
 
