@@ -71,6 +71,16 @@ If left blank, these will default to Subscriber and email respectively.
 >	unsubscribeHost: '' //Address of the server that handles unsubscribe links    
 >}
 
+### Configure SSL options
+The SSL certificate files go in the `certs` folder.  
+>key: server.key  
+>certificate: server.crt  
+
+#### SSL with Let's Encrypt
+The Let's Encrypt tool will generate a number of files, but the important ones are:
+>`privkey.pem` - rename to `server.key`  
+>`fullchain.pem` - rename to `server.crt`
+
 ### Running the Application
 
 1. Build the project    
