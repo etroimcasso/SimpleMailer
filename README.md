@@ -47,17 +47,21 @@ Below is a .env template
 >EMAIL_PASS=
 >MONGO_HOST=
 >MONGO_DB=
->MONGO_COLLECTION_NAME_SINGULAR=Subscribers
->MONGO_EMAIL_KEY=Email
+>MONGO_COLLECTION_NAME_SINGULAR=
+>MONGO_EMAIL_KEY=
 >MONGO_PORT=
 >MONGO_USER=
 >MONGO_PASS=
 >```
 
-The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to collect data from an existing database collection of Subscribers. For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you use use
+The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to collect data from an existing database collection of Subscribers. 
+For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you use use
 
 >MONGO_COLLECTION_NAME_SINGULAR=User
 >MONGO_EMAIL_KEY=EmailAddress
+
+If left blank, these will default to Subscriber and email respectively.
+
 
 ### Create React App Stuff
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

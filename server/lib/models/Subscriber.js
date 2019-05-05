@@ -12,7 +12,7 @@ const schema = new Schema({
 		trim: false
 	},
 	*/
-	[process.env.MONGO_EMAIL_KEY]: {
+	[(process.env.MONGO_EMAIL_KEY || "email")]: {
 		type: String,
 		required: true,
 		unique: true,
@@ -27,4 +27,4 @@ const schema = new Schema({
 	*/
 })
 
-module.exports = mongoose.model(process.env.MONGO_COLLECTION_NAME_SINGULAR, schema);
+module.exports = mongoose.model((process.env.MONGO_COLLECTION_NAME_SINGULAR || "Subscriber"), schema);
