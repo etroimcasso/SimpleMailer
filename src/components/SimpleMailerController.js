@@ -180,10 +180,12 @@ export default class SimpleMailController extends Component {
 							</FlexView>
 						</Segment>
 						<Segment fluid style={styles.fullWidth}>
-							<Dimmer  active={!subscribersLoaded}>
+							<Dimmer inverted active={!subscribersLoaded}>
 								<Loader active={!subscribersLoaded} inline>{UIStrings.LoadingSubscribers}</Loader>
 							</Dimmer>
-							<SubscribersDisplay subscribers={subscribersList} />
+							{ subscribersLoaded &&
+								<SubscribersDisplay subscribers={subscribersList} />
+							}
 						</Segment>
 						<Segment style={styles.fullHeight}>
 							<Editor
