@@ -230,7 +230,7 @@ io.on('connection', (client) => {
 			}	
 			SubscriberController.getOneSubscriberByQuery(query, (error, subscriber) => {
 				if (error || !subscriber || subscriber.email == "" || !subscriber.email) {
-					console.error(`Can't remove subscriber because I'm a stupid computer: ${error} ${subscriber.email}`)
+					//console.error(`Can't remove subscriber because I'm a stupid computer: ${error} ${.email}`)
 					client.emit('subscriberRemoved', error, null)
 				}
 				else {
@@ -238,7 +238,7 @@ io.on('connection', (client) => {
 						if (error) client.emit('subscriberRemoved', error, null)
 						else {
 							console.log(`${email} has been unsubscribed`)
-							client.emit('subscriberRemoved', null, JSON.stringify(item))
+							//client.emit('subscriberRemoved', null, JSON.stringify(item))
 							io.emit('subscriberUnsubscribed', JSON.stringify(item))
 
 
@@ -250,7 +250,7 @@ io.on('connection', (client) => {
 									ccReceivers: null,
 									bccReceivers: null,
 									subject: ServerStrings.UnsubscribeEmail.Subject(email),
-									messageText: ServerStrings.UnsubscribeEmail.BodyText(subscriber.email),
+									messageText: ServerStrings.UnsubscribeEmail.BodyText(email),
 									html: null ,
 									attachments: null
 								}
