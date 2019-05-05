@@ -9,7 +9,7 @@ import openSocket from 'socket.io-client';
 
 import { Container, Input, Segment } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
-import MailingProgressModal from './MailingProgressModal'
+import MailingProgressModal from './MailingProgressModal/MailingProgressModal'
 
 
 const hostname = require('../config/hostname.js');
@@ -21,12 +21,11 @@ const sendMailer = (message) => {
 	socket.emit('sendMailer', message)
 } 
 
-/*
-const getSubscriberCount = (callback) => {
-	socket.on('getSubscriberCountResult', (error, count) => callback(error ,count))
-	socket.emit('getSubscriberCount')
+
+const getAllSubscribers = (callback) => {
+	socket.on('getAllSubscribersResult', (error, subscribers) => callback(error, subscribers))
+	socket.emit('getAllSubscribers')
 }
-*/
 
 // Styles
 const styles = {
@@ -48,40 +47,41 @@ export default class SimpleMailController extends Component {
 		editorState: EditorState.createEmpty(),
 		subject: "",
 		mailerBeingSent: false,
-		allMailSent: false,
+		//allMailSent: false,
 		mailerResults: [],
-		totalSubscribers: 0,
-		currentSubscriberNumber: 0,
 		mailerProgressModalOpen: false,
+		subscribersList: []
 	}
 
 	componentDidMount = () => {
 		
 
-		socket.on('mailerSendToSubscriberResult', (error, email, totalSubscribers, currentSubscriberNumber) => {
+		socket.on('mailerSendToSubscriberResult', (error, email) => {
 			this.setState({
 				mailerResults: this.state.mailerResults.concat({
 					email: email,
 					error: error
 				}),
-				totalSubscribers: totalSubscribers,
-				currentSubscriberNumber: currentSubscriberNumber,
 			})
 		})
+
 		socket.on('sendMailerFinished', () => {
 			this.setState({ 
 				mailerBeingSent: false,
-				allMailSent: true,
+				//allMailSent: true,
 			})
 
 		})
-		/*
-		getSubscriberCount((error, count) => {
+		
+		getAllSubscribers((error, subscribers) => {
+			console.log(`subscribers: ${subscribers}`)
 			if (!error) {
+				this.setState({
+					subscribersList: JSON.parse(subscribers)
+				})
 
 			}
 		})
-		*/
 
 	}
 
@@ -100,8 +100,7 @@ export default class SimpleMailController extends Component {
 		this.setState({ 
 			mailerBeingSent: true,
 			mailerResults: [],
-			allMailSent: false,
-			currentSubscriberNumber: 0,
+			//allMailSent: false,
 			mailerProgressModalOpen: true
 			 })
 
@@ -131,16 +130,25 @@ export default class SimpleMailController extends Component {
 		})
 	}
 
+	closeModalAndConfirmMailerSend = () => {
+		this.setState({
+			mailerProgressModalOpen: false,
+			subject: "",
+			mailerResults: [],
+			editorState: EditorState.createEmpty()
+		})
+	}
+
 
 	render() {
 		const { editorState, 
 				subject, 
 				mailerBeingSent, 
 				mailerResults, 
-				allMailSent, 
+				//allMailSent, 
 				mailerProgressModalOpen,
-				totalSubscribers, 
-				currentSubscriberNumber, } = this.state
+				subscribersList
+				 } = this.state
 
 		const { connection } = this.props
 
@@ -151,28 +159,31 @@ export default class SimpleMailController extends Component {
 					<MailingProgressModal 
 					mailerResults={mailerResults} 
 					mailerBeingSent={mailerBeingSent}
-					allMailSent={allMailSent}
-					totalSubscribers={totalSubscribers}
-					currentSubscriberNumber={currentSubscriberNumber}
+					totalSubscribers={subscribersList.length}
 					open={mailerProgressModalOpen}
-					 />
-					<FlexView>
-						<FlexView column grow>
-							<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
-						</FlexView>
-						<FlexView column style={{paddingTop: '1px' }}>
-							<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid} />
-						</FlexView>
-					</FlexView>
-					<Segment style={styles.fullHeight}>
-						<Editor
-  						editorState={editorState}
-  						toolbarClassName="editorToolbar"
-  						wrapperClassName="editorWrapper"
-  						editorClassName="editorEditor"
-  						onEditorStateChange={this.onEditorStateChange}
-						/>
-					</Segment>
+					handleConfirmClick={this.closeModalAndConfirmMailerSend}
+					/>
+					<Segment.Group>
+						<Segment>
+							<FlexView>
+								<FlexView column grow>
+									<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
+								</FlexView>
+								<FlexView column style={{paddingTop: '1px' }}>
+									<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid} />
+								</FlexView>
+							</FlexView>
+						</Segment>
+						<Segment style={styles.fullHeight}>
+							<Editor
+  							editorState={editorState}
+  							toolbarClassName="editorToolbar"
+  							wrapperClassName="editorWrapper"
+  							editorClassName="editorEditor"
+  							onEditorStateChange={this.onEditorStateChange}
+							/>
+						</Segment>
+					</Segment.Group>
 				</Container>
 		)
 	}

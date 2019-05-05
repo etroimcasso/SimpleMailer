@@ -108,6 +108,7 @@ io.on('connection', (client) => {
 			} else{
 				for (var i = 0; i < subscribers.length; i++) {
 					const subscriber = subscribers[i]
+					const subNumber = i + 1
 					//Construct message with subscriber as recipient
 					//Only the messageText, html, attachments, receiver, and subject should be modifiable here
 					const emailMessage = {
@@ -123,7 +124,7 @@ io.on('connection', (client) => {
 						attachments: message.attachments
 					}
 					sendEmail(emailMessage, (resultError) => {
-						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email, subscribers.length, (i + 1) )
+						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email, subscribers.length, subNumber )
 					})					
 				}
 				client.emit('sendMailerFinished')
@@ -155,7 +156,8 @@ io.on('connection', (client) => {
 
 	client.on('getAllSubscribers', () => {
 		SubscriberController.getAllSubscribers((error, subscribers) => {
-			console.log(subscribers)
+			console.log(`Subscribers: ${subscribers}`)
+			client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
 		})
 	})
 

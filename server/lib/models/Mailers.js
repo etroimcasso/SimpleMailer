@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
 	subject: {},
-	bodyText: {}
+	bodyText: {} // Stored as  DraftJS EditorState
 })
 
 module.exports = mongoose.model('Mailers', schema);
