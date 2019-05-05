@@ -74,9 +74,10 @@ If left blank, these will default to Subscriber and email respectively.
 
 #Using the Subscriber Links
 SimpleMailer provides links for adding and removing subscribers. These links are:
->/addSubscriber/subscriberEmail
+>/subscribe/subscriberEmail
 and
->/removeSubscriber/subscriberEmail/subscriberId    
+>/unubscribe/subscriberEmail/subscriberId    
+The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers
 
 
 ### Create React App Stuff
