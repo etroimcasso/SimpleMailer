@@ -6,7 +6,7 @@ import TopBar from './TopBar';
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
-export default class SimpleMailer extends Component {
+export default class SimpleMailerConnectionWrapper extends Component {
 	state = {
 		connection: false
 	}

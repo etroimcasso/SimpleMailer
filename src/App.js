@@ -5,7 +5,7 @@ import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
 import openSocket from 'socket.io-client';
 
-import SimpleMailer from './components/SimpleMailer';
+import SimpleMailerConnectionWrapper from './components/SimpleMailerConnectionWrapper';
 
 
 
@@ -13,11 +13,25 @@ const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
 export default class App extends Component {
+  state= {
+    subscriberInfoModalOpen: false,
+    subscriberInfoMessage: "",
+    subscriberError: false
+
+  }
 
   componentDidMount = () => {
     socket.on('subscriberRemoved', (error, subscriber) => {
       //Alerts the user that their email has been unsubscribed
       // using a controlled modal with just a message and an "OK" button 
+      if (error) {
+
+      } else {
+        this.setState({
+          subscriberInfoModalOpen: true,
+
+        })
+      }
     })
   }
 
@@ -25,8 +39,9 @@ export default class App extends Component {
 
   		return (
   			<div className="App">
-  				<Route exact path="/" component={SimpleMailer} />
-  				<Route path="/addSubscriber/:email" component={AddSubscriberBridge} />
+  				<Route exact path="/" component={SimpleMailerConnectionWrapper} />
+  				<Route path="/subscribe/:email" component={AddSubscriberBridge} />
+          <Route path="/unsubscribe/:email/:id" component={RemoveSubscriberBridge} />
     		</div>
   		)
   	}
@@ -41,11 +56,9 @@ const AddSubscriberBridge = ({ match }) => {
 } 
 
 const RemoveSubscriberBridge = ({match}) => {
-  const email = match.params.email
-  const subId = match.params.subId
+  socket.emit('removeSubscriber', match.params.email, match.params.id )
 
-  socket.emit('removeSubscriber', email, subId )
   return (
-    <Redirect to ="/" />
+    <Redirect to="/" />
   )
 }

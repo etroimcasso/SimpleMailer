@@ -100,6 +100,12 @@ export default class SimpleMailController extends Component {
 				})
 			})
 		})
+
+		socket.on('noSubscribers', () => {
+			this.setState({
+				subscribersLoaded: true
+			})
+		})
 		
 
 	}

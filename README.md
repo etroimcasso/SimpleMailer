@@ -72,6 +72,13 @@ If left blank, these will default to Subscriber and email respectively.
 
 >npm run production    
 
+#Using the Subscriber Links
+SimpleMailer provides links for adding and removing subscribers. These links are:
+>/addSubscriber/subscriberEmail
+and
+>/removeSubscriber/subscriberEmail/subscriberId    
+
+
 ### Create React App Stuff
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

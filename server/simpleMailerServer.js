@@ -164,7 +164,11 @@ io.on('connection', (client) => {
 
 	client.on('getAllSubscribers', () => {
 		SubscriberController.getAllSubscribers((error, subscribers) => {
-			client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
+			if (subscribers.length > 0) {
+				client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
+			} else {
+				client.emit('noSubscribers')
+			}
 		})
 	})
 
@@ -213,6 +217,33 @@ io.on('connection', (client) => {
 					})
 			}
 		})
+	})
+
+	client.on('removeSubscriber', (email, id) => {
+		console.log(`Remove ${email} ${id}`)
+
+		if (id && email ) {
+			const query = {
+				_id: id,
+				email: email
+			}	
+			SubscriberController.getOneSubscriberByQuery(query, (error, subscriber) => {
+				if (error || !subscriber || subscriber.email == "" || !subscriber.email) {
+					console.error(`Can't remove subscriber because I'm a stupid computer: ${error} ${subscriber.email}`)
+					client.emit('subscriberRemoved', error, null)
+				}
+				else {
+					SubscriberController.removeSubscriber(subscriber, (error, item) => {
+						if (error) client.emit('subscriberRemoved', error, null)
+						else {
+							console.log(`${email} has been unsubscribed`)
+							client.emit('subscriberRemoved', null, JSON.stringify(item))
+							io.emit('subscriberUnsubscribed', JSON.stringify(item))
+						}
+					})
+				}
+			})
+		} else client.emit('subscriberRemoved', "WHAT", null)
 	})
 		
 });

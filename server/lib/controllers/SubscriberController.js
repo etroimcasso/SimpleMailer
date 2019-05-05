@@ -18,6 +18,7 @@ mongoose.connect(__MONGO_URI__);
 
 const isSubscriberUnique = (subscriber) => {
 
+
 }
 
 //Public functions
@@ -72,6 +73,13 @@ module.exports = {
 		Subscriber.count({}, (error, count) => {
 			if (error) return (error, false)
 			return callback(null, count)
+		})
+	},
+
+	getOneSubscriberByQuery: (query, callback) => {
+		Subscriber.findOne(query, (error, item) => {
+			if (error) return (error, false)
+			return callback(null, item)
 		})
 	}
 
