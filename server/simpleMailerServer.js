@@ -183,6 +183,7 @@ io.on('connection', (client) => {
 		SubscriberController.addSubscriber(subscriberEmail, (error, item) => {
 			subscriberEmail = subscriberEmail.toLowerCase()
 			var resultError = false
+			client.emit('subscriberAdded', error)
 			if (error) {
 				console.log(`ERROR ADDING SUBSCRIBER: ${error}`)
 				resultError = error
@@ -239,6 +240,31 @@ io.on('connection', (client) => {
 							console.log(`${email} has been unsubscribed`)
 							client.emit('subscriberRemoved', null, JSON.stringify(item))
 							io.emit('subscriberUnsubscribed', JSON.stringify(item))
+
+							const emailMessage = {
+									senderName: process.env.EMAIL_USER, 
+									senderEmail: process.env.EMAIL_USER,
+									replyTo: process.env.EMAIL_USER,
+									receiverEmails: email,
+									ccReceivers: null,
+									bccReceivers: null,
+									subject: ServerStrings.UnsubscribeEmail.Subject(email),
+									messageText: ServerStrings.UnsubscribeEmail.BodyText(subscriber.email),
+									html: null ,
+									attachments: null
+								}
+
+							sendEmail(emailMessage,(error, info) => {
+									var resultError = ""
+									if (error) {
+										console.error(`Could not send email - error: ${error}`)
+										resultError = "Count not send email"
+									} else {
+										console.log("Successfully sent Unsubscribe alert email")
+										resultError = false
+									}
+								})
+							
 						}
 					})
 				}
