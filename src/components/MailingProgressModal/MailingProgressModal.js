@@ -4,6 +4,7 @@ import { Container, Button, Icon, List, Modal, Item, Header, Transition } from '
 import MailingProgressIndicator from './MailingProgressIndicator';
 import MailerResultsList from './MailerResultsList';
 
+const UIStrings = require('../../config/UIStrings')
 
 export default class MailingProgressModal extends Component {
 
@@ -21,12 +22,12 @@ export default class MailingProgressModal extends Component {
 			basic
 			dimmer="blurring" >
 				<Modal.Header>
-					{ (allMailSent ) ? 
+					{ (allMailSent ) ?
 						<Icon name='check' size={loadingIconSize} />
 						:
 						<Icon loading name='spinner' size={loadingIconSize} />
 					}
-					Sending Mailer
+					{ (allMailSent) ? UIStrings.MailerModal.Completed : UIStrings.MailerModal.InProgress }
 				</Modal.Header>
 				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent}/>
 				<MailerResultsList items={mailerResults} />

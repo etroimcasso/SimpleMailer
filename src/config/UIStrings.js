@@ -4,5 +4,9 @@ module.exports = {
 		ConnectionText: "",
 		ConnectionStatusConnected: 'Connected' ,
 		ConnectionStatusDisconnected: 'Disconnected',
+	},
+	MailerModal: {
+		InProgress: 'Sending Mailer',
+		Completed: 'Mailer Sent'
 	}
 }
