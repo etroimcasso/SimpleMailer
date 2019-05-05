@@ -1,3 +1,59 @@
+# SimpleMailer
+
+SimpleMailer is an easy-to-use Mailing List application that adds mailing list functionality to any website. SimpleMailer can be configured to work with an existing database collection or to use its own. 
+
+# Requirements
+* Node 10.8.0+
+* MongoDB 3.6.3+
+* SSL Certificate and Key
+
+# Installation
+
+### Clone project and install dependencies
+
+1. Clone SimpleMailer to any `directory`
+
+> git clone https://gitlab.com/etroimcasso/simplemailer.git `directory`
+
+2. Change directory to `directory`
+
+> cd `directory`
+
+3. Install dependencies
+
+> npm install
+
+4. Install pm2
+
+> npm install pm2 -g
+
+### Configure Project Settings
+The .env file is used to configure the application's ports, email settings, and database settings.
+Below is a .env template
+>#### __.env__
+>```
+>HTTP_PORT=3000
+>HTTPS_PORT=3001
+>S_PORT=3001
+>EMAIL_HOST=
+>EMAIL_PORT=465
+>EMAIL_USER=
+>EMAIL_PASS=
+>MONGO_HOST=
+>MONGO_DB=
+>MONGO_COLLECTION_NAME_SINGULAR=Subscribers
+>MONGO_EMAIL_KEY=Email
+>MONGO_PORT=
+>MONGO_USER=
+>MONGO_PASS=
+>```
+
+The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to collect data from an existing database collection of Subscribers. For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you use use
+
+>MONGO_COLLECTION_NAME_SINGULAR=User
+>MONGO_EMAIL_KEY=EmailAddress
+
+### Create React App Stuff
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
