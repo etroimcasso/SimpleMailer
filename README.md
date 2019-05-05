@@ -60,14 +60,14 @@ The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to
 For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you would use
 
 >MONGO_COLLECTION_NAME_SINGULAR=User    
->MONGO_EMAIL_KEY=EmailAddress
+>MONGO_EMAIL_KEY=EmailAddress    
 
 If left blank, these will default to Subscriber and email respectively.
 
 >#### __src/config/hostname.js__
->module.exports = {
->	opensocket: '', //Address of this socket server
->	unsubscribeHost: '' //Address of the server that handles unsubscribe links
+>module.exports = {    
+>	opensocket: '', //Address of this socket server    
+>	unsubscribeHost: '' //Address of the server that handles unsubscribe links    
 >}
 
 ### Running the Application
