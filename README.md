@@ -72,7 +72,7 @@ If left blank, these will default to Subscriber and email respectively.
 
 >npm run production    
 
-#Using the Subscriber Links
+# Using the Subscriber Links
 SimpleMailer provides links for adding and removing subscribers. These links are:
 >/subscribe/subscriberEmail
 and
