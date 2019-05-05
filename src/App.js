@@ -14,6 +14,13 @@ const socket = openSocket(hostname.opensocket);
 
 export default class App extends Component {
 
+  componentDidMount = () => {
+    socket.on('subscriberRemoved', (error, subscriber) => {
+      //Alerts the user that their email has been unsubscribed
+      // using a controlled modal with just a message and an "OK" button 
+    })
+  }
+
 	render() {
 
   		return (
@@ -25,9 +32,20 @@ export default class App extends Component {
   	}
 }
 
+
 const AddSubscriberBridge = ({ match }) => {
 	socket.emit('addSubscriber', match.params.email)
 	return(
 		<Redirect to="/" />
 	)
 } 
+
+const RemoveSubscriberBridge = ({match}) => {
+  const email = match.params.email
+  const subId = match.params.subId
+
+  socket.emit('removeSubscriber', email, subId )
+  return (
+    <Redirect to ="/" />
+  )
+}

@@ -55,9 +55,9 @@ Below is a .env template
 >```
 
 The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to collect data from an existing database collection of Subscribers. 
-For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you use use
+For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you would use
 
->MONGO_COLLECTION_NAME_SINGULAR=User
+>MONGO_COLLECTION_NAME_SINGULAR=User    
 >MONGO_EMAIL_KEY=EmailAddress
 
 If left blank, these will default to Subscriber and email respectively.
