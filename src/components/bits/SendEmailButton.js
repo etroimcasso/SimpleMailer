@@ -8,7 +8,7 @@ export default class SendEmailButton extends Component {
 		return(
 			<Button icon attached={attached} labelPosition='right' onClick={this.props.onClick} disabled={disabled}>
 				<Icon name="send" />
-				Send Mailer
+				Send
 			</Button>
 		)
 

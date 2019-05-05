@@ -83,13 +83,21 @@ export default class SimpleMailController extends Component {
 
 		})
 
-		//Resets the subscribersLoaded state to false whenever a new subscriber is added
-		//Forces the subscribersList to reload and adds the new subscriber to the list
+		//Adds the new subscriber to the list
 		socket.on('newSubscriberAdded', (subscriber) => {
 			subscriber = JSON.parse(subscriber)
-			console.log(`NEW SUBSCRIBER: ${subscriber}`)
 			this.setState({
 				subscribersList: this.state.subscribersList.concat(subscriber)
+			})
+		})
+
+		//Removes subscriber from list
+		socket.on('subscriberUnsubscribed', (subscriber) =>{
+			subscriber = JSON.parse(subscriber)
+			this.setState({
+				subscribersList: this.state.subscribersList.filter( (item) => {
+					return item.email != subscriber.email
+				})
 			})
 		})
 		
