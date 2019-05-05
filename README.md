@@ -57,6 +57,7 @@ Below is a .env template
 
 `ALLOW_LINKS` enables/disables the subscribe/unsubscribe links
 The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to collect data from an existing database collection of Subscribers. 
+`S_PORT` is the port value of the socket server
 For example, if you were attaching SimpleMailer to a website that has a MongoDB collection of Users with their emails stored in an EmailAddress field, you would use
 
 >MONGO_COLLECTION_NAME_SINGULAR=User    
@@ -88,4 +89,4 @@ and
 
 >/unubscribe/subscriberEmail/subscriberId      
 
-The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers
+The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers.
