@@ -1,42 +1,33 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { Route } from 'react-router-dom';
+
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
 import openSocket from 'socket.io-client';
-import SimpleMailerController from './components/SimpleMailerController';
-import TopBar from './components/TopBar';
+
+import SimpleMailer from './components/SimpleMailer';
+
+
 
 const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
 export default class App extends Component {
-	state = {
-		connection: false
-	}
 
-	componentDidMount = () => {
-		socket.on('connect', () => {
-			this.setState({
-				connection: true
-			})
-		})
-
-		socket.on('disconnect', () => {
-			this.setState({
-				connection: false
-			})
-		})
-	}
 	render() {
-		const { connection } = this.state
 
   		return (
   			<div className="App">
-  				<TopBar connection={connection} />
-      			<SimpleMailerController connection={connection}/>
+  				<Route exact path="/" component={SimpleMailer} />
+  				<Route path="/addSubscriber/:email" component={AddSubscriberBridge} />
     		</div>
   		)
   	}
 }
 
-
+const AddSubscriberBridge = ({ match }) => {
+	socket.emit('addSubscriber', match.params.email)
+	return(
+		<span>Added {match.params.email}</span>
+	)
+} 

@@ -38,6 +38,7 @@ app.use(express.static(root));
 app.get("/mailerContent/:fileName", (req, res, next) => {
 	res.sendFile(req.params.fileName, path.join(root, 'mailerContent/'))
 })
+
 //Route for everything else
 app.get("*", (req, res) => {
    res.sendFile('index.html', { root });
@@ -175,54 +176,44 @@ io.on('connection', (client) => {
 
 	client.on('addSubscriber', (subscriberEmail ) => {
 		// Add to thingy
-		SubscriberController.addSubscriber(subscriberEmail, (error, success) => {
+		SubscriberController.addSubscriber(subscriberEmail, (error, item) => {
 			subscriberEmail = subscriberEmail.toLowerCase()
 			var resultError = false
-
 			if (error) {
 				console.log(`ERROR ADDING SUBSCRIBER: ${error}`)
 				resultError = error
 			} 
 			if (resultError == false) {
-				console.log(`NEW SUBSCRIBER: ${subscriberEmail}`)
-				SubscriberController.getSubscriberByEmail(subscriberEmail, (error, subscriber) => {
-					if (error) resultError = true
-					else {
-						client.emit('newSubscriberAdded', subscriber)
-						Emailer.sendEmail(process.env.EMAIL_USER, 
-							process.env.EMAIL_USER, 
-							process.env.EMAIL_USER,
-							subscriberEmail,
-							null,
-							null,
-							ServerStrings.WelcomeSubscriberEmail.Subject(subscriberEmail),
-							ServerStrings.WelcomeSubscriberEmail.BodyText(subscriberEmail,subscriber._id),
-							null,
-							null,
-							(error, info) => {
-								var resultError = ""
-								if (error) {
-									console.error(`Could not send email - error: ${error}`)
-									resultError = "Count not send email"
-								} else {
-									console.log("Successfully sent WelcomeSubscriberEmail email")
-									resultError = false
-								}
-						})	
+				const subscriber = item
+				console.log(`NEW SUBSCRIBER: ${subscriber.email}`)
+				console.log(`Subscriber ID: ${subscriber._id}`)
+				const emailMessage = {
+						senderName: process.env.EMAIL_USER, 
+						senderEmail: process.env.EMAIL_USER,
+						replyTo: process.env.EMAIL_USER,
+						receiverEmails: subscriber.email,
+						ccReceivers: null,
+						bccReceivers: null,
+						subject: ServerStrings.WelcomeSubscriberEmail.Subject(subscriber.email),
+						messageText: ServerStrings.WelcomeSubscriberEmail.BodyText(subscriber.email,subscriber._id),
+						html: null ,
+						attachments: null
 					}
-				})
 
+				sendEmail(emailMessage,(error, info) => {
+						var resultError = ""
+						if (error) {
+							console.error(`Could not send email - error: ${error}`)
+							resultError = "Count not send email"
+						} else {
+							console.log("Successfully sent WelcomeSubscriberEmail email")
+							resultError = false
+						}
+					})
+				client.emit('newSubscriberAdded', subscriber)	
 			}
-		
-
-			/*
-			SubscriberController.getAllSubscribers((error, subscribers) => {
-				client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
-			})
-			*/
-
 		})
 	})
-
+		
 });
 

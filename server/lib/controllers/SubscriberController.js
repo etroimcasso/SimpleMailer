@@ -31,10 +31,10 @@ module.exports = {
 		}, (error, item) => {
 			if (error) {
 				//Could not add Subscriber
-				return callback(error, false) 
+				return callback(error, null) 
 			}
 			// Subscriber successfully added
-			return callback(false, true)
+			return callback(false, item)
 		})
 	},
 
