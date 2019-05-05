@@ -7,10 +7,11 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
 import openSocket from 'socket.io-client';
 
-import { Container, Input, Segment, Dimmer, Loader } from 'semantic-ui-react';
+import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
+import SubjectInput from './bits/SubjectInput';
 
 
 const hostname = require('../config/hostname.js');
@@ -172,52 +173,42 @@ export default class SimpleMailController extends Component {
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3 && connection
 
 		return(
-				<Container style={{height: '100%'}}>
-					<MailingProgressModal 
-					mailerResults={mailerResults} 
-					mailerBeingSent={mailerBeingSent}
-					totalSubscribers={subscribersList.length}
-					open={mailerProgressModalOpen}
-					handleConfirmClick={this.closeModalAndConfirmMailerSend}
-					/>
-					<Segment.Group>
-						<Segment>
-							<FlexView>
-								<FlexView column grow>
-									<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
-								</FlexView>
-								<FlexView column style={{paddingTop: '1px' }}>
-									<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid} />
-								</FlexView>
+			<Container style={{height: '100%'}}>
+				<MailingProgressModal 
+				mailerResults={mailerResults} 
+				mailerBeingSent={mailerBeingSent}
+				totalSubscribers={subscribersList.length}
+				open={mailerProgressModalOpen}
+				handleConfirmClick={this.closeModalAndConfirmMailerSend}
+				/>
+				<Segment.Group>
+					<Segment>
+						<FlexView>
+							<FlexView column grow>
+								<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
 							</FlexView>
-						</Segment>
-						<Segment fluid style={styles.fullWidth}>
-							<Dimmer inverted active={!subscribersLoaded}>
-								<Loader active={!subscribersLoaded} inline>{UIStrings.LoadingSubscribers}</Loader>
-							</Dimmer>
-							<SubscribersDisplay subscribers={subscribersList} loaded={subscribersLoaded} />
-						</Segment>
-						<Segment style={styles.fullHeight}>
-							<Editor
-  							editorState={editorState}
-  							toolbarClassName="editorToolbar"
-  							wrapperClassName="editorWrapper"
-  							editorClassName="editorEditor"
-  							onEditorStateChange={this.onEditorStateChange}
-							/>
-						</Segment>
-					</Segment.Group>
-				</Container>
+							<FlexView column style={{paddingTop: '1px' }}>
+								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid} />
+							</FlexView>
+						</FlexView>
+					</Segment>
+					<Segment fluid style={styles.fullWidth}>
+						<Dimmer inverted active={!subscribersLoaded}>
+							<Loader active={!subscribersLoaded} inline>{UIStrings.LoadingSubscribers}</Loader>
+						</Dimmer>
+						<SubscribersDisplay subscribers={subscribersList} loaded={subscribersLoaded} />
+					</Segment>
+					<Segment style={styles.fullHeight}>
+						<Editor
+  						editorState={editorState}
+  						toolbarClassName="editorToolbar"
+  						wrapperClassName="editorWrapper"
+  						editorClassName="editorEditor"
+  						onEditorStateChange={this.onEditorStateChange}
+						/>
+					</Segment>
+				</Segment.Group>
+			</Container>
 		)
 	}
 }
-
-class SubjectInput extends Component {
-	render() {
-		const { value, onChange, style, fluid } = this.props
-		return (
-			<Input fluid={fluid} label="Subject" name="subject" value={value} style={style} onChange={(event) => onChange(event.target.name, event.target.value)} />
-		)
-	}
-}
-
