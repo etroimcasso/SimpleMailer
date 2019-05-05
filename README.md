@@ -57,7 +57,7 @@ Below is a .env template
 
 `ALLOW_LINKS` enables/disables the subscribe/unsubscribe links
 The `MONGO_COLLECTION_NAME_SINGULAR` and `MONGO_EMAIL_KEY` are selectors used to collect data from an existing database collection of Subscribers. 
-For example, if you were attaching SimpleMailer to a website that has a MongoDB database of Users with their emails stored in an EmailAddress field, you would use
+For example, if you were attaching SimpleMailer to a website that has a MongoDB collection of Users with their emails stored in an EmailAddress field, you would use
 
 >MONGO_COLLECTION_NAME_SINGULAR=User    
 >MONGO_EMAIL_KEY=EmailAddress    
