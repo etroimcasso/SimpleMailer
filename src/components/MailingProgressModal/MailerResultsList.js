@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { Icon, List, Transition } from 'semantic-ui-react';
 
+const UIStrings = require('../../config/UIStrings')
+
+const listSize = {
+	height: '50vh'
+}
+
 export default class MailerResultsList extends Component {
 	render() {
 		const { items } = this.props
 		return (
-			<Transition.Group as={List} divided relaxed>
+			<Transition.Group as={List} celled relaxed style={listSize}>
 				{items.map(item => <MailerResultsListItem item={item}/>)}
 			</Transition.Group>
 		)
@@ -17,7 +23,7 @@ class MailerResultsListItem extends Component {
 		const { item } = this.props
 
 		const emailIconColor = (!item.error) ? "green" : "red"
-		const emailIcon = (<Icon name="mail" color={emailIconColor} size="big" />)
+		const emailIcon = (<Icon name="mail" color={emailIconColor} />)
 
 
 		const email = item.email
@@ -26,7 +32,7 @@ class MailerResultsListItem extends Component {
 			<List.Item key={email} size="massive">
 				{emailIcon}
 				<List.Content>
-					{(item.error) ? `Could not email ${email}` : `Sent email to ${email}`}
+					{(item.error) ? UIStrings.MailerResults.Failure : UIStrings.MailerResults.Success }<b>{email}</b>
 				</List.Content>
 			</List.Item>
 		)

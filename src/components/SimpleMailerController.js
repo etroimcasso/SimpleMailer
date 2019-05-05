@@ -9,7 +9,8 @@ import openSocket from 'socket.io-client';
 
 import { Container, Input, Segment } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
-import MailingProgressModal from './MailingProgressModal/MailingProgressModal'
+import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
+import SubscribersDisplay from './SubscribersDisplay';
 
 
 const hostname = require('../config/hostname.js');
@@ -74,7 +75,6 @@ export default class SimpleMailController extends Component {
 		})
 		
 		getAllSubscribers((error, subscribers) => {
-			console.log(`subscribers: ${subscribers}`)
 			if (!error) {
 				this.setState({
 					subscribersList: JSON.parse(subscribers)
@@ -174,6 +174,11 @@ export default class SimpleMailController extends Component {
 								</FlexView>
 							</FlexView>
 						</Segment>
+						<FlexView haAlignContent="left" style={styles.fullWidth}>
+							<Segment fluid basic style={styles.fullWidth}>
+								<SubscribersDisplay subscribers={subscribersList} />
+							</Segment>
+						</FlexView>
 						<Segment style={styles.fullHeight}>
 							<Editor
   							editorState={editorState}

@@ -20,7 +20,9 @@ export default class MailingProgressModal extends Component {
 			<Modal
 			open={open}
 			basic
-			dimmer="blurring" >
+			dimmer="blurring" 
+			inverted
+			>
 				<Modal.Header>
 					{ (allMailSent ) ?
 						<Icon name='check' size={loadingIconSize} />
@@ -31,7 +33,7 @@ export default class MailingProgressModal extends Component {
 				</Modal.Header>
 				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent}/>
 				<MailerResultsList items={mailerResults} />
-				<Button disabled={!allMailSent} onClick={this.props.handleConfirmClick}>Continue</Button>
+				<Button basic disabled={!allMailSent} onClick={this.props.handleConfirmClick}>Continue</Button>
 			</Modal>
 		)
 	}
