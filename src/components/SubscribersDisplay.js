@@ -7,7 +7,7 @@ const styles = {
 		textAlign: 'left'
 	},
 	maxHeight: {
-		maxHeight: '100px'
+		maxHeight: '300px'
 	},
 	autoYOverflow: {
 		overflowY:'auto'
