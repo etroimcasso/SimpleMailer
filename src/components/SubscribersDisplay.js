@@ -7,7 +7,7 @@ const styles = {
 		textAlign: 'left'
 	},
 	height: {
-		height: '150px'
+		height: '150px',
 	},
 	autoYOverflow: {
 		overflowY:'auto'
@@ -40,7 +40,7 @@ export default class SubscribersDisplay extends Component {
 					<Label circular>{subscribers.length}</Label>
 					}
 				</Accordion.Title>
-				<Accordion.Content active={active} style={styles.height}>
+				<Accordion.Content active={active} style={Object.assign(styles.height, styles.autoYOverflow)}>
 					<SubscribersList subscribers={subscribers} />
 				</Accordion.Content>
 			</Accordion>

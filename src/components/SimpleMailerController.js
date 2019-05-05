@@ -58,7 +58,6 @@ export default class SimpleMailController extends Component {
 	}
 
 	componentDidMount = () => {
-		
 
 		socket.on('mailerSendToSubscriberResult', (error, email) => {
 			this.setState({
@@ -77,18 +76,31 @@ export default class SimpleMailController extends Component {
 
 		})
 		
+		this.getAllSubscribers()
+
+	}
+
+	getAllSubscribers = () => {
+		this.startReconnectionTimer()
 		getAllSubscribers((error, subscribers) => {
 			if (!error) {
 				this.setState({
 					subscribersList: JSON.parse(subscribers),
 					subscribersLoaded: true
 				})
-
 			}
 		})
-
 	}
 
+	startReconnectionTimer = () => {
+		//Start timer
+		//When timer ends getAllSubscribers' again if subscribersLoaded is  false
+		setTimeout(() => {
+			if (!this.state.subscribersLoaded)
+				this.getAllSubscribers()
+		}, 10000)
+
+	}
 	onEditorStateChange = (editorState) => {
     	this.setState({
       		editorState,
