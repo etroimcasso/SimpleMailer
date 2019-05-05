@@ -10,7 +10,7 @@ module.exports = {
 	MailerModal: {
 		InProgress: 'Sending Mailer',
 		Completed: 'Mailer Sent',
-		OKButtonText: 'Continue',
+		OKButtonText: 'Done!',
 		OKButtonWaitText: "Please Wait..."
 	},
 	MailerResults: {

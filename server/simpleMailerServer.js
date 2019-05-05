@@ -165,4 +165,53 @@ io.on('connection', (client) => {
 		})
 	})
 
+	client.on('addSubscriber', (subscriberEmail ) => {
+		// Add to thingy
+		SubscriberController.addSubscriber(subscriberEmail, (error, success) => {
+			subscriberEmail = subscriberEmail.toLowerCase()
+			var resultError = false
+
+			if (error) {
+				console.log(`ERROR ADDING SUBSCRIBER: ${error}`)
+				resultError = error
+			} 
+			if (resultError == false) {
+				console.log(`NEW SUBSCRIBER: ${subscriberEmail}`)
+				SubscriberController.getSubscriberByEmail(subscriberEmail, (error, subscriber) => {
+					if (error) resultError = true
+					else {
+						Emailer.sendEmail(process.env.EMAIL_USER, 
+							process.env.EMAIL_USER, 
+							process.env.EMAIL_USER,
+							subscriberEmail,
+							null,
+							null,
+							ServerStrings.WelcomeSubscriberEmail.Subject(subscriberEmail),
+							ServerStrings.WelcomeSubscriberEmail.BodyText(subscriberEmail,subscriber._id),
+							null,
+							null,
+							(error, info) => {
+								var resultError = ""
+								if (error) {
+									console.error(`Could not send email - error: ${error}`)
+									resultError = "Count not send email"
+								} else {
+									console.log("Successfully sent WelcomeSubscriberEmail email")
+									resultError = false
+								}
+						})	
+					}
+				})
+
+			}
+			client.emit('addSubscriberResults', resultError)
+
+			SubscriberController.getAllSubscribers((error, subscribers) => {
+				client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
+			})
+
+		})
+	})
+
 });
+

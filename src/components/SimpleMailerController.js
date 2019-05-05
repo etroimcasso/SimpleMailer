@@ -31,6 +31,12 @@ const getAllSubscribers = (callback) => {
 	socket.emit('getAllSubscribers')
 }
 
+const startReconnectionTimer = (callback) => {
+
+		setTimeout(() => callback(), 3000)
+
+	}
+
 // Styles
 const styles = {
 	solidBorder: {
@@ -76,13 +82,26 @@ export default class SimpleMailController extends Component {
 			})
 
 		})
+
+		//Resets the subscribersLoaded state to false whenever a new subscriber is added
+		//Forces the subscribersList to reload
+		socket.on('addSubscriberResults', () => {
+			this.setState({
+				subscribersLoaded: false
+			})
+		})
 		
 		this.getAllSubscribers()
 
 	}
 
 	getAllSubscribers = () => {
-		this.startReconnectionTimer()
+		//Start timer
+		//When timer ends getAllSubscribers' again if subscribersLoaded is  false
+		startReconnectionTimer(() => {
+			if (!this.state.subscribersLoaded) this.getAllSubscribers()
+		})
+
 		getAllSubscribers((error, subscribers) => {
 			if (!error) {
 				this.setState({
@@ -93,15 +112,6 @@ export default class SimpleMailController extends Component {
 		})
 	}
 
-	startReconnectionTimer = () => {
-		//Start timer
-		//When timer ends getAllSubscribers' again if subscribersLoaded is  false
-		setTimeout(() => {
-			if (!this.state.subscribersLoaded)
-				this.getAllSubscribers()
-		}, 5000)
-
-	}
 	onEditorStateChange = (editorState) => {
     	this.setState({
       		editorState,
@@ -170,7 +180,7 @@ export default class SimpleMailController extends Component {
 
 		const { connection } = this.props
 
-		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length > 3 && connection
+		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
 		return(
 			<Container style={{height: '100%'}}>
