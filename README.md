@@ -62,6 +62,15 @@ For example, if you were attaching SimpleMailer to a website that has a MongoDB 
 
 If left blank, these will default to Subscriber and email respectively.
 
+### Running the Application
+
+1. Build the project    
+
+>npm run build    
+
+2. Run the production server    
+
+>npm run production    
 
 ### Create React App Stuff
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
