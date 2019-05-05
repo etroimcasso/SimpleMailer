@@ -98,7 +98,7 @@ export default class SimpleMailController extends Component {
 		setTimeout(() => {
 			if (!this.state.subscribersLoaded)
 				this.getAllSubscribers()
-		}, 10000)
+		}, 5000)
 
 	}
 	onEditorStateChange = (editorState) => {

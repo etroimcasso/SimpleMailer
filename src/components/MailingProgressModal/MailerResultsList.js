@@ -4,7 +4,7 @@ import { Icon, List, Transition } from 'semantic-ui-react';
 const UIStrings = require('../../config/UIStrings')
 
 const listSize = {
-	height: '30vh'
+	height: '40vh',
 }
 
 export default class MailerResultsList extends Component {

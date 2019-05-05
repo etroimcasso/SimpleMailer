@@ -22,6 +22,7 @@ export default class MailingProgressModal extends Component {
 			basic
 			dimmer="blurring" 
 			inverted
+			size="large"
 			>
 				<Modal.Header>
 					{ (allMailSent ) ?
@@ -32,8 +33,14 @@ export default class MailingProgressModal extends Component {
 					<span style={{paddingTop: '5px'}}>{ (allMailSent) ? UIStrings.MailerModal.Completed : UIStrings.MailerModal.InProgress }</span>
 				</Modal.Header>
 				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent}/>
-				<MailerResultsList items={mailerResults} />
-				<Button inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? "green": null}>Continue</Button>
+				<Modal.Content scrolling >
+					<MailerResultsList items={mailerResults} />
+				</Modal.Content>
+				<Modal.Actions>
+					<Button primary inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? "green": null}>
+					Continue
+					</Button>
+				</Modal.Actions>
 			</Modal>
 		)
 	}
