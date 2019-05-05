@@ -5,6 +5,7 @@ module.exports = {
 	UnSubscribeSuccess: (email) => `${email} has been removed from our mailing list`,
 	SubscribeSuccess: (email) => `${email} has been added to our mailing list`,
 	SubscribeError: (email) =>  `${email} is already subscribed`,
+	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
 	TopBar: {
 		MenuHeaderText: "SimpleMailer",
 		ConnectionStatusPopupHeaderText: 'Connection Status',

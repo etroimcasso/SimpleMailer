@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, Link } from 'react-router-dom';
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
@@ -27,6 +27,7 @@ export default class App extends Component {
 
   AddSubscriberBridge = ({ match }) => {
     const email = match.params.email
+    /*
       socket.on('subscriberAdded', (error) => {
         if (error) {
           this.setState({
@@ -37,17 +38,16 @@ export default class App extends Component {
           this.setState({
             subscriberInfoMessage: UIStrings.SubscribeSuccess(email)
           })
-        } 
+        }
     })
+    */
     socket.emit('addSubscriber', email)
-
-    //return(<span>{ this.state.subscriberInfoMessage }</span>)  
-    return (<Redirect to='/' />)
-
+    return redirectAwayFromMailer()
   } 
 
   RemoveSubscriberBridge = ({match}) => {
     const email = match.params.email
+    /*
     socket.on('subscriberRemoved', (error, subscriber) => {
       if (error) {
         this.setState({
@@ -59,11 +59,32 @@ export default class App extends Component {
         })
       } 
     })
+    */
     socket.emit('removeSubscriber', email, match.params.id )
-
-    //return(<span>{ this.state.subscriberInfoMessage }</span>)  
-    return (<Redirect to='/' />)
+    return redirectAwayFromMailer()
   }
+
+  
+  subscriptionChangeResults = ({match}) => {
+
+    /*
+    switch (option) {
+      case "subscribe":
+        message = (error) ? UIStrings.SubscribeError(email): UIStrings.SubscribeSuccess(email)
+        break;
+      case "unsubscribe":
+        message = (error) ? UIStrings.UnsubscribeError(email): UIStrings.UnsubscribeSuccess(email)
+        break;
+    }
+    */
+
+    return(
+      <div>
+        <span>{UIStrings.GenericSubscribeResult}</span>
+      </div>
+      )  
+  }
+  
 
 	render() {
 
@@ -72,9 +93,14 @@ export default class App extends Component {
   				<Route exact path="/" component={SimpleMailerConnectionWrapper} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
           <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
+          <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
     		</div>
   		)
   }
 }
 
-
+const redirectAwayFromMailer = () => {
+  return(
+    <Redirect to='/subscribeResults' />
+  )
+}

@@ -241,6 +241,7 @@ io.on('connection', (client) => {
 							client.emit('subscriberRemoved', null, JSON.stringify(item))
 							io.emit('subscriberUnsubscribed', JSON.stringify(item))
 
+
 							const emailMessage = {
 									senderName: process.env.EMAIL_USER, 
 									senderEmail: process.env.EMAIL_USER,
