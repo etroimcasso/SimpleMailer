@@ -64,6 +64,12 @@ For example, if you were attaching SimpleMailer to a website that has a MongoDB 
 
 If left blank, these will default to Subscriber and email respectively.
 
+>#### __src/config/hostname.js__
+>module.exports = {
+>	opensocket: '', //Address of this socket server
+>	unsubscribeHost: '' //Address of the server that handles unsubscribe links
+>}
+
 ### Running the Application
 
 1. Build the project    
