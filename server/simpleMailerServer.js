@@ -185,6 +185,7 @@ io.on('connection', (client) => {
 			} 
 			if (resultError == false) {
 				const subscriber = item
+				io.emit('newSubscriberAdded', JSON.stringify(subscriber))
 				console.log(`NEW SUBSCRIBER: ${subscriber.email}`)
 				console.log(`Subscriber ID: ${subscriber._id}`)
 				const emailMessage = {
@@ -210,7 +211,6 @@ io.on('connection', (client) => {
 							resultError = false
 						}
 					})
-				client.emit('newSubscriberAdded', subscriber)	
 			}
 		})
 	})
