@@ -82,9 +82,9 @@ If left blank, these will default to Subscriber and email respectively.
 
 # Using the Subscriber Links
 SimpleMailer provides links for adding and removing subscribers. These links are:
->/subscribe/subscriberEmail
-and
->/unubscribe/subscriberEmail/subscriberId    
+>/subscribe/subscriberEmail    
+and    
+>/unubscribe/subscriberEmail/subscriberId      
 The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers
 
 
