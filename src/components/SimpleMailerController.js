@@ -92,11 +92,11 @@ export default class SimpleMailController extends Component {
 		})
 
 		//Removes subscriber from list
-		socket.on('subscriberUnsubscribed', (subscriber) =>{
-			subscriber = JSON.parse(subscriber)
+		socket.on('subscriberUnsubscribed', (email) =>{
+			console.log(`REMOVE ${email}`)
 			this.setState({
 				subscribersList: this.state.subscribersList.filter( (item) => {
-					return item.email != subscriber.email
+					return item.email !== email
 				})
 			})
 		})

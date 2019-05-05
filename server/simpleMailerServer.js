@@ -231,15 +231,16 @@ io.on('connection', (client) => {
 			SubscriberController.getOneSubscriberByQuery(query, (error, subscriber) => {
 				if (error || !subscriber || subscriber.email == "" || !subscriber.email) {
 					//console.error(`Can't remove subscriber because I'm a stupid computer: ${error} ${.email}`)
-					client.emit('subscriberRemoved', error, null)
+					//client.emit('subscriberRemoved', error, null)
 				}
 				else {
 					SubscriberController.removeSubscriber(subscriber, (error, item) => {
 						if (error) client.emit('subscriberRemoved', error, null)
 						else {
-							console.log(`${email} has been unsubscribed`)
+							console.log(`${email} has been unsubscribed DISPLAY IN THE FUCKING INTERFACE GOD DAMNIT $[item}`)
 							//client.emit('subscriberRemoved', null, JSON.stringify(item))
-							io.emit('subscriberUnsubscribed', JSON.stringify(item))
+							io.emit('subscriberUnsubscribed', email)
+							console.log(`MESSAGE HAS BEEN EMITTED SO IF THE UI HASN'T CAUGHT UP IT CAN GET FUCKED`)
 
 
 							const emailMessage = {
