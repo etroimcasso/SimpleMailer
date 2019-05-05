@@ -38,7 +38,7 @@ export default class TopBar extends Component {
 					<span style={styles.connectionHeaderText}>{UIStrings.TopBar.ConnectionText}</span>
 				</Menu.Item>
 				<Menu.Item>
-					<span style={styles.appTitleText}>SimpleMailer</span>
+					<span style={styles.appTitleText}>{UIStrings.TopBar.MenuHeaderText}</span>
 				</Menu.Item>
 			</Menu>
 		)

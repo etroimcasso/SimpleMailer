@@ -29,7 +29,7 @@ export default class MailingProgressModal extends Component {
 						:
 						<Icon loading name='spinner' size={loadingIconSize} />
 					}
-					{ (allMailSent) ? UIStrings.MailerModal.Completed : UIStrings.MailerModal.InProgress }
+					<span style={{paddingTop: '5px'}}>{ (allMailSent) ? UIStrings.MailerModal.Completed : UIStrings.MailerModal.InProgress }</span>
 				</Modal.Header>
 				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent}/>
 				<MailerResultsList items={mailerResults} />

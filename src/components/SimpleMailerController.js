@@ -183,9 +183,7 @@ export default class SimpleMailController extends Component {
 							<Dimmer inverted active={!subscribersLoaded}>
 								<Loader active={!subscribersLoaded} inline>{UIStrings.LoadingSubscribers}</Loader>
 							</Dimmer>
-							{ subscribersLoaded &&
-								<SubscribersDisplay subscribers={subscribersList} />
-							}
+							<SubscribersDisplay subscribers={subscribersList} loaded={subscribersLoaded} />
 						</Segment>
 						<Segment style={styles.fullHeight}>
 							<Editor

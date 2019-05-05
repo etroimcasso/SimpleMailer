@@ -30,13 +30,15 @@ export default class SubscribersDisplay extends Component {
 
 	render() {
 		const { active } = this.state
-		const { subscribers } = this.props
+		const { subscribers, loaded } = this.props
 		const dropdownIcon = (<Icon name="dropdown" />)
 		return (
 			<Accordion fluid style={styles.leftAlignedText}>
 				<Accordion.Title index={0} active={active} onClick={this.toggleAccordion}>
 					{dropdownIcon} Subscribers 
+					{ loaded &&
 					<Label circular>{subscribers.length}</Label>
+					}
 				</Accordion.Title>
 				<Accordion.Content active={active} style={styles.height}>
 					<SubscribersList subscribers={subscribers} />
