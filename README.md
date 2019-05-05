@@ -7,6 +7,12 @@ SimpleMailer is an easy-to-use Mailing List application that adds mailing list f
 * MongoDB 3.6.3+
 * SSL Certificate and Key
 
+# Features
+* Easy-to-use, simple email interface
+* WYSIWYG (What You See is What You Get) Email Editor
+* Routes for adding and removing subscribers for integration with external sites
+
+
 # Installation
 
 ### Clone project and install dependencies
