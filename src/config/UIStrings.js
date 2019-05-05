@@ -1,5 +1,6 @@
 module.exports = {
 	LoadingSubscribers: "Loading Subscriber List",
+	SubscribersNoun: "Subscribers",
 	TopBar: {
 		MenuHeaderText: "SimpleMailer",
 		ConnectionStatusPopupHeaderText: 'Connection Status',

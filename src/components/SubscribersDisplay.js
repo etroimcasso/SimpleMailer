@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Accordion, List, Icon, Label } from 'semantic-ui-react';
 
+const UIStrings = require('../config/UIStrings')
 
 const styles = {
 	leftAlignedText: {
@@ -31,14 +32,17 @@ export default class SubscribersDisplay extends Component {
 	render() {
 		const { active } = this.state
 		const { subscribers, loaded } = this.props
-		const dropdownIcon = (<Icon name="dropdown" />)
+		const dropdownIcon = (<Icon name="dropdown"/>)
 		return (
 			<Accordion fluid style={styles.leftAlignedText}>
 				<Accordion.Title index={0} active={active} onClick={this.toggleAccordion}>
-					{dropdownIcon} Subscribers 
-					{ loaded &&
-					<Label circular>{subscribers.length}</Label>
-					}
+					<Label size="large">
+						{dropdownIcon}
+						{UIStrings.SubscribersNoun} 
+						{ loaded &&
+							<Label.Detail style={{paddingTop: '2px'}}>{subscribers.length}</Label.Detail>
+						}
+					</Label>
 				</Accordion.Title>
 				<Accordion.Content active={active} style={Object.assign(styles.height, styles.autoYOverflow)}>
 					<SubscribersList subscribers={subscribers} />

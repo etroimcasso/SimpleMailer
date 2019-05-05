@@ -23,7 +23,7 @@ const isSubscriberUnique = (subscriber) => {
 //Public functions
 module.exports = {
 
-	/*
+	
 	addSubscriber: (email, callback) => {
 		Subscriber.create({
 			email: email.toLowerCase(),
@@ -45,7 +45,7 @@ module.exports = {
 		})
 
 	},
-	*/
+	
 
 	getAllSubscribers: (callback) => {
 		Subscriber.find({}, (error, subscribers) => {

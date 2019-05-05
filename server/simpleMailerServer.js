@@ -11,6 +11,7 @@ const port = process.env.S_PORT;
 const Emailer = require('./lib/Emailer')
 //const socketController = require('./lib/SocketController')
 const SubscriberController = require('./lib/controllers/SubscriberController')
+const MailerController = require('./lib/controllers/MailerController')
 const ServerStrings = require('./config/ServerStrings')
 
 app.set('forceSSLOptions', {
@@ -96,13 +97,13 @@ io.on('connection', (client) => {
 	client.on('sendMailer', (message) => {
 		//Get all subscribers
 
-
 		//1. Send process.env.EMAILER_MAXSEND # of emails
 		//2. Wait process.env.EMAILER_WAITMS # of ms
 		//3. return to 1. 
 
 
 		SubscriberController.getAllSubscribers((error, subscribers) => {
+			var subscriberEmails = []
 			if (subscribers.length < 1) {
 				client.emit('sendEmailResults', "No subscribers")
 			} else{
@@ -125,8 +126,15 @@ io.on('connection', (client) => {
 					sendEmail(emailMessage, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
 					})					
+					subscriberEmails = subscriberEmails.concat(subscriber.email)
 				}
 				client.emit('sendMailerFinished')
+				MailerController.addMailer(message.subject, message.messageText, message.html, subscriberEmails, (error, result) => {
+					if (error) console.error("Could not add mailer")
+					else {
+
+					}
+				})
 			}
 		})
 	})
@@ -180,6 +188,7 @@ io.on('connection', (client) => {
 				SubscriberController.getSubscriberByEmail(subscriberEmail, (error, subscriber) => {
 					if (error) resultError = true
 					else {
+						client.emit('newSubscriberAdded', subscriber)
 						Emailer.sendEmail(process.env.EMAIL_USER, 
 							process.env.EMAIL_USER, 
 							process.env.EMAIL_USER,
@@ -204,11 +213,13 @@ io.on('connection', (client) => {
 				})
 
 			}
-			client.emit('addSubscriberResults', resultError)
+		
 
+			/*
 			SubscriberController.getAllSubscribers((error, subscribers) => {
 				client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
 			})
+			*/
 
 		})
 	})
