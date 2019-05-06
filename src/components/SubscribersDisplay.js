@@ -8,7 +8,7 @@ const styles = {
 		textAlign: 'left'
 	},
 	height: {
-		height: '20vh',
+		height: '21vh',
 	},
 	autoYOverflow: {
 		overflowY:'auto'
