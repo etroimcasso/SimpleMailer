@@ -26,6 +26,8 @@ yarn-error.log*
 #Certificates
 certs/
 
+#mailerContent
+mailerContent/*
 
 #hostname at src/config/hostname
 # this file is referenced for frontend and server string usage of the hostname
