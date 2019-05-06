@@ -20,23 +20,31 @@ const isSubscriberUnique = (subscriber) => {
 
 
 }
+const fieldIsValidEmail = text => {
+	var regexp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+	return regexp.test(String(text).toLowerCase());
+}
 
 //Public functions
 module.exports = {
 
 	
 	addSubscriber: (email, callback) => {
-		Subscriber.create({
-			email: email.toLowerCase(),
-			joined_on: Date.now(),
-		}, (error, item) => {
-			if (error) {
-				//Could not add Subscriber
-				return callback(error, null) 
-			}
-			// Subscriber successfully added
-			return callback(false, item)
-		})
+		if (fieldIsValidEmail(email)) {
+			Subscriber.create({
+				email: email.toLowerCase(),
+				joined_on: Date.now(),
+			}, (error, item) => {
+				if (error || ) {
+					//Could not add Subscriber
+					return callback(error, null) 
+				}
+				// Subscriber successfully added
+				return callback(false, item)
+			})
+		} else {
+			callback("Invalid email", null)
+		}
 	},
 
 	removeSubscriber: (subscriberId, callback) => {
