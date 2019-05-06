@@ -21,7 +21,7 @@ SimpleMailer uses Node, Express, React, React Router, MongoDB, Mongoose, DraftJS
 
 1. Clone SimpleMailer to any `directory`
 
-> git clone https://gitlab.com/etroimcasso/simplemailer.git `directory`
+> git clone https://github.com/etroimcasso/SimpleMailer.git `directory`
 
 2. Change directory to `directory`
 
