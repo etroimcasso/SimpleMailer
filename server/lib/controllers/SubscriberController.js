@@ -35,7 +35,7 @@ module.exports = {
 				email: email.toLowerCase(),
 				joined_on: Date.now(),
 			}, (error, item) => {
-				if (error || ) {
+				if (error) {
 					//Could not add Subscriber
 					return callback(error, null) 
 				}
