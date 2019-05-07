@@ -9,9 +9,12 @@ const UIStrings = require('../../config/UIStrings')
 export default class MailingProgressModal extends Component {
 
 	render() {
-		const {mailerResults, mailerBeingSent, totalSubscribers, open, handleConfirmClick,  } = this.props
+		const {mailerResults, mailerBeingSent, totalSubscribers, open, handleConfirmClick, errors  } = this.props
 		const emailsSent = mailerResults.length
 		const allMailSent = totalSubscribers <= emailsSent
+
+		const anyError = errors > 0
+
 
 
 		const loadingIconSize = "large"
@@ -25,21 +28,18 @@ export default class MailingProgressModal extends Component {
 			size="large"
 			>
 				<Modal.Header>
-					{ (allMailSent ) ?
-						<Icon name='check' size={loadingIconSize} />
-						:
-						<Icon loading name='spinner' size={loadingIconSize} />
-					}
-					<span style={{paddingTop: '5px'}}>{ (allMailSent) ? UIStrings.MailerModal.Completed : UIStrings.MailerModal.InProgress }</span>
+					<Icon name={(allMailSent) ? ((anyError) ? 'exclamation' : 'check' ): 'spinner'} size={loadingIconSize} />
+					<span style={{paddingTop: '5px'}}>{ (allMailSent) ? ((anyError) ? UIStrings.MailerModal.CompletedWithErrors(errors,totalSubscribers) : UIStrings.MailerModal.Completed) : UIStrings.MailerModal.InProgress }</span>
 				</Modal.Header>
-				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent}/>
+				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent} anyError={anyError}/>
 				<Modal.Content scrolling >
 					<MailerResultsList items={mailerResults} />
 				</Modal.Content>
 				<Modal.Actions>
-					<Button inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? "green": null}>
-					{(allMailSent) ? UIStrings.MailerModal.OKButtonText : UIStrings.MailerModal.OKButtonWaitText }
+					<Button inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? ((anyError) ? "red" : "green"): null}>
+						{(allMailSent) ? ((anyError) ? UIStrings.MailerModal.OKButtonFailureText(errors, totalSubscribers) : UIStrings.MailerModal.OKButtonText) : UIStrings.MailerModal.OKButtonWaitText }
 					</Button>
+
 				</Modal.Actions>
 			</Modal>
 		)

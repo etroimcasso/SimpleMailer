@@ -8,7 +8,7 @@ import { Progress } from 'semantic-ui-react';
 export default class MailingProgressIndicator extends Component {
 
 	render() {
-		const {totalSubscribers, emailsSent, allMailSent, attached } = this.props
+		const {totalSubscribers, emailsSent, allMailSent, attached, anyError } = this.props
 
 		//const progressPercentage = calculateProgress(totalSubscribers,emailsSent)
 
@@ -18,9 +18,10 @@ export default class MailingProgressIndicator extends Component {
 			total={totalSubscribers} 
 			progress="ratio" 
 			active={!allMailSent}
-			success={allMailSent}
+			success={allMailSent && !anyError}
 			attached={attached} 
-			indicating
+			color={(anyError) ? "red" : null}
+			indicating={!allMailSent}
 			size="large" />
 		)
 	}

@@ -16,8 +16,10 @@ module.exports = {
 	MailerModal: {
 		InProgress: 'Sending Mailer',
 		Completed: 'Mailer Sent',
-		OKButtonText: 'All Sent!',
-		OKButtonWaitText: "Please Wait..."
+		CompletedWithErrors: (errors, totalSubs) => `Could not send ${errors}/${totalSubs} emails.`,
+		OKButtonText: 'OK',
+		OKButtonWaitText: "Please Wait...",
+		OKButtonFailureText: (errors, totalSubs) => `OK`
 	},
 	MailerResults: {
 		Failure: "Could not email ",

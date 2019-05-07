@@ -10,6 +10,7 @@ const listSize = {
 export default class MailerResultsList extends Component {
 	render() {
 		const { items } = this.props
+		
 		return (
 			<Transition.Group as={List} celled relaxed style={listSize}>
 				{items.map(item => <MailerResultsListItem item={item}/>)}
