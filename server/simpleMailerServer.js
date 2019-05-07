@@ -88,7 +88,7 @@ const sendMailerEmail = (message, subscriberId, callback) => {
 			var resultError = ""
 			if (error) {
 				console.error(`Could not send email - error: ${error}`)
-				resultError = "Count not send email"
+				resultError = error
 			} else {
 				console.log(`Successfully sent email to ${subscriberEmail}`)
 				resultError = false

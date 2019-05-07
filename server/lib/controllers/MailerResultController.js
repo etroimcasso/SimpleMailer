@@ -26,7 +26,7 @@ module.exports = {
 			const currentIndex = i
 			MailerResult.create({
 				recipient: result.recipient,
-				error: (result.error !== null || result.error.length > 0)
+				error: result.error
 			}, (error, item) => {
 				if (error) console.log(`Could not add mailer results: ${error}`)
 				else {

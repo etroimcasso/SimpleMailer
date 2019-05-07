@@ -9,8 +9,8 @@ const schema = new Schema({
 		unique: false
 	},
 	error: {
-		type: Boolean,
-		required: true,
+		type: String,
+		required: false,
 		unique: false
 	}
 })
