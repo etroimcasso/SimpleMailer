@@ -18,11 +18,7 @@ const schema = new Schema({
 		required: true,
 		unique: false
 	},
-	mailerResults: {
-		type: [String],
-		required: true,
-		unique: false
-	},
+	mailerResults: [Schema.Types.ObjectId],
 	sent_on: {
 		type: Date,
 		required: true,

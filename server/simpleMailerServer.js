@@ -109,6 +109,7 @@ io.on('connection', (client) => {
 				client.emit('sendEmailResults', "No subscribers")
 			} else{
 				for (var i = 0; i < subscribers.length; i++) {
+					const currentIndex = i
 					const subscriber = subscribers[i]
 					//Construct message with subscriber as recipient
 					//Only the messageText, html, attachments, receiver, and subject should be modifiable here
@@ -126,19 +127,27 @@ io.on('connection', (client) => {
 					}
 					sendEmail(emailMessage, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
-						mailerResults = mailerResults.concat(/*subscriber:*/ subscriber.email, /*error: resultError */)
-					})					
+						//console.debug(`Subscriber: ${subscriber.email}, ERROR: ${resultError}`)
+						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
+						if (currentIndex === (subscribers.length - 1)) {
+							finishMailer(emailMessage, mailerResults)
+						}	
+					})				
 				}
-				client.emit('sendMailerFinished')
-				MailerController.addMailer(message.subject, message.messageText, message.html, mailerResults, (error, result) => {
-					if (error) console.error("Could not add mailer")
-					else {
-
-					}
-				})
 			}
 		})
 	})
+
+	const finishMailer = (message, mailerResults) => {
+		client.emit('sendMailerFinished')
+		//console.log('MAILER SENT')
+		MailerController.addMailer(message.subject, message.messageText, message.html, mailerResults, (error, result) => {
+			if (error) console.error("Could not add mailer to history")
+			else {
+				console.log("There was no error")
+			}
+		})
+	}
 
 	//Tests the email's connection
 	//   returns false if successful, and an error message if there is an error

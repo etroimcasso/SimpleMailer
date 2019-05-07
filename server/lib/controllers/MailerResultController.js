@@ -2,26 +2,10 @@ require('dotenv').config();
 //Mongoose
 const mongoose = require('mongoose')
 //Subscriber schema
-const Mailer = require('../models/Mailer')
 const MailerResult = require('../models/MailerResult')
 
-const createMailer = (subject, bodyText, bodyHTML, mailerResultsArray, callback) => {
-	Mailer.create({
-		subject: subject,
-		bodyText: bodyText,
-		bodyHTML: bodyHTML,
-		mailerResults: mailerResultsArray,
-		sent_on: Date.now()
-	},(error, item) => {
-		if (error) {
-			return callback(error, false) 
-		}
-		return callback(false, true)
-	})
-}
-
 module.exports = {
-	addMailer: (subject, bodyText, bodyHTML, mailerResults, callback) => {
+	addMailerResults: (mailerResults, callback) => {
 		/*
 		var mailerResultsDocument = []
 		for (var i = 0; i < mailerResults.length; i++) {
@@ -35,8 +19,9 @@ module.exports = {
 
 		
 
-		console.log(`MAILER RESULTS object: ${mailerResults[0].recipient}`)
+		//console.log(`MAILER RESULTS object: ${mailerResults[0].recipient}`)
 		var mailerResultsDocument = []
+		console.log(`mailreResults[0].recipient`)
 		for (var i = 0;  i < mailerResults.length; i++ ) {
 			const result = mailerResults[i]
 			const currentIndex = i
@@ -46,10 +31,10 @@ module.exports = {
 			}, (error, item) => {
 				if (error) console.log(`Could not add mailer results: ${error}`)
 				else {
-					//console.log("Adding mailerResult")
+					console.log("Adding mailerResult")
 					mailerResultsDocument.push(item._id)
 					if (currentIndex === (mailerResults.length - 1)) {
-						createMailer(subject, bodyText, bodyHTML, mailerResultsDocument, callback)
+						callback(null, mailerResultsDocument)
 					}
 				}
 			})
