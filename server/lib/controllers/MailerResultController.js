@@ -21,7 +21,6 @@ module.exports = {
 
 		//console.log(`MAILER RESULTS object: ${mailerResults[0].recipient}`)
 		var mailerResultsDocument = []
-		console.log(`mailreResults[0].recipient`)
 		for (var i = 0;  i < mailerResults.length; i++ ) {
 			const result = mailerResults[i]
 			const currentIndex = i

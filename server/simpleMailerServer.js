@@ -77,35 +77,13 @@ const sendEmail = (message, subscriberId, callback) => {
 }
 
 const sendMailerEmail = (message, subscriberId, callback) => {
+	var newMessage = message
 	const subscriberEmail = message.receiverEmails
 	if (message.subject.length < 1 || message.messageText.length < 1) {
 		//True signifies an error
 		client.emit('sendEmailResults', true)
 	} else {
-		//Inject unsubscribe link into message before sending 
-		message.messageText = `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriberEmail, subscriberId)}`
-		message.html = `${message.html} ${ServerStrings.UnsubscribeHTML(subscriberEmail, subscriberId)}`
 
-		Emailer.sendEmail(message, (error, info) => {
-			var resultError = ""
-			if (error) {
-				console.error(`Could not send email - error: ${error}`)
-				resultError = "Count not send email"
-			} else {
-				console.log(`Successfully sent email to ${subscriberEmail}`)
-				resultError = false
-			}
-			callback(resultError)
-		})
-	}
-}
-
-const sendUnsubscribeEmail = (message, callback) => {
-	const subscriberEmail = message.receiverEmails
-	if (message.subject.length < 1 || message.messageText.length < 1) {
-		//True signifies an error
-		client.emit('sendEmailResults', true)
-	} else {
 		Emailer.sendEmail(message, (error, info) => {
 			var resultError = ""
 			if (error) {
@@ -157,8 +135,7 @@ io.on('connection', (client) => {
 				for (var i = 0; i < subscribers.length; i++) {
 					const currentIndex = i
 					const subscriber = subscribers[i]
-					//Construct message with subscriber as recipient
-					//Only the messageText, html, attachments, receiver, and subject should be modifiable here
+
 					const emailMessage = {
 						senderName: process.env.EMAIL_USER, 
 						senderEmail: process.env.EMAIL_USER,
@@ -167,16 +144,17 @@ io.on('connection', (client) => {
 						ccReceivers: null,
 						bccReceivers: null,
 						subject: message.subject,
-						messageText: message.messageText,
-						html: message.html,
+						messageText: `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`,
+						html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
 						attachments: message.attachments
 					}
+					console.log(`EMAIL MESSAGe ${emailMessage.messageText}`)
 					sendMailerEmail(emailMessage, subscriber._id, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
 						//console.debug(`Subscriber: ${subscriber.email}, ERROR: ${resultError}`)
 						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
 						if (mailerResults.length === subscribers.length) {
-							finishMailer(emailMessage, mailerResults)
+							finishMailer(emailMessage, mailerResults, message.messageText, message.html)
 						}	
 					})				
 				}
@@ -184,10 +162,10 @@ io.on('connection', (client) => {
 		})
 	})
 
-	const finishMailer = (message, mailerResults) => {
+	const finishMailer = (message, mailerResults, messageText, messageHtml) => {
 		client.emit('sendMailerFinished')
 		//console.log('MAILER SENT')
-		MailerController.addMailer(message.subject, message.messageText, message.html, mailerResults, (error, result) => {
+		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, result) => {
 			if (error) console.error("Could not add mailer to history")
 			else {
 				console.log("There were no errors")
@@ -309,7 +287,7 @@ io.on('connection', (client) => {
 									attachments: null
 								}
 
-							sendUnsubscribeEmail(emailMessage,(error, info) => {
+							sendEmail(emailMessage,(error, info) => {
 									var resultError = ""
 									if (error) {
 										console.error(`Could not send email - error: ${error}`)
