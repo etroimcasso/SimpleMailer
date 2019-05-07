@@ -55,8 +55,13 @@ server.listen(process.env.HTTPS_PORT,() => {
 	console.log(`Listening on port ${process.env.HTTPS_PORT}`)
 })
 
-const sendEmail = (message, callback) => {
+const sendEmail = (message, subscriberId, callback) => {
 	if (message.subject.length < 1 || message.messageText.length < 1) {
+
+		//Inject unsubscribe link into message before sending 
+		message.messageText = `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`
+		message.html = `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`
+
 		//True signifies an error
 		client.emit('sendEmailResults', true)
 	} else {
@@ -121,11 +126,11 @@ io.on('connection', (client) => {
 						ccReceivers: null,
 						bccReceivers: null,
 						subject: message.subject,
-						messageText: `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`,
-						html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
+						messageText: message.messageText,
+						html: message.html,
 						attachments: message.attachments
 					}
-					sendEmail(emailMessage, (resultError) => {
+					sendEmail(emailMessage, subscriber._id, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
 						//console.debug(`Subscriber: ${subscriber.email}, ERROR: ${resultError}`)
 						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
@@ -144,7 +149,7 @@ io.on('connection', (client) => {
 		MailerController.addMailer(message.subject, message.messageText, message.html, mailerResults, (error, result) => {
 			if (error) console.error("Could not add mailer to history")
 			else {
-				console.log("There was no error")
+				console.log("There were no errors")
 			}
 		})
 	}

@@ -28,7 +28,7 @@ export default class MailingProgressModal extends Component {
 			size="large"
 			>
 				<Modal.Header>
-					<Icon name={(allMailSent) ? ((anyError) ? 'exclamation' : 'check' ): 'spinner'} size={loadingIconSize} />
+					<Icon loading={!allMailSent} name={(allMailSent) ? ((anyError) ? 'exclamation' : 'check' ): 'spinner'} size={loadingIconSize} />
 					<span style={{paddingTop: '5px'}}>{ (allMailSent) ? ((anyError) ? UIStrings.MailerModal.CompletedWithErrors(errors,totalSubscribers) : UIStrings.MailerModal.Completed) : UIStrings.MailerModal.InProgress }</span>
 				</Modal.Header>
 				<MailingProgressIndicator totalSubscribers={totalSubscribers} emailsSent={emailsSent} allMailSent={allMailSent} anyError={anyError}/>
