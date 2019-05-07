@@ -56,12 +56,53 @@ server.listen(process.env.HTTPS_PORT,() => {
 })
 
 const sendEmail = (message, subscriberId, callback) => {
+	const subscriberEmail = message.receiverEmails
 	if (message.subject.length < 1 || message.messageText.length < 1) {
-
+		//True signifies an error
+		client.emit('sendEmailResults', true)
+	} else {
 		//Inject unsubscribe link into message before sending 
-		message.messageText = `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`
-		message.html = `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`
+		Emailer.sendEmail(message, (error, info) => {
+			var resultError = ""
+			if (error) {
+				console.error(`Could not send email - error: ${error}`)
+				resultError = "Count not send email"
+			} else {
+				console.log(`Successfully sent email to ${subscriberEmail}`)
+				resultError = false
+			}
+			callback(resultError)
+		})
+	}
+}
 
+const sendMailerEmail = (message, subscriberId, callback) => {
+	const subscriberEmail = message.receiverEmails
+	if (message.subject.length < 1 || message.messageText.length < 1) {
+		//True signifies an error
+		client.emit('sendEmailResults', true)
+	} else {
+		//Inject unsubscribe link into message before sending 
+		message.messageText = `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriberEmail, subscriberId)}`
+		message.html = `${message.html} ${ServerStrings.UnsubscribeHTML(subscriberEmail, subscriberId)}`
+
+		Emailer.sendEmail(message, (error, info) => {
+			var resultError = ""
+			if (error) {
+				console.error(`Could not send email - error: ${error}`)
+				resultError = "Count not send email"
+			} else {
+				console.log(`Successfully sent email to ${subscriberEmail}`)
+				resultError = false
+			}
+			callback(resultError)
+		})
+	}
+}
+
+const sendUnsubscribeEmail = (message, callback) => {
+	const subscriberEmail = message.receiverEmails
+	if (message.subject.length < 1 || message.messageText.length < 1) {
 		//True signifies an error
 		client.emit('sendEmailResults', true)
 	} else {
@@ -71,7 +112,7 @@ const sendEmail = (message, subscriberId, callback) => {
 				console.error(`Could not send email - error: ${error}`)
 				resultError = "Count not send email"
 			} else {
-				console.log(`Successfully sent email to ${message.receiverEmails}`)
+				console.log(`Successfully sent email to ${subscriberEmail}`)
 				resultError = false
 			}
 			callback(resultError)
@@ -81,6 +122,7 @@ const sendEmail = (message, subscriberId, callback) => {
 
 //SOCKET SERVER
 io.on('connection', (client) => {
+
 	client.on('sendEmail', (message) => {
 		console.log(`Sending mail to ${message.receiverEmails}`)
 		const emailMessage = {
@@ -99,7 +141,6 @@ io.on('connection', (client) => {
 			client.emit('sendEmailResults', resultError)
 		})
 	})
-
 	client.on('sendMailer', (message) => {
 		//Get all subscribers
 
@@ -130,7 +171,7 @@ io.on('connection', (client) => {
 						html: message.html,
 						attachments: message.attachments
 					}
-					sendEmail(emailMessage, subscriber._id, (resultError) => {
+					sendMailerEmail(emailMessage, subscriber._id, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
 						//console.debug(`Subscriber: ${subscriber.email}, ERROR: ${resultError}`)
 						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
@@ -268,7 +309,7 @@ io.on('connection', (client) => {
 									attachments: null
 								}
 
-							sendEmail(emailMessage,(error, info) => {
+							sendUnsubscribeEmail(emailMessage,(error, info) => {
 									var resultError = ""
 									if (error) {
 										console.error(`Could not send email - error: ${error}`)
