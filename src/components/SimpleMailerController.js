@@ -11,6 +11,7 @@ import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
 import SubjectInput from './bits/SubjectInput';
+import TopBar from './TopBar';
 
 
 const hostname = require('../config/hostname.js');
@@ -57,7 +58,9 @@ export default class SimpleMailController extends Component {
 		mailerResults: [],
 		mailerProgressModalOpen: false,
 		subscribersLoaded: false,
-		subscribersList: []
+		subscribersList: [],
+		connection: false,
+		reloadSubscribersPending: false
 	}
 
 	componentWillMount = () => {
@@ -65,6 +68,26 @@ export default class SimpleMailController extends Component {
 	}
 
 	componentDidMount = () => {
+
+		socket.on('connect', () => {
+			if (this.state.reloadSubscribersPending) {
+				this.setState({
+					subscribersList: []
+				})
+				this.getAllSubscribers()
+			}
+			this.setState({
+				connection: true,
+				reloadSubscribersPending: false
+			})
+		})
+
+		socket.on('disconnect', () => {
+			this.setState({
+				connection: false,
+				reloadSubscribersPending: true
+			})
+		})
 
 		socket.on('mailerSendToSubscriberResult', (error, email) => {
 			this.setState({
@@ -190,16 +213,17 @@ export default class SimpleMailController extends Component {
 				//allMailSent, 
 				mailerProgressModalOpen,
 				subscribersList,
-				subscribersLoaded
+				subscribersLoaded,
+				connection
 				 } = this.state
-
-		const { connection } = this.props
 
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
 
 		return(
+			<div>
+			<TopBar connection={connection} />
 			<Container style={{height: '100%'}}>
 				<MailingProgressModal 
 				mailerResults={mailerResults} 
@@ -237,6 +261,7 @@ export default class SimpleMailController extends Component {
 					</Segment>
 				</Segment.Group>
 			</Container>
+			</div>
 		)
 	}
 }
