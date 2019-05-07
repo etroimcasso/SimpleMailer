@@ -102,3 +102,6 @@ and
 >/unubscribe/subscriberEmail/subscriberId      
 
 The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers.
+
+# Serving Static Content In Mailers
+Desired content can be stored in `public/mailerContent`	 and accessed via `hostname/mailerContent`
