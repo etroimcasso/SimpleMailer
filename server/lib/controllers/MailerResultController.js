@@ -33,7 +33,7 @@ module.exports = {
 				else {
 					console.log("Adding mailerResult")
 					mailerResultsDocument.push(item._id)
-					if (currentIndex === (mailerResults.length - 1)) {
+					if (mailerResultsDocument.length === mailerResults.length) {
 						callback(null, mailerResultsDocument)
 					}
 				}

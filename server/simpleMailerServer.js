@@ -175,7 +175,7 @@ io.on('connection', (client) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
 						//console.debug(`Subscriber: ${subscriber.email}, ERROR: ${resultError}`)
 						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
-						if (currentIndex === (subscribers.length - 1)) {
+						if (mailerResults.length === subscribers.length) {
 							finishMailer(emailMessage, mailerResults)
 						}	
 					})				
