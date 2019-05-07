@@ -198,7 +198,6 @@ export default class SimpleMailController extends Component {
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
-		const anyError = errors > 0
 
 		return(
 			<Container style={{height: '100%'}}>
@@ -208,6 +207,7 @@ export default class SimpleMailController extends Component {
 				totalSubscribers={subscribersList.length}
 				open={mailerProgressModalOpen}
 				handleConfirmClick={this.closeModalAndConfirmMailerSend}
+				errors={errors}
 				/>
 				<Segment.Group>
 					<Segment>

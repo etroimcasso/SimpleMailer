@@ -10,7 +10,7 @@ module.exports = {
 			subject: subject,
 			bodyText: bodyText,
 			bodyHTML: bodyHTML,
-			recipients: recipients,
+			mailerResults: recipients,
 			sent_on: Date.now()
 		},(error, item) => {
 			if (error) {

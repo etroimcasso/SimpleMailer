@@ -18,7 +18,7 @@ const schema = new Schema({
 		required: true,
 		unique: false
 	},
-	recipients: {
+	mailerResults: {
 		type: [String],
 		required: true,
 		unique: false

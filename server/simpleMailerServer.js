@@ -104,7 +104,7 @@ io.on('connection', (client) => {
 
 
 		SubscriberController.getAllSubscribers((error, subscribers) => {
-			var subscriberEmails = []
+			var mailerResults = []
 			if (subscribers.length < 1) {
 				client.emit('sendEmailResults', "No subscribers")
 			} else{
@@ -126,11 +126,11 @@ io.on('connection', (client) => {
 					}
 					sendEmail(emailMessage, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
+						mailerResults = mailerResults.concat(/*subscriber:*/ subscriber.email, /*error: resultError */)
 					})					
-					subscriberEmails = subscriberEmails.concat(subscriber.email)
 				}
 				client.emit('sendMailerFinished')
-				MailerController.addMailer(message.subject, message.messageText, message.html, subscriberEmails, (error, result) => {
+				MailerController.addMailer(message.subject, message.messageText, message.html, mailerResults, (error, result) => {
 					if (error) console.error("Could not add mailer")
 					else {
 
