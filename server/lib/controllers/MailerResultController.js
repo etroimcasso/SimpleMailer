@@ -6,20 +6,6 @@ const MailerResult = require('../models/MailerResult')
 
 module.exports = {
 	addMailerResults: (mailerResults, callback) => {
-		/*
-		var mailerResultsDocument = []
-		for (var i = 0; i < mailerResults.length; i++) {
-			const newResult = new MailerResult({
-				recipient: mailerResults.recipient,
-				error: (mailerResults[i].error !== null || mailerResults[i].error.length > 0)
-			})
-			mailerResultsDocument.concat(newResult)
-		}
-		*/
-
-		
-
-		//console.log(`MAILER RESULTS object: ${mailerResults[0].recipient}`)
 		var mailerResultsDocument = []
 		for (var i = 0;  i < mailerResults.length; i++ ) {
 			const result = mailerResults[i]

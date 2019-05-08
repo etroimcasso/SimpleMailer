@@ -3,34 +3,15 @@ require('dotenv').config();
 const mongoose = require('mongoose')
 //Subscriber schema
 const Subscriber = require('../models/Subscriber')
-
-/*
-const __MONGO_URI__ = 'mongodb://' + 
-               //process.env.MONGO_USER + 
-               //':' + process.env.MONGO_PASS + '@' + 
-               process.env.MONGO_HOST + 
-                ':' + process.env.MONGO_PORT + 
-                '/' + process.env.MONGO_DB;
-*/
-const __MONGO_URI__ = `mongodb://${(!process.env.MONGO_USER) ? "" : process.env.MONGO_USER }${(!process.env.MONGO_PASS) ? "" : `:${process.env.MONGO_USER}@`}${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`
-                
-mongoose.connect(__MONGO_URI__);
-
-const isSubscriberUnique = (subscriber) => {
-
-
-}
-const fieldIsValidEmail = text => {
-	var regexp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-	return regexp.test(String(text).toLowerCase());
-}
+//input Validator
+const InputValidator = require('../../../src/helpers/InputValidator.js');
 
 //Public functions
 module.exports = {
 
 	
 	addSubscriber: (email, callback) => {
-		if (fieldIsValidEmail(email)) {
+		if (InputValidator.fieldIsValidEmail(email)) {
 			Subscriber.create({
 				email: email.toLowerCase(),
 				joined_on: Date.now(),

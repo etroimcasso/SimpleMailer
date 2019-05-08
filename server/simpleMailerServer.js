@@ -1,15 +1,16 @@
 require('dotenv').config();
 
 const express = require('express');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const path = require('path');
 const fs = require('fs');
 const http = require('https');
 const https = require('https');
 const app = express();
 const port = process.env.S_PORT;
-
+const mongoose = require('mongoose')
 const Emailer = require('./lib/Emailer')
-//const socketController = require('./lib/SocketController')
 const SubscriberController = require('./lib/controllers/SubscriberController')
 const MailerController = require('./lib/controllers/MailerController')
 const ServerStrings = require('./config/ServerStrings')
@@ -54,6 +55,21 @@ http.createServer(app).listen(process.env.HTTP_PORT)
 server.listen(process.env.HTTPS_PORT,() => {
 	console.log(`Listening on port ${process.env.HTTPS_PORT}`)
 })
+
+//MongoDBURL Helper
+const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
+mongoose.connect(__MONGO_URI__);
+
+//Set up sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection
+  })
+}))
+
 
 const sendEmail = (message, subscriberId, callback) => {
 	const subscriberEmail = message.receiverEmails
@@ -122,9 +138,11 @@ io.on('connection', (client) => {
 	client.on('sendMailer', (message) => {
 		//Get all subscribers
 
+
 		//1. Send process.env.EMAILER_MAXSEND # of emails
 		//2. Wait process.env.EMAILER_WAITMS # of ms
 		//3. return to 1. 
+		//This above isn't needed thanks to nodemailer pooling. Maybe it will be needed in the future
 
 
 		SubscriberController.getAllSubscribers((error, subscribers) => {
@@ -148,10 +166,9 @@ io.on('connection', (client) => {
 						html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
 						attachments: message.attachments
 					}
-					console.log(`EMAIL MESSAGe ${emailMessage.messageText}`)
+					//console.log(`EMAIL MESSAGe ${emailMessage.messageText}`)
 					sendMailerEmail(emailMessage, subscriber._id, (resultError) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
-						//console.debug(`Subscriber: ${subscriber.email}, ERROR: ${resultError}`)
 						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
 						if (mailerResults.length === subscribers.length) {
 							finishMailer(emailMessage, mailerResults, message.messageText, message.html)
@@ -164,11 +181,11 @@ io.on('connection', (client) => {
 
 	const finishMailer = (message, mailerResults, messageText, messageHtml) => {
 		client.emit('sendMailerFinished')
-		//console.log('MAILER SENT')
+		console.log('MAILER SENT')
 		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, result) => {
 			if (error) console.error("Could not add mailer to history")
 			else {
-				console.log("There were no errors")
+				//console.log("There were no errors")
 			}
 		})
 	}
@@ -303,6 +320,17 @@ io.on('connection', (client) => {
 				}
 			})
 		} else client.emit('subscriberRemoved', "WHAT", null)
+	})
+
+
+	//Emits 'loginResult', error, user object
+	client.on('login', (username, password) => {
+
+	})
+
+	//Emits 'logoutResult'
+	client.on('logout', (username) => {
+
 	})
 		
 });
