@@ -88,7 +88,10 @@ export default class App extends Component {
 
   	return (
   			<div className="App">
+        { 
   				<Route exact path="/" component={SimpleMailerController} />
+        }
+
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
           <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
           <Route path="/subscribeResults" component={this.subscriptionChangeResults} />

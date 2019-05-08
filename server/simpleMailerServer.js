@@ -1,8 +1,6 @@
 require('dotenv').config();
 
 const express = require('express');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
 const path = require('path');
 const fs = require('fs');
 const http = require('https');
@@ -31,8 +29,6 @@ const ssl_options = {
 app.use(forceSsl)
 
 const root = require('path').join(__dirname, '..', 'build')
-
-
 app.use(express.static(root));
 
 //Route for mailer content
@@ -41,10 +37,12 @@ app.get("/mailerContent/:fileName", (req, res, next) => {
 })
 
 //Route for everything else
+/*
 app.get("*", (req, res) => {
-	if (req.)
-   res.sendFile('index.html', { root });
+	res.sendFile('index.html', { root })
 })
+*/
+
 
 
 const server = https.createServer(ssl_options, app);
@@ -60,16 +58,6 @@ server.listen(process.env.HTTPS_PORT,() => {
 //MongoDBURL Helper
 const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
 mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
-
-//Set up sessions
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: mongoose.connection
-  })
-}))
 
 
 const sendEmail = (message, subscriberId, callback) => {
