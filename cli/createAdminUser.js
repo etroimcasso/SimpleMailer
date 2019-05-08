@@ -41,7 +41,6 @@ mongoose.connection.once('open', () => {
 		}
 	]).then(answers => {
 		const username = answers['username']
-		console.log(`username: ${username}`)
 		const password = answers['password']
 		const passwordConfirm = answers['passwordConfirm']
 		const passwordsMatch = password === passwordConfirm
