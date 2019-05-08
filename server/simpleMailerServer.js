@@ -60,6 +60,7 @@ server.listen(process.env.HTTPS_PORT,() => {
 //MongoDBURL Helper
 const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
 mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
+
 //Set up sessions
 app.use(session({
   secret: process.env.SESSION_SECRET,
