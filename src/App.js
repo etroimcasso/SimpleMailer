@@ -22,8 +22,6 @@ export default class App extends Component {
 
   }
 
-  componentDidMount = () => {
-  }
 
   AddSubscriberBridge = ({ match }) => {
     const email = match.params.email
