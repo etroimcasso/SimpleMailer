@@ -31,7 +31,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "production": "pm2 start server/simpleMailerServer.js --watch"
+    "production": "pm2 start server/simpleMailerServer.js --watch",
+    "addAdminUser": "node cli/createAdminUser.js"
   },
   "eslintConfig": {
     "extends": "react-app"
