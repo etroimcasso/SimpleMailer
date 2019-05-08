@@ -32,19 +32,11 @@ const root = require('path').join(__dirname, '..', 'build')
 app.use(express.static(root));
 
 //Route for mailer content
+/*
 app.get("/mailerContent/:fileName", (req, res, next) => {
 	res.sendFile(req.params.fileName, path.join(root, 'mailerContent/'))
 })
-
-//Route for everything else
-/*
-app.get("*", (req, res) => {
-	res.sendFile('index.html', { root })
-})
 */
-
-
-
 const server = https.createServer(ssl_options, app);
 
 const io = require('socket.io')(server);
