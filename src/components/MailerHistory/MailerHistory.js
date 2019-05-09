@@ -8,7 +8,8 @@ const socket = openSocket(hostname.opensocket);
 
 const UIStrings = require('../../config/UIStrings');
 const ReconnectionTimer = require('../../helpers/ReconnectionTimer')
-
+const HtmlToReactParser = require('html-to-react').Parser;
+const htmlToReactParser = new HtmlToReactParser();
 
 
 export default class MailerHistory extends Component {
@@ -47,7 +48,7 @@ class MailerHistoryItem extends Component {
 		return(
 			<div id={item._id}>
 				<div>{item.subject}:{item.mailerResults.length}</div>
-				<div dangerouslySetInnerHTML={{__html: item.bodyHTML}} />
+				<div>{ htmlToReactParser.parse(item.bodyHTML) }</div>
 			</div>
 
 		)

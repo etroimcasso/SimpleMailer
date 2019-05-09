@@ -130,6 +130,12 @@ export default class App extends Component {
       })
     })
 
+    socket.on('noMailers', () => {
+      this.setState({
+        mailerHistoryLoaded: true
+      })
+    })
+
     socket.on('mailerAddedToHistory', mailer => {
       console.log("ADDED TO HISTORY")
       this.setState({
