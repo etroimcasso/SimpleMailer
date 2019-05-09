@@ -177,7 +177,16 @@ io.on('connection', (client) => {
 						client.emit('mailerSendToSubscriberResult', resultError, subscriber.email)
 						mailerResults = mailerResults.concat({recipient: subscriber.email, error: resultError})
 						if (mailerResults.length === subscribers.length) {
-							finishMailer(emailMessage, mailerResults, message.messageText, message.html)
+							//finishMailer(emailMessage, mailerResults, message.messageText, message.html)
+							client.emit('sendMailerFinished')
+							console.log('MAILER SENT')
+							MailerController.addMailer(emailMessage.subject, message.messageText, message.html, mailerResults, (error, mailer) => {
+								if (error) console.error("Could not add mailer to history")
+								else {
+									console.log("mailerAddedToHistory")
+									io.emit('mailerAddedToHistory', JSON.stringify(mailer))
+								}
+							})
 						}	
 					})				
 				}
@@ -191,6 +200,7 @@ io.on('connection', (client) => {
 		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, mailer) => {
 			if (error) console.error("Could not add mailer to history")
 			else {
+				console.log("mailerAddedToHistory")
 				io.emit('mailerAddedToHistory', mailer)
 			}
 		})

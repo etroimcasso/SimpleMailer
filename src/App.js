@@ -5,7 +5,7 @@ import 'semantic-ui-css/semantic.min.css';
 import openSocket from 'socket.io-client';
 import MailerEditor from './components/MailerEditor';
 import ConnectionWrapper from './components/ConnectionWrapper'
-import MailerHistoryController from './components/MailerHistory/MailerHistoryController'
+import MailerHistory from './components/MailerHistory/MailerHistory'
 import TopBar from './components/TopBar'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -30,6 +30,11 @@ const sendMailer = (message) => {
   socket.emit('sendMailer', message)
 } 
 
+const getAllMailers = (callback) => {
+  socket.on('getAllMailersResults', (error, mailerResults) => callback(error, mailerResults))
+  socket.emit('getAllMailers')
+}
+
 
 export default class App extends Component {
   state = {
@@ -42,12 +47,15 @@ export default class App extends Component {
     subscribersList: [],
     reloadSubscribersPending: false,
     mailerResults: [],
-    mailerProgressModalOpen: false
-
+    mailerProgressModalOpen: false,
+    mailerHistory: [],
+    mailerHistoryLoaded: false,
+    reloadMailerHistoryPending: false
   }
 
   componentWillMount() {
     this.getAllSubscribers()
+    this.getAllMailers()
   }
 
   componentDidMount() {
@@ -59,16 +67,25 @@ export default class App extends Component {
         })
         this.getAllSubscribers()
       }
+      if (this.state.reloadMailerHistoryPending) {
+        this.setState({
+          mailerHistory: [],
+          mailerHistoryLoaded: false
+        })
+        this.getAllMailers()
+      }
       this.setState({
         connection: true,
-        reloadSubscribersPending: false
+        reloadSubscribersPending: false,
+        reloadMailerHistoryPending: false
       })
     })
 
     socket.on('disconnect', () => {
       this.setState({
         connection: false,
-        reloadSubscribersPending: true
+        reloadSubscribersPending: true,
+        reloadMailerHistoryPending: true
       })
     })
 
@@ -112,6 +129,13 @@ export default class App extends Component {
         subscribersLoaded: true
       })
     })
+
+    socket.on('mailerAddedToHistory', mailer => {
+      console.log("ADDED TO HISTORY")
+      this.setState({
+        mailerHistory: this.state.mailerHistory.concat(JSON.parse(mailer))
+      })
+    })
     
   }
 
@@ -128,6 +152,22 @@ export default class App extends Component {
         this.setState({
           subscribersList: JSON.parse(subscribers),
           subscribersLoaded: true
+        })
+      }
+    })
+  }
+
+  getAllMailers = () => {
+    ReconnectionTimer(3000,() => { 
+      if (!this.state.mailerHistoryLoaded) 
+        this.getAllMailers() 
+    })
+
+    getAllMailers((error, mailers) => {
+      if (!error) {
+        this.setState({
+          mailerHistory: JSON.parse(mailers),
+          mailerHistoryLoaded: true
         })
       }
     })
@@ -240,31 +280,40 @@ export default class App extends Component {
       subscribersList,
       reloadSubscribersPending,
       mailerResults,
-      mailerProgressModalOpen
+      mailerProgressModalOpen,
+      mailerHistory,
+      mailerHistoryLoaded,
+      reloadMailerHistoryPending
     } = this.state
 
-  const mailerEditorProps = {
-    connection: this.state.connection,
-        mailerBeingSent: this.state.mailerBeingSent,
-        subscribersLoaded: this.state.subscribersLoaded,
-        subscribersList: this.state.subscribersList,
-        reloadSubscribersPending: this.state.reloadSubscribersPending,
-        mailerResults: this.state.mailerResults,
-        mailerProgressModalOpen: this.state.mailerProgressModalOpen,
+    const renderProps = {
+      connection: {
+        connection: connection,
+      },
+      mailerEditorProps: {
+        mailerBeingSent: mailerBeingSent,
+        subscribersLoaded: subscribersLoaded,
+        subscribersList: subscribersList,
+        reloadSubscribersPending: reloadSubscribersPending,
+        mailerResults: mailerResults,
+        mailerProgressModalOpen: mailerProgressModalOpen,
         handleModalClose: this.closeModalAndConfirmMailerSend,
         handleSendButtonClick: this.handleSendButtonClick,
+      },
+      mailerHistoryProps: {
+        mailerHistory: mailerHistory,
+        mailerHistoryLoaded: mailerHistoryLoaded,
+        reloadMailerHistoryPending: reloadMailerHistoryPending,
       }
-    const mailerHistoryControllerProps = {
-        test: "none"
-      }
+    }
 
     
 
   	return (
   			<div className="App">
           <TopBar connection={connection} />
-  				<Route exact path="/" render={props => <MailerEditor {...props} {...mailerEditorProps}/>} />
-          <Route exact path="/history" render={props => <MailerHistoryController {...props} {...mailerHistoryControllerProps} />} />
+  				<Route exact path="/" render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditorProps, renderProps.connection)}/>} />
+          <Route exact path="/history" render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistoryProps, renderProps.connection)} />} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
           <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
           <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
