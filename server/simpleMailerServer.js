@@ -37,6 +37,14 @@ app.get("/mailerContent/:fileName", (req, res, next) => {
 	res.sendFile(req.params.fileName, path.join(root, 'mailerContent/'))
 })
 */
+app.get('/api/home', function(req, res) {
+  res.send('Welcome!');
+});
+
+app.get('/api/secret', function(req, res) {
+  res.send('The password is potato');
+});
+
 const server = https.createServer(ssl_options, app);
 
 const io = require('socket.io')(server);

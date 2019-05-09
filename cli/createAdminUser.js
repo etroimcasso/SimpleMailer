@@ -47,7 +47,11 @@ mongoose.connection.once('open', () => {
 		const usernameValid = InputValidator.fieldIsMinimumLength(username, validatorSettings.username.minLength) 
 			&& !InputValidator.fieldIsEmpty(username)
 			&& !InputValidator.fieldExceedsMaximumLength(username, validatorSettings.username.maxLength)
-		const passwordsAreValid = InputValidator.fieldIsMinimumLength(password, validatorSettings.password.minLength) && !InputValidator.fieldExceedsMaximumLength(password, validatorSettings.password.maxLength) && !InputValidator.fieldIsEmpty(password)
+
+		const passwordsAreValid = InputValidator.fieldIsMinimumLength(password, validatorSettings.password.minLength) 
+			&& !InputValidator.fieldExceedsMaximumLength(password, validatorSettings.password.maxLength) 
+			&& !InputValidator.fieldIsEmpty(password)
+			
 		if (passwordsMatch) {
 			if (passwordsAreValid) {
 				if (usernameValid) {
