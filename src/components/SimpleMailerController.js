@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
+
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -18,19 +17,9 @@ const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
 const UIStrings = require('../config/UIStrings');
-const ReconnectionTimer = require('../helpers/ReconnectionTimer');
 
-const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
-const sendMailer = (message) => {
-	socket.emit('sendMailer', message)
-} 
 
-//Loads the subscribersList state with data
-const getAllSubscribers = (callback) => {
-	socket.on('getAllSubscribersResult', (error, subscribers) => callback(error, subscribers))
-	socket.emit('getAllSubscribers')
-}
 
 // Styles
 const styles = {
@@ -51,104 +40,17 @@ export default class SimpleMailController extends Component {
 	state = {
 		editorState: EditorState.createEmpty(),
 		subject: "",
-		mailerBeingSent: false,
-		//allMailSent: false,
-		mailerResults: [],
-		mailerProgressModalOpen: false,
-		subscribersLoaded: false,
-		subscribersList: [],
-		connection: true,
-		reloadSubscribersPending: false
 	}
 
 	componentWillMount = () => {
-		this.getAllSubscribers()
+		
 	}
 
 	componentDidMount = () => {
 
-		socket.on('connect', () => {
-			if (this.state.reloadSubscribersPending) {
-				this.setState({
-					subscribersList: [],
-					subscribersLoaded: false
-				})
-				this.getAllSubscribers()
-			}
-			this.setState({
-				connection: true,
-				reloadSubscribersPending: false
-			})
-		})
-
-		socket.on('disconnect', () => {
-			this.setState({
-				connection: false,
-				reloadSubscribersPending: true
-			})
-		})
-
-		socket.on('mailerSendToSubscriberResult', (error, email) => {
-			this.setState({
-				mailerResults: this.state.mailerResults.concat({
-					email: email,
-					error: error
-				}),
-			})
-		})
-
-		socket.on('sendMailerFinished', () => {
-			this.setState({ 
-				mailerBeingSent: false,
-				//allMailSent: true,
-			})
-
-		})
-
-		//Adds the new subscriber to the list
-		socket.on('newSubscriberAdded', (subscriber) => {
-			subscriber = JSON.parse(subscriber)
-			this.setState({
-				subscribersList: this.state.subscribersList.concat(subscriber)
-			})
-		})
-
-		//Removes subscriber from list
-		socket.on('subscriberUnsubscribed', (email) =>{
-			console.log(`REMOVE ${email}`)
-			this.setState({
-				subscribersList: this.state.subscribersList.filter( (item) => {
-					return item.email !== email
-				})
-			})
-		})
-
-		socket.on('noSubscribers', () => {
-			this.setState({
-				subscribersLoaded: true
-			})
-		})
-		
-
 	}
 
-	getAllSubscribers = () => {
-		//Start timer
-		//When timer ends getAllSubscribers' again if subscribersLoaded is  false
-		
-		ReconnectionTimer(3000, () => {
-			if (!this.state.subscribersLoaded) this.getAllSubscribers()
-		})
-		
-		getAllSubscribers((error, subscribers) => {
-			if (!error) {
-				this.setState({
-					subscribersList: JSON.parse(subscribers),
-					subscribersLoaded: true
-				})
-			}
-		})
-	}
+	
 
 	onEditorStateChange = (editorState) => {
     	this.setState({
@@ -156,38 +58,6 @@ export default class SimpleMailController extends Component {
     	});
     }
 
-	handleSubmitButtonClick = () => {
-		const currentContent = this.state.editorState.getCurrentContent()
-		const rawContent = convertToRaw(currentContent)
-		const plainText = currentContent.getPlainText() //Plain Text
-		const htmlText = convertRawEditorContentToHTML(rawContent)
-
-		this.setState({ 
-			mailerBeingSent: true,
-			mailerResults: [],
-			//allMailSent: false,
-			mailerProgressModalOpen: true
-		})
-
-		const message = {
-			senderEmail: null,
-			senderName: null,
-			receiverEmails: null,
-			ccReceivers: null,
-			bccReceivers: null,
-			subject: this.state.subject,
-			messageText: plainText,
-			html: htmlText,
-			attachments: null,
-			replyTo: null
-
-		}
-		
-		sendMailer(message, (error, subscriberEmail) => {
-
-		})
-
-	}
 
 	handleInputChange = (name, value) => {
 		this.setState({
@@ -196,26 +66,23 @@ export default class SimpleMailController extends Component {
 	}
 
 	closeModalAndConfirmMailerSend = () => {
-		this.setState({
-			mailerProgressModalOpen: false,
-			subject: "",
-			mailerResults: [],
-			editorState: EditorState.createEmpty()
-		})
+	  this.setState({
+	    subject: "",
+	    editorState: EditorState.createEmpty()
+	  })
+	  this.props.handleModalClose()
 	}
 
-
 	render() {
-		const { editorState, 
-				subject, 
-				mailerBeingSent, 
+		const { editorState, subject } = this.state
+		const { mailerBeingSent, 
 				mailerResults, 
-				//allMailSent, 
 				mailerProgressModalOpen,
 				subscribersList,
 				subscribersLoaded,
-				connection
-				} = this.state
+				connection,
+				handleSendButtonClick } = this.props
+
 
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
@@ -241,7 +108,7 @@ export default class SimpleMailController extends Component {
 								<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
 							</FlexView>
 							<FlexView column style={{paddingTop: '1px' }}>
-								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!enableButton} />
+								<SendEmailButton style={styles.fullWidth} onClick={() => handleSendButtonClick(editorState, subject)} disabled={!enableButton} />
 							</FlexView>
 						</FlexView>
 					</Segment>
