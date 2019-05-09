@@ -18,7 +18,7 @@ const createMailer = (subject, bodyText, bodyHTML, mailerResultsArray, callback)
 		if (error) {
 			return callback(error, false) 
 		}
-		return callback(false, true)
+		return callback(false, item)
 	})
 }
 
@@ -26,6 +26,12 @@ module.exports = {
 	addMailer: (subject, bodyText, bodyHTML, mailerResults, callback) => {
 		MailerResultController.addMailerResults(mailerResults, (error, mailerResultsDocument) => {
 			createMailer(subject, bodyText, bodyHTML, mailerResultsDocument, callback)		
+		})
+	},
+	getAllMailers: callback => {
+		Mailer.find({}, (error, mailers) => {
+			if (error) return (error, false)
+			return callback(null, mailers)
 		})
 	}
 }	

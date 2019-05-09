@@ -18,6 +18,7 @@ const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
 const UIStrings = require('../config/UIStrings');
+const ReconnectionTimer = require('../helpers/ReconnectionTimer');
 
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
@@ -30,9 +31,6 @@ const getAllSubscribers = (callback) => {
 	socket.on('getAllSubscribersResult', (error, subscribers) => callback(error, subscribers))
 	socket.emit('getAllSubscribers')
 }
-
-//Used to reconnect when componentDid/WillMount connections didn't take the first time
-const startReconnectionTimer = callback => setTimeout(() => callback(), 3000)
 
 // Styles
 const styles = {
@@ -72,7 +70,8 @@ export default class SimpleMailController extends Component {
 		socket.on('connect', () => {
 			if (this.state.reloadSubscribersPending) {
 				this.setState({
-					subscribersList: []
+					subscribersList: [],
+					subscribersLoaded: false
 				})
 				this.getAllSubscribers()
 			}
@@ -136,10 +135,11 @@ export default class SimpleMailController extends Component {
 	getAllSubscribers = () => {
 		//Start timer
 		//When timer ends getAllSubscribers' again if subscribersLoaded is  false
-		startReconnectionTimer(() => {
+		
+		ReconnectionTimer(3000, () => {
 			if (!this.state.subscribersLoaded) this.getAllSubscribers()
 		})
-
+		
 		getAllSubscribers((error, subscribers) => {
 			if (!error) {
 				this.setState({
@@ -214,10 +214,8 @@ export default class SimpleMailController extends Component {
 				mailerProgressModalOpen,
 				subscribersList,
 				subscribersLoaded,
-				//connection
-				 } = this.state
-
-		const { connection } = this.props
+				connection
+				} = this.state
 
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
@@ -241,7 +239,7 @@ export default class SimpleMailController extends Component {
 								<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
 							</FlexView>
 							<FlexView column style={{paddingTop: '1px' }}>
-								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid && !noSubscribers} />
+								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid && noSubscribers} />
 							</FlexView>
 						</FlexView>
 					</Segment>

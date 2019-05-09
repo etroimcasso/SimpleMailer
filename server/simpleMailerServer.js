@@ -107,7 +107,7 @@ const sendMailerEmail = (message, subscriberId, callback) => {
 				console.log(`Successfully sent email to ${subscriberEmail}`)
 				resultError = false
 			}
-			callback(resultError)
+			callback(resultError, info)
 		})
 	}
 }
@@ -188,10 +188,10 @@ io.on('connection', (client) => {
 	const finishMailer = (message, mailerResults, messageText, messageHtml) => {
 		client.emit('sendMailerFinished')
 		console.log('MAILER SENT')
-		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, result) => {
+		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, mailer) => {
 			if (error) console.error("Could not add mailer to history")
 			else {
-				//console.log("There were no errors")
+				io.emit('mailerAddedToHistory', mailer)
 			}
 		})
 	}
@@ -337,6 +337,17 @@ io.on('connection', (client) => {
 	//Emits 'logoutResult'
 	client.on('logout', (username) => {
 
+	})
+
+	//Emits 'getAllMailerResultsResults' and 'noMailerResults'
+	client.on('getAllMailers', () => {
+		MailerController.getAllMailers((error, mailers) => {
+			if (mailers.length > 0) {
+				client.emit('getAllMailersResults', error, JSON.stringify(mailers))
+			} else {
+				client.emit('noMailers')
+			}
+		})
 	})
 		
 });

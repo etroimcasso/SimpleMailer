@@ -65,10 +65,10 @@ export default class TopBar extends Component {
 					<span style={styles.appTitleText}>{UIStrings.TopBar.MenuHeaderText}</span>
 				</Menu.Item>
 				<Menu.Item name="mailer" as={NavLink} to="/" exact>
-					New Mailer
+					{UIStrings.TopBar.NewMailerText}
 				</Menu.Item>
 				<Menu.Item name="history" as={NavLink} to="/history" exact>
-					Mailing History
+					{UIStrings.TopBar.MailingHistoryText}
 				</Menu.Item>
 			</Menu>
 		)

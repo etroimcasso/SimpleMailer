@@ -6,12 +6,15 @@ module.exports = {
 	SubscribeSuccess: (email) => `${email} has been added to our mailing list`,
 	SubscribeError: (email) =>  `${email} is already subscribed`,
 	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
+	NoSubscribers: "There are no subscribers",
 	TopBar: {
 		MenuHeaderText: "SimpleMailer",
 		ConnectionStatusPopupHeaderText: 'Connection Status',
 		ConnectionText: "",
 		ConnectionStatusConnected: 'Connected' ,
 		ConnectionStatusDisconnected: 'Disconnected',
+		MailingHistoryText: "History",
+		NewMailerText: "New Mailer"
 	},
 	MailerModal: {
 		InProgress: 'Sending Mailer',
@@ -24,5 +27,9 @@ module.exports = {
 	MailerResults: {
 		Failure: "Could not email ",
 		Success: "Sent mailer to " ,
+	},
+	MailerHistory: {
+		NoHistory: "There is no mailer history",
+		Loading: "Loading Mailer History"
 	}
 }

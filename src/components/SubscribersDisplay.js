@@ -59,7 +59,7 @@ class SubscribersList extends Component {
 		return(
 			<List relaxed divided style={Object.assign(styles.leftAlignedText, styles.fullWidth)} size="small">
 				{(subscribers.length > 0) ? subscribers.map((subscriber, index) => <SubscribersListItem key={index} subscriber={subscriber} />) 
-				: <span>There are no subscribers</span> }
+				: <span>{UIStrings.NoSubscribers}</span> }
 			</List>
 		)
 	}
