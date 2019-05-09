@@ -1,5 +1,5 @@
 module.exports = {
-	LoadingSubscribers: "Loading Subscriber List",
+	LoadingSubscribers: null, // "Loading Subscriber List",
 	SubscribersNoun: "Subscribers",
 	UnsubscribeError: (email) => `${email} is not subscribed to our mailing list`,
 	UnSubscribeSuccess: (email) => `${email} has been removed from our mailing list`,
@@ -30,6 +30,6 @@ module.exports = {
 	},
 	MailerHistory: {
 		NoHistory: "There is no mailer history",
-		Loading: "Loading Mailer History"
+		Loading: null  //"Loading Mailer History"
 	}
 }

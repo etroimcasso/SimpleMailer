@@ -81,7 +81,7 @@ export default class MailerHistoryController extends Component {
 				<Dimmer inverted active={!mailerHistoryLoaded}>
 					<Loader active={!mailerHistoryLoaded} inline>{UIStrings.MailerHistory.Loading}</Loader>
 				</Dimmer>
-				{ (mailerHistory.length > 0) ? mailerHistory.map((item, index) => <div key={index} id={item._id}>{item.subject}</div>) : <span>{UIStrings.MailerHistory.NoHistory}</span> }		
+				{ (mailerHistory.length > 0) ? mailerHistory.map((item, index) => <div key={index} id={item._id}>{item.subject}:{item.mailerResults.length}</div>) : <span>{UIStrings.MailerHistory.NoHistory}</span> }		
 			</Segment>
 		)
 	}

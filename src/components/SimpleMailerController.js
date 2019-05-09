@@ -57,7 +57,7 @@ export default class SimpleMailController extends Component {
 		mailerProgressModalOpen: false,
 		subscribersLoaded: false,
 		subscribersList: [],
-		connection: false,
+		connection: true,
 		reloadSubscribersPending: false
 	}
 
@@ -167,7 +167,7 @@ export default class SimpleMailController extends Component {
 			mailerResults: [],
 			//allMailSent: false,
 			mailerProgressModalOpen: true
-			 })
+		})
 
 		const message = {
 			senderEmail: null,
@@ -217,10 +217,12 @@ export default class SimpleMailController extends Component {
 				connection
 				} = this.state
 
-		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
+
 		const noSubscribers = subscribersList.length === 0
+		const enableButton = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection && !noSubscribers
+
 
 		return(
 			<Container style={{height: '100%'}}>
@@ -239,7 +241,7 @@ export default class SimpleMailController extends Component {
 								<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
 							</FlexView>
 							<FlexView column style={{paddingTop: '1px' }}>
-								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid && noSubscribers} />
+								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!enableButton} />
 							</FlexView>
 						</FlexView>
 					</Segment>
