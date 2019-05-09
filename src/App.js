@@ -19,7 +19,8 @@ export default class App extends Component {
   state= {
     subscriberInfoModalOpen: false,
     subscriberInfoMessage: "",
-    subscriberError: false
+    subscriberError: false,
+    connection: false,
 
   }
 
@@ -86,13 +87,14 @@ export default class App extends Component {
   
 
 	render() {
+    const { connection } = this.state
 
   	return (
   			<div className="App">
           <ConnectionWrapper>
             <TopBar />
           </ConnectionWrapper>
-  				<Route exact path="/" component={SimpleMailerController} />
+  				<Route exact path="/" component={SimpleMailerControllerContainer} />
           <Route exact path="/history" component={MailerHistoryController} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
           <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
@@ -100,6 +102,18 @@ export default class App extends Component {
     		</div>
   		)
   }
+}
+
+const SimpleMailerControllerContainer = () => {
+  return(
+    <SimpleMailerController connection={connection} />
+    )
+}
+
+const MailerHistoryControllerContainer = () => {
+  return(
+    <MailerHistoryController connection={connection} />
+  )
 }
 
 const redirectAwayFromMailer = () => {
