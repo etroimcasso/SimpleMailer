@@ -220,6 +220,7 @@ export default class SimpleMailController extends Component {
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
+		const noSubscribers = subscribersList.length === 0
 
 		return(
 			<div>
@@ -240,7 +241,7 @@ export default class SimpleMailController extends Component {
 								<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
 							</FlexView>
 							<FlexView column style={{paddingTop: '1px' }}>
-								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid} />
+								<SendEmailButton style={styles.fullWidth} onClick={this.handleSubmitButtonClick} disabled={!inputValid && !noSubscribers} />
 							</FlexView>
 						</FlexView>
 					</Segment>

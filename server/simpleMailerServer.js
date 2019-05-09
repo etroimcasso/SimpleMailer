@@ -31,12 +31,21 @@ app.use(forceSsl)
 const root = require('path').join(__dirname, '..', 'build')
 app.use(express.static(root));
 
+
 //Route for mailer content
 /*
 app.get("/mailerContent/:fileName", (req, res, next) => {
 	res.sendFile(req.params.fileName, path.join(root, 'mailerContent/'))
 })
 */
+
+//Route for everything else
+
+app.get("*", (req, res) => {
+	res.sendFile('index.html', { root })
+})
+
+
 app.get('/api/home', function(req, res) {
   res.send('Welcome!');
 });
@@ -58,7 +67,7 @@ server.listen(process.env.HTTPS_PORT,() => {
 //MongoDBURL Helper
 const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
 mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
-
+const db = mongoose.connection
 
 const sendEmail = (message, subscriberId, callback) => {
 	const subscriberEmail = message.receiverEmails
@@ -105,6 +114,14 @@ const sendMailerEmail = (message, subscriberId, callback) => {
 
 //SOCKET SERVER
 io.on('connection', (client) => {
+	/*
+	const subscribersCollection = db.collection('subscribers')
+	const subscribersChanges = subscribersCollection.watch()
+
+	subscribersChanges.on('change', (change) => {
+			console.log(` Changes: ${change}`)
+	})
+	*/
 
 	client.on('sendEmail', (message) => {
 		console.log(`Sending mail to ${message.receiverEmails}`)
