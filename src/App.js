@@ -3,7 +3,7 @@ import { Route, Redirect, Link } from 'react-router-dom';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
 import openSocket from 'socket.io-client';
-import SimpleMailerController from './components/SimpleMailerController';
+import MailerEditor from './components/MailerEditor';
 import ConnectionWrapper from './components/ConnectionWrapper'
 import MailerHistoryController from './components/MailerHistory/MailerHistoryController'
 import TopBar from './components/TopBar'
@@ -243,7 +243,7 @@ export default class App extends Component {
       mailerProgressModalOpen
     } = this.state
 
-  const simpleMailerControllerProps = {
+  const mailerEditorProps = {
     connection: this.state.connection,
         mailerBeingSent: this.state.mailerBeingSent,
         subscribersLoaded: this.state.subscribersLoaded,
@@ -263,7 +263,7 @@ export default class App extends Component {
   	return (
   			<div className="App">
           <TopBar connection={connection} />
-  				<Route exact path="/" render={props => <SimpleMailerController {...props} {...simpleMailerControllerProps}/>} />
+  				<Route exact path="/" render={props => <MailerEditor {...props} {...mailerEditorProps}/>} />
           <Route exact path="/history" render={props => <MailerHistoryController {...props} {...mailerHistoryControllerProps} />} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
           <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />

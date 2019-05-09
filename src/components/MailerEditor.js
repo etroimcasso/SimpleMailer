@@ -36,7 +36,7 @@ const styles = {
 
 
 
-export default class SimpleMailController extends Component {
+export default class MailerEditor extends Component {
 	state = {
 		editorState: EditorState.createEmpty(),
 		subject: "",
