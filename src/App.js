@@ -311,7 +311,7 @@ export default class App extends Component {
 
   	return (
   			<div className="App">
-          <TopBar connection={connection} />
+          <TopBar connection={connection} mailerHistoryCount={mailerHistory.length}/>
   				<Route exact path="/" render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditorProps, renderProps.connection)}/>} />
           <Route exact path="/history" render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistoryProps, renderProps.connection)} />} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />

@@ -21,8 +21,35 @@ export default class MailerHistory extends Component {
 				<Dimmer inverted active={!mailerHistoryLoaded}>
 					<Loader active={!mailerHistoryLoaded} inline>{UIStrings.MailerHistory.Loading}</Loader>
 				</Dimmer>
-				{ (mailerHistory.length > 0) ? mailerHistory.map((item, index) => <div key={index} id={item._id}>{item.subject}:{item.mailerResults.length}</div>) : <span>{UIStrings.MailerHistory.NoHistory}</span> }		
+				{	mailerHistory.length > 0 &&
+					<div>
+						{
+							mailerHistory.map((item, index) => {
+								return (
+									<MailerHistoryItem item={item} key={index} />
+								)
+							})
+						}
+					</div>
+				} 
+				{ mailerHistory.length === 0 &&
+					<span>{UIStrings.MailerHistory.NoHistory}</span> 
+				}		
 			</Segment>
+		)
+	}
+}
+
+
+class MailerHistoryItem extends Component {
+	render() {
+		const { item } = this.props
+		return(
+			<div id={item._id}>
+				<div>{item.subject}:{item.mailerResults.length}</div>
+				<div dangerouslySetInnerHTML={{__html: item.bodyHTML}} />
+			</div>
+
 		)
 	}
 }

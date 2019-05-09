@@ -1,6 +1,6 @@
 //Shows connection status in the top left corner
 import React, { Component } from 'react';
-import { Menu, Icon, Popup } from 'semantic-ui-react';
+import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import openSocket from 'socket.io-client';
 
@@ -15,7 +15,7 @@ const styles = {
 		left: '-20px'
 	},
 	connectionHeaderText: {
-		paddingTop: '5px'
+		paddingTop: '3px'
 	},
 	redText: {
 		color: "#ff0000"
@@ -45,7 +45,7 @@ export default class TopBar extends Component {
 	}
 
 	render() {
-		const { connection } = this.props
+		const { connection, mailerHistoryCount } = this.props
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -69,6 +69,9 @@ export default class TopBar extends Component {
 				</Menu.Item>
 				<Menu.Item name="history" as={NavLink} to="/history" exact>
 					{UIStrings.TopBar.MailingHistoryText}
+					<Label>
+						{mailerHistoryCount}
+					</Label>
 				</Menu.Item>
 			</Menu>
 		)
