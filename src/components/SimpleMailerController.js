@@ -214,8 +214,10 @@ export default class SimpleMailController extends Component {
 				mailerProgressModalOpen,
 				subscribersList,
 				subscribersLoaded,
-				connection
+				//connection
 				 } = this.state
+
+		const { connection } = this.props
 
 		const inputValid = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection
 
@@ -223,8 +225,6 @@ export default class SimpleMailController extends Component {
 		const noSubscribers = subscribersList.length === 0
 
 		return(
-			<div>
-			<TopBar connection={connection} />
 			<Container style={{height: '100%'}}>
 				<MailingProgressModal 
 				mailerResults={mailerResults} 
@@ -262,7 +262,6 @@ export default class SimpleMailController extends Component {
 					</Segment>
 				</Segment.Group>
 			</Container>
-			</div>
 		)
 	}
 }

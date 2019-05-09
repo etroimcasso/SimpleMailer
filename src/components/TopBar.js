@@ -1,7 +1,11 @@
 //Shows connection status in the top left corner
 import React, { Component } from 'react';
 import { Menu, Icon, Popup } from 'semantic-ui-react';
+import { NavLink } from 'react-router-dom';
+import openSocket from 'socket.io-client';
 
+const hostname = require('../config/hostname.js');
+const socket = openSocket(hostname.opensocket);
 const UIStrings = require('../config/UIStrings')
 
 const styles = {
@@ -20,6 +24,26 @@ const styles = {
 
 
 export default class TopBar extends Component {
+	state = {
+		//connection: false
+	}
+
+	componentDidMount() {
+		/*
+		socket.on('connect', () => {
+			this.setState({
+				connection: true,
+			})
+		})
+
+		socket.on('disconnect', () => {
+			this.setState({
+				connection: false,
+			})
+		})
+		*/
+	}
+
 	render() {
 		const { connection } = this.props
 
@@ -39,6 +63,12 @@ export default class TopBar extends Component {
 				</Menu.Item>
 				<Menu.Item>
 					<span style={styles.appTitleText}>{UIStrings.TopBar.MenuHeaderText}</span>
+				</Menu.Item>
+				<Menu.Item name="mailer" as={NavLink} to="/" exact>
+					New Mailer
+				</Menu.Item>
+				<Menu.Item name="history" as={NavLink} to="/history" exact>
+					Mailing History
 				</Menu.Item>
 			</Menu>
 		)

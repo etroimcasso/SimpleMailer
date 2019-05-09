@@ -5,9 +5,10 @@ import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
 import openSocket from 'socket.io-client';
 
-
 import SimpleMailerController from './components/SimpleMailerController';
-
+import ConnectionWrapper from './components/ConnectionWrapper'
+import MailerHistoryController from './components/MailerHistory/MailerHistoryController'
+import TopBar from './components/TopBar'
 
 
 const hostname = require('./config/hostname.js');
@@ -88,10 +89,11 @@ export default class App extends Component {
 
   	return (
   			<div className="App">
-        { 
+          <ConnectionWrapper>
+            <TopBar />
+          </ConnectionWrapper>
   				<Route exact path="/" component={SimpleMailerController} />
-        }
-
+          <Route exact path="/history" component={MailerHistoryController} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
           <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
           <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
