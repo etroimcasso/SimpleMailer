@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Accordion, List, Icon, Label } from 'semantic-ui-react';
+import { Accordion, List, Icon, Label, Transition } from 'semantic-ui-react';
 
 const UIStrings = require('../config/UIStrings')
 
@@ -57,10 +57,10 @@ class SubscribersList extends Component {
 	render() {
 		const { subscribers } = this.props
 		return(
-			<List relaxed divided style={Object.assign(styles.leftAlignedText, styles.fullWidth)} size="small">
+			<Transition.Group as={List} animation='scale' duration={200} relaxed divided style={Object.assign(styles.leftAlignedText, styles.fullWidth)} size="small">
 				{(subscribers.length > 0) ? subscribers.map((subscriber, index) => <SubscribersListItem key={index} subscriber={subscriber} />) 
 				: <span>{UIStrings.NoSubscribers}</span> }
-			</List>
+			</Transition.Group>
 		)
 	}
 }

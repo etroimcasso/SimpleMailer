@@ -35,6 +35,11 @@ const getAllMailers = (callback) => {
   socket.emit('getAllMailers')
 }
 
+const getAllMailerResults = (callback) => {
+  socket.on('getAllMailerResultsResults', (error, results) => callback(error, results))
+  socket.emit('getAllMailerResults')
+}
+
 
 export default class App extends Component {
   state = {
@@ -50,12 +55,16 @@ export default class App extends Component {
     mailerProgressModalOpen: false,
     mailerHistory: [],
     mailerHistoryLoaded: false,
-    reloadMailerHistoryPending: false
+    reloadMailerHistoryPending: false,
+    mailerHistoryResults: [],
+    mailerHistoryResultsLoaded: false,
+    reloadMailerHistoryResultsPending: false
   }
 
   componentWillMount() {
     this.getAllSubscribers()
     this.getAllMailers()
+    this.getAllMailerResults()
   }
 
   componentDidMount() {
@@ -74,6 +83,13 @@ export default class App extends Component {
         })
         this.getAllMailers()
       }
+      if (this.state.reloadMailerHistoryResultsPending) {
+        this.setState({
+          mailerHistoryResults: [],
+          mailerHistoryResultsLoaded: false
+        })
+        this.getAllMailerResults()
+      }
       this.setState({
         connection: true,
         reloadSubscribersPending: false,
@@ -85,7 +101,8 @@ export default class App extends Component {
       this.setState({
         connection: false,
         reloadSubscribersPending: true,
-        reloadMailerHistoryPending: true
+        reloadMailerHistoryPending: true,
+        reloadMailerHistoryResultsPending: true
       })
     })
 
@@ -136,6 +153,12 @@ export default class App extends Component {
       })
     })
 
+    socket.on('noMailerResultss', () => {
+      this.setState({
+        mailerHistoryResultsLoaded: true
+      })
+    })
+
     socket.on('mailerAddedToHistory', mailer => {
       console.log("ADDED TO HISTORY")
       this.setState({
@@ -174,6 +197,23 @@ export default class App extends Component {
         this.setState({
           mailerHistory: JSON.parse(mailers),
           mailerHistoryLoaded: true
+        })
+      }
+    })
+  }
+
+  getAllMailerResults = () => {
+    ReconnectionTimer(3000,() => { 
+      if (!this.state.mailerHistoryLoaded) 
+        this.getAllMailerResults() 
+    })
+
+    getAllMailerResults((error, mailerHistoryResults) => {
+      //console.log(`MAILER HISTORY: ${mailerHistoryResults}`)
+      if (!error) {
+        this.setState({
+          mailerHistoryResults: JSON.parse(mailerHistoryResults),
+          mailerHistoryResultsLoaded: true
         })
       }
     })
@@ -289,7 +329,9 @@ export default class App extends Component {
       mailerProgressModalOpen,
       mailerHistory,
       mailerHistoryLoaded,
-      reloadMailerHistoryPending
+      reloadMailerHistoryPending,
+      mailerHistoryResults,
+      mailerHistoryResultsLoaded,
     } = this.state
 
     const renderProps = {
@@ -309,6 +351,8 @@ export default class App extends Component {
       mailerHistoryProps: {
         mailerHistory: mailerHistory,
         mailerHistoryLoaded: mailerHistoryLoaded,
+        mailerHistoryResults: mailerHistoryResults,
+        mailerHistoryResultsLoaded: mailerHistoryResultsLoaded,
         reloadMailerHistoryPending: reloadMailerHistoryPending,
       }
     }

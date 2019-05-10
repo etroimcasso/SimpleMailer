@@ -7,6 +7,9 @@ module.exports = {
 	SubscribeError: (email) =>  `${email} is already subscribed`,
 	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
 	NoSubscribers: "There are no subscribers",
+	SendEmailButton: {
+		Text: "Send"
+	},
 	TopBar: {
 		MenuHeaderText: "SimpleMailer",
 		ConnectionStatusPopupHeaderText: 'Connection Status',
@@ -30,6 +33,13 @@ module.exports = {
 	},
 	MailerHistory: {
 		NoHistory: "There is no mailer history",
-		Loading: null  //"Loading Mailer History"
+		Loading: null,  //"Loading Mailer History",
+		Table: {
+			Header: {
+				Subject: "Subject",
+				SendDate: "Send Date",
+				Recipients: "Recipients"
+			}
+		}
 	}
 }

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Icon } from 'semantic-ui-react';
 
+const UIStrings = require('../../config/UIStrings')
+
 
 export default class SendEmailButton extends Component {
 	render() {
@@ -8,7 +10,7 @@ export default class SendEmailButton extends Component {
 		return(
 			<Button icon attached={attached} labelPosition='right' onClick={this.props.onClick} disabled={disabled}>
 				<Icon name="send" />
-				Send
+				{UIStrings.SendEmailButton.Text}
 			</Button>
 		)
 

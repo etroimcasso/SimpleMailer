@@ -25,5 +25,12 @@ module.exports = {
 			})
 		}		
 
-	}
+	},
+
+	getAllMailerResults: (callback) => {
+		MailerResult.find({}, (error, results) => {
+			if (error) return (error, false)
+			return callback(null, results)
+		})
+	},
 }

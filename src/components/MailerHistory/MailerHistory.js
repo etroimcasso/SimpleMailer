@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
+import { Container, Segment, Dimmer, Loader, Table, Icon } from 'semantic-ui-react';
 import openSocket from 'socket.io-client';
 
 const hostname = require('../../config/hostname.js');
@@ -12,26 +12,19 @@ const HtmlToReactParser = require('html-to-react').Parser;
 const htmlToReactParser = new HtmlToReactParser();
 
 
+
 export default class MailerHistory extends Component {
 	
 	render() {
-		const { mailerHistory, mailerHistoryLoaded } = this.props
+		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResults, mailerHistoryResultsLoaded } = this.props
 
 		return(
 			<Segment basic>
-				<Dimmer inverted active={!mailerHistoryLoaded}>
+				<Dimmer inverted active={!mailerHistoryLoaded || !mailerHistoryResultsLoaded}>
 					<Loader active={!mailerHistoryLoaded} inline>{UIStrings.MailerHistory.Loading}</Loader>
 				</Dimmer>
 				{	mailerHistory.length > 0 &&
-					<div>
-						{
-							mailerHistory.map((item, index) => {
-								return (
-									<MailerHistoryItem item={item} key={index} />
-								)
-							})
-						}
-					</div>
+					<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
 				} 
 				{ mailerHistory.length === 0 &&
 					<span>{UIStrings.MailerHistory.NoHistory}</span> 
@@ -41,16 +34,66 @@ export default class MailerHistory extends Component {
 	}
 }
 
-
-class MailerHistoryItem extends Component {
+class MailerHistoryTable extends Component {
 	render() {
-		const { item } = this.props
+		const { mailerHistory, mailerHistoryResults } = this.props
 		return(
-			<div id={item._id}>
-				<div>{item.subject}:{item.mailerResults.length}</div>
-				<div>{ htmlToReactParser.parse(item.bodyHTML) }</div>
-			</div>
+			<Table celled>
+				<Table.Header>
+					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Subject}</Table.HeaderCell>
+					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendDate}</Table.HeaderCell>
+					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Recipients}</Table.HeaderCell>
+				</Table.Header>
+				{ 
+					mailerHistory.map((item) => {
+						var results = []
+						//console.log( "mailerRESULT")
+						//console.log(item.mailerResults)
+						for (var i = 0; i < item.mailerResults.length; i++) {
+							results = results.concat(mailerHistoryResults.filter((historyResult) => {
+								return historyResult._id === item.mailerResults[i]
+							}))
+						}
+						return (
+							<MailerHistoryTableRowItem item={item} key={item} mailerResults={results} />
+						)
+					})
+				}
+			</Table>
+		)
+	}
+}
+
+
+class MailerHistoryTableRowItem extends Component {
+	render() {
+		const { item, mailerResults } = this.props
+
+		var errors = 0
+		mailerResults.map(result => {
+			if (result.error != "false")
+				++errors
+		})
+
+		const recipientCount = item.mailerResults.length
+
+
+		return(
+			<Table.Row>
+				<Table.Cell>{item.subject}</Table.Cell>
+				<Table.Cell>{item.sent_on}</Table.Cell>
+				<Table.Cell error={errors > 0}>
+						<Fragment>
+							{ (errors > 0) &&
+								<Icon name='attention' />
+							}
+							<span>{(errors === 0) ? recipientCount:`${recipientCount - errors}/${recipientCount}`}</span>
+						</Fragment>
+				</Table.Cell>
+			</Table.Row>
 
 		)
 	}
 }
+
+//<Table.Cell>{ htmlToReactParser.parse(item.bodyHTML) }</Table.Cell>

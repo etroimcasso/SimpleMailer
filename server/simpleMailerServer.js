@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 const Emailer = require('./lib/Emailer')
 const SubscriberController = require('./lib/controllers/SubscriberController')
 const MailerController = require('./lib/controllers/MailerController')
+const MailerResultController = require('./lib/controllers/MailerResultController')
 const ServerStrings = require('./config/ServerStrings')
 
 app.set('forceSSLOptions', {
@@ -349,13 +350,23 @@ io.on('connection', (client) => {
 
 	})
 
-	//Emits 'getAllMailerResultsResults' and 'noMailerResults'
+	//Emits 'getAllMailersResults' and 'noMailerResults'
 	client.on('getAllMailers', () => {
 		MailerController.getAllMailers((error, mailers) => {
 			if (mailers.length > 0) {
 				client.emit('getAllMailersResults', error, JSON.stringify(mailers))
 			} else {
 				client.emit('noMailers')
+			}
+		})
+	})
+
+	client.on('getAllMailerResults', () => {
+		MailerResultController.getAllMailerResults((error, results) => {
+			if (results.length > 0) {
+				client.emit('getAllMailerResultsResults', error, JSON.stringify(results))
+			} else {
+				client.emit('noMailerResults')
 			}
 		})
 	})

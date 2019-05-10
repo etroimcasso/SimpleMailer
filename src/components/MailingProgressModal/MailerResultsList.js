@@ -12,8 +12,8 @@ export default class MailerResultsList extends Component {
 		const { items } = this.props
 		
 		return (
-			<Transition.Group as={List} celled relaxed style={listSize}>
-				{items.map(item => <MailerResultsListItem item={item}/>)}
+			<Transition.Group as={List} duration={200}Z celled relaxed style={listSize}>
+				{items.map(item => <MailerResultsListItem item={item} key={item._id}/>)}
 			</Transition.Group>
 		)
 	}
