@@ -37,13 +37,11 @@ export default class SubscribersDisplay extends Component {
 		return (
 			<Accordion fluid style={styles.leftAlignedText}>
 				<Accordion.Title index={0} active={active} onClick={this.toggleAccordion}>
-					<Label size="large">
 						{dropdownIcon}
 						{UIStrings.SubscribersNoun} 
 						{ loaded &&
-							<Label.Detail style={{paddingTop: '2px'}}>{subscribers.length}</Label.Detail>
+							<Label size="large" circular>{subscribers.length}</Label>
 						}
-					</Label>
 				</Accordion.Title>
 				<Accordion.Content active={active} style={Object.assign(styles.height, styles.autoYOverflow)}>
 					<SubscribersList subscribers={subscribers} />

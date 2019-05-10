@@ -71,7 +71,7 @@ export default class TopBar extends Component {
 				<Menu.Item name="history" as={NavLink} to="/history" exact>
 					{UIStrings.TopBar.MailingHistoryText}
 					{ historyLoaded &&
-						<Label>
+						<Label circular>
 							{(historyLoaded) ? mailerHistoryCount : (<Icon name="spinner" loading />)}
 						</Label>
 					}

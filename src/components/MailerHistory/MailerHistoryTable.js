@@ -1,5 +1,5 @@
-import React, { Component, Fragment, createRef } from 'react';
-import { Table, Icon, Button } from 'semantic-ui-react';
+import React, { Component, Fragment } from 'react';
+import { Table, Icon, Button, Popup } from 'semantic-ui-react';
 import MailerHistoryViewer from './MailerHistoryViewer';
 
 const convertUTCTimeToLocalTime = require('../../helpers/convertUTCTimeToLocalTime')
@@ -11,7 +11,6 @@ export default class MailerHistoryTable extends Component {
 		activeId: -1
 	}
 
-	contextRef = createRef()
 
 	handleRowHover = (id) => {
 		this.setState({
@@ -30,12 +29,15 @@ export default class MailerHistoryTable extends Component {
 		const { mailerHistory, mailerHistoryResults } = this.props
 		return(
 			<Table striped celled>
-					<Table.Header>
+				<Table.Header>
+					<Table.Row>
 						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Subject}</Table.HeaderCell>
-						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendDate}</Table.HeaderCell>
 						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Recipients}</Table.HeaderCell>
+						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendDate}</Table.HeaderCell>
+						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendTime}</Table.HeaderCell>
 						<Table.HeaderCell />
-					</Table.Header>
+					</Table.Row>
+				</Table.Header>
 				{ 
 					mailerHistory.map((item) => {
 						var results = []
@@ -72,28 +74,35 @@ class MailerHistoryTableRowItem extends Component {
 		const errors = mailerResults.filter((result) => { return result.error !== "false" }).length
 
 		const recipientCount = item.mailerResults.length
+		const formatDate = 'MMMM Do YYYY'
+		const formatTime = 'h:mm:ss a'
 
-		const timeFormatString = 'h:m a'
+		const timeFormatString = `${formatDate}[, ]${formatTime}`
 
 
 		return(
 			<Fragment>
-				<Table.Row active={active} onMouseEnter={() => this.props.handleHover(item._id)} onMouseLeave={this.props.handleHoverLeave}>
+				<Table.Row error={errors > 0} active={active} onMouseEnter={() => this.props.handleHover(item._id)} onMouseLeave={this.props.handleHoverLeave}>
 					<Table.Cell>{item.subject}</Table.Cell>
-					<Table.Cell>{convertUTCTimeToLocalTime(item.sent_on, timeFormatString)}</Table.Cell>
-					<Table.Cell error={errors > 0}>
+					<Table.Cell>
 							<Fragment>
 								{ (errors > 0) &&
-									<Icon name='attention' />
+									<Popup 
+									content={UIStrings.GeneralErrors.NotAllEmailsSent} 
+									trigger={<Icon name='attention' />}
+									position='top center' />
 								}
 								<span>{(errors === 0) ? recipientCount:`${recipientCount - errors}/${recipientCount}`}</span>
 							</Fragment>
 					</Table.Cell>
+					<Table.Cell>{convertUTCTimeToLocalTime(item.sent_on, formatDate)}</Table.Cell>
+					<Table.Cell>{convertUTCTimeToLocalTime(item.sent_on, formatTime)}</Table.Cell>
 					<Table.Cell>
 						<MailerHistoryViewer 
 						trigger={<Button color='blue' >{UIStrings.MailerHistory.ViewEntryButtonText}</Button>}
 						mailer={item}
 						mailerResults={mailerResults}
+						errors={errors}
 						/>
 					</Table.Cell>
 				</Table.Row>

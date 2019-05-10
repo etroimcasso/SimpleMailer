@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Segment, Modal, Header } from 'semantic-ui-react';
+import React, { Component, Fragment } from 'react';
+import { Segment, Modal, Header, Label, Progress } from 'semantic-ui-react';
 import SubscribersList from '../bits/SubscribersList';
 
 const UIStrings = require('../../config/UIStrings');
@@ -10,7 +10,8 @@ const convertMailerResultsToSubscribersList = (mailerResults) => {
 	var resultObject = []
 	mailerResults.map((item) => {
 		resultObject = resultObject.concat({
-			email: item.recipient
+			email: item.recipient,
+			error: item.error !== "false" && item.error !== null
 		})
 		return 0
 	})
@@ -20,19 +21,32 @@ const convertMailerResultsToSubscribersList = (mailerResults) => {
 
 export default class MailerHistoryViewer extends Component {
 
-	componentWillRender() {}
-
+	
 	render() {
-		const { mailer, mailerResults, trigger} = this.props
+		const { mailer, mailerResults, trigger, errors } = this.props
 
 		const subscribersList = convertMailerResultsToSubscribersList(mailerResults)
+		const progressIndicator = (attachTo) => { 
+			return (
+				<Progress attached={attachTo} percent={100} error={errors > 0} success={errors === 0}></Progress>
+			)
+		}
+
 
 		return (
-			<Modal trigger={trigger}>
+			<Modal trigger={trigger} >
+				{progressIndicator('top')}
 				<Modal.Header>{mailer.subject}</Modal.Header>
 				<Segment.Group>
 					<Segment basic>
-						<Header as="h3">{UIStrings.SubscribersNoun}</Header>
+						<Header as="h3">
+							<span>
+								{UIStrings.SubscribersNoun}
+								<Label circular >
+									{subscribersList.length}
+								</Label>
+							</span>
+						</Header>
 						<SubscribersList subscribers={subscribersList} />
 					</Segment>
 					<Segment>
@@ -40,6 +54,7 @@ export default class MailerHistoryViewer extends Component {
 						{ htmlToReactParser.parse(mailer.bodyHTML) }
 					</Segment>
 				</Segment.Group>
+				{progressIndicator('bottom')}
 			</Modal>
 		)
 	}

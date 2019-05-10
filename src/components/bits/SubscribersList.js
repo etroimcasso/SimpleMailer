@@ -15,7 +15,11 @@ const styles = {
 	},
 	fullWidth: {
 		width:'100%'
+	},
+	redText: {
+		color: `#FF0000`
 	}
+
 }
 
 export default class SubscribersList extends Component {
@@ -30,15 +34,20 @@ export default class SubscribersList extends Component {
 	}
 }
 
+
 class SubscribersListItem extends Component {
 	render() {
 		const { subscriber } = this.props
 		const subsIcon = (<Icon name="mail" />)
+		const errorIcon = (<Icon name="cancel" color="red"/>)
+		const error = subscriber.error
+
 
 		return(
 			<List.Item verticalAlign="center" floated="left" style={styles.fullWidth}>
+				{(error) ? errorIcon : subsIcon}
 				<List.Content>
-					{subsIcon}{subscriber.email}
+					<span style={(error) ? styles.redText : null}>{subscriber.email}</span>
 				</List.Content>
 			</List.Item>
 		)

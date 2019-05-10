@@ -37,9 +37,13 @@ module.exports = {
 		Table: {
 			Header: {
 				Subject: "Subject",
-				SendDate: "Send Date",
+				SendDate: "Date",
+				SendTime: "Time",
 				Recipients: "Recipients"
-			}
-		}
+			},
+		},
+	},
+	GeneralErrors: {
+		NotAllEmailsSent: "Not all emails could be sent"
 	}
 }
