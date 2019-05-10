@@ -13,7 +13,7 @@ SimpleMailer uses Node, Express, React, React Router, MongoDB, Mongoose, DraftJS
 * Easy-to-use, simple email interface
 * WYSIWYG (What You See is What You Get) Email Editor
 * Routes for adding and removing subscribers for integration with external sites
-* Sent Mailer History Viewer
+* Mailer History Viewer
 
 
 # Installation
