@@ -1,15 +1,11 @@
-import React, { Component, Fragment } from 'react';
-import { Container, Segment, Dimmer, Loader, Table, Icon, Button} from 'semantic-ui-react';
+import React, { Component, Fragment, createRef } from 'react';
+import { Segment, Dimmer, Loader, Table, Icon, Button } from 'semantic-ui-react';
 import MailerHistoryViewer from './MailerHistoryViewer';
-import openSocket from 'socket.io-client';
-
-const hostname = require('../../config/hostname.js');
-const socket = openSocket(hostname.opensocket);
 
 const UIStrings = require('../../config/UIStrings');
-const ReconnectionTimer = require('../../helpers/ReconnectionTimer')
 
 export default class MailerHistory extends Component {
+
 	
 	render() {
 		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResults, mailerHistoryResultsLoaded } = this.props
@@ -31,28 +27,51 @@ export default class MailerHistory extends Component {
 }
 
 class MailerHistoryTable extends Component {
+	state = {
+		activeId: -1
+	}
+
+	contextRef = createRef()
+
+	handleRowHover = (id) => {
+		console.log("ENTER")
+		console.log(id)
+		this.setState({
+			activeId: id
+		})
+	}
+
+	handleRowHoverLeave = () => {
+		this.setState({
+			activeId: -1
+		})
+	}
+
 	render() {
+		const { activeId } = this.state
 		const { mailerHistory, mailerHistoryResults } = this.props
 		return(
-			<Table celled>
-				<Table.Header>
-					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Subject}</Table.HeaderCell>
-					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendDate}</Table.HeaderCell>
-					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Recipients}</Table.HeaderCell>
-					<Table.HeaderCell />
-				</Table.Header>
+			<Table striped celled>
+					<Table.Header>
+						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Subject}</Table.HeaderCell>
+						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendDate}</Table.HeaderCell>
+						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Recipients}</Table.HeaderCell>
+						<Table.HeaderCell />
+					</Table.Header>
 				{ 
 					mailerHistory.map((item) => {
 						var results = []
 						//console.log( "mailerRESULT")
 						//console.log(item.mailerResults)
+						const filterFunc = (historyResult) => historyResult._id === item.mailerResults[i]
 						for (var i = 0; i < item.mailerResults.length; i++) {
-							results = results.concat(mailerHistoryResults.filter((historyResult) => {
-								return historyResult._id === item.mailerResults[i]
-							}))
+							results = results.concat(mailerHistoryResults.filter(filterFunc))
 						}
 						return (
-							<MailerHistoryTableRowItem item={item} key={item} mailerResults={results} />
+							<MailerHistoryTableRowItem item={item} key={item} 
+							handleHover={this.handleRowHover}
+							handleHoverLeave={this.handleRowHoverLeave}
+							active={item._id === activeId } mailerResults={results} />
 						)
 					})
 				}
@@ -64,20 +83,24 @@ class MailerHistoryTable extends Component {
 
 class MailerHistoryTableRowItem extends Component {
 	render() {
-		const { item, mailerResults } = this.props
+		const { item, mailerResults, active } = this.props
 
+		/*
 		var errors = 0
 		mailerResults.map(result => {
 			if (result.error != "false")
 				++errors
 		})
+		*/
+
+		const errors = mailerResults.filter((result) => { return result.error !== "false" }).length
 
 		const recipientCount = item.mailerResults.length
 
 
 		return(
 			<Fragment>
-				<Table.Row>
+				<Table.Row active={active} onMouseEnter={() => this.props.handleHover(item._id)} onMouseLeave={this.props.handleHoverLeave}>
 					<Table.Cell>{item.subject}</Table.Cell>
 					<Table.Cell>{item.sent_on}</Table.Cell>
 					<Table.Cell error={errors > 0}>
@@ -90,7 +113,7 @@ class MailerHistoryTableRowItem extends Component {
 					</Table.Cell>
 					<Table.Cell>
 						<MailerHistoryViewer 
-						trigger={<Button>{UIStrings.MailerHistory.ViewEntryButtonText}</Button>}
+						trigger={<Button color='blue' >{UIStrings.MailerHistory.ViewEntryButtonText}</Button>}
 						mailer={item}
 						mailerResults={mailerResults}
 						/>
