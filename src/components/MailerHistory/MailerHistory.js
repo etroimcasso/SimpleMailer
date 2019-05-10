@@ -1,17 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Segment, Dimmer, Loader, Table, Icon } from 'semantic-ui-react';
+import { Container, Segment, Dimmer, Loader, Table, Icon, Button} from 'semantic-ui-react';
+import MailerHistoryViewer from './MailerHistoryViewer';
 import openSocket from 'socket.io-client';
 
 const hostname = require('../../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 
-
 const UIStrings = require('../../config/UIStrings');
 const ReconnectionTimer = require('../../helpers/ReconnectionTimer')
-const HtmlToReactParser = require('html-to-react').Parser;
-const htmlToReactParser = new HtmlToReactParser();
-
-
 
 export default class MailerHistory extends Component {
 	
@@ -43,6 +39,7 @@ class MailerHistoryTable extends Component {
 					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Subject}</Table.HeaderCell>
 					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.SendDate}</Table.HeaderCell>
 					<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Recipients}</Table.HeaderCell>
+					<Table.HeaderCell />
 				</Table.Header>
 				{ 
 					mailerHistory.map((item) => {
@@ -79,21 +76,30 @@ class MailerHistoryTableRowItem extends Component {
 
 
 		return(
-			<Table.Row>
-				<Table.Cell>{item.subject}</Table.Cell>
-				<Table.Cell>{item.sent_on}</Table.Cell>
-				<Table.Cell error={errors > 0}>
-						<Fragment>
-							{ (errors > 0) &&
-								<Icon name='attention' />
-							}
-							<span>{(errors === 0) ? recipientCount:`${recipientCount - errors}/${recipientCount}`}</span>
-						</Fragment>
-				</Table.Cell>
-			</Table.Row>
+			<Fragment>
+				<Table.Row>
+					<Table.Cell>{item.subject}</Table.Cell>
+					<Table.Cell>{item.sent_on}</Table.Cell>
+					<Table.Cell error={errors > 0}>
+							<Fragment>
+								{ (errors > 0) &&
+									<Icon name='attention' />
+								}
+								<span>{(errors === 0) ? recipientCount:`${recipientCount - errors}/${recipientCount}`}</span>
+							</Fragment>
+					</Table.Cell>
+					<Table.Cell>
+						<MailerHistoryViewer 
+						trigger={<Button>{UIStrings.MailerHistory.ViewEntryButtonText}</Button>}
+						mailer={item}
+						mailerResults={mailerResults}
+						/>
+					</Table.Cell>
+				</Table.Row>
+			</Fragment>
 
 		)
 	}
 }
 
-//<Table.Cell>{ htmlToReactParser.parse(item.bodyHTML) }</Table.Cell>
+//<Table.Cell></Table.Cell>

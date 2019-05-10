@@ -34,6 +34,7 @@ module.exports = {
 	MailerHistory: {
 		NoHistory: "There is no mailer history",
 		Loading: null,  //"Loading Mailer History",
+		ViewEntryButtonText: 'View',
 		Table: {
 			Header: {
 				Subject: "Subject",

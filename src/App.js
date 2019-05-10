@@ -164,6 +164,7 @@ export default class App extends Component {
       this.setState({
         mailerHistory: this.state.mailerHistory.concat(JSON.parse(mailer))
       })
+      this.getAllMailerResults() // This isn't needed if MailerHistory requests each item from the server when it's needed
     })
     
   }
