@@ -4,17 +4,11 @@ import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
-import openSocket from 'socket.io-client';
 import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
 import SubjectInput from './bits/SubjectInput';
-import TopBar from './TopBar';
-
-
-const hostname = require('../config/hostname.js');
-const socket = openSocket(hostname.opensocket);
 
 const UIStrings = require('../config/UIStrings');
 
@@ -75,8 +69,7 @@ export default class MailerEditor extends Component {
 
 	render() {
 		const { editorState, subject } = this.state
-		const { mailerBeingSent, 
-				mailerResults, 
+		const {  mailerResults, 
 				mailerProgressModalOpen,
 				subscribersList,
 				subscribersLoaded,
@@ -95,7 +88,6 @@ export default class MailerEditor extends Component {
 			<Container style={{height: '100%'}}>
 				<MailingProgressModal 
 				mailerResults={mailerResults} 
-				mailerBeingSent={mailerBeingSent}
 				totalSubscribers={subscribersList.length}
 				open={mailerProgressModalOpen}
 				handleConfirmClick={this.closeModalAndConfirmMailerSend}

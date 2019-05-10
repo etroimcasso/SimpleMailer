@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Icon, List, Modal, Item, Header, Transition } from 'semantic-ui-react';
+import { Button, Icon, Modal } from 'semantic-ui-react';
 
 import MailingProgressIndicator from './MailingProgressIndicator';
 import MailerResultsList from './MailerResultsList';
@@ -9,7 +9,7 @@ const UIStrings = require('../../config/UIStrings')
 export default class MailingProgressModal extends Component {
 
 	render() {
-		const {mailerResults, mailerBeingSent, totalSubscribers, open, handleConfirmClick, errors  } = this.props
+		const {mailerResults, totalSubscribers, open, handleConfirmClick, errors  } = this.props
 		const emailsSent = mailerResults.length
 		const allMailSent = totalSubscribers <= emailsSent
 
@@ -36,7 +36,7 @@ export default class MailingProgressModal extends Component {
 					<MailerResultsList items={mailerResults} />
 				</Modal.Content>
 				<Modal.Actions>
-					<Button inverted disabled={!allMailSent} onClick={this.props.handleConfirmClick} color={(allMailSent) ? ((anyError) ? "red" : "green"): null}>
+					<Button inverted disabled={!allMailSent} onClick={handleConfirmClick} color={(allMailSent) ? ((anyError) ? "red" : "green"): null}>
 						{(allMailSent) ? ((anyError) ? UIStrings.MailerModal.OKButtonFailureText(errors, totalSubscribers) : UIStrings.MailerModal.OKButtonText) : UIStrings.MailerModal.OKButtonWaitText }
 					</Button>
 

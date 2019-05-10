@@ -2,10 +2,7 @@
 import React, { Component } from 'react';
 import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
-import openSocket from 'socket.io-client';
 
-const hostname = require('../config/hostname.js');
-const socket = openSocket(hostname.opensocket);
 const UIStrings = require('../config/UIStrings')
 
 const styles = {
@@ -20,6 +17,10 @@ const styles = {
 	redText: {
 		color: "#ff0000"
 	},
+	loadingIconPadding: {
+		paddingLeft: '5px',
+		paddingTop: '3px'
+	}
 }
 
 
@@ -45,7 +46,7 @@ export default class TopBar extends Component {
 	}
 
 	render() {
-		const { connection, mailerHistoryCount } = this.props
+		const { connection, mailerHistoryCount, historyLoaded } = this.props
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -69,9 +70,16 @@ export default class TopBar extends Component {
 				</Menu.Item>
 				<Menu.Item name="history" as={NavLink} to="/history" exact>
 					{UIStrings.TopBar.MailingHistoryText}
-					<Label>
-						{mailerHistoryCount}
-					</Label>
+					{ historyLoaded &&
+						<Label>
+							{(historyLoaded) ? mailerHistoryCount : (<Icon name="spinner" loading />)}
+						</Label>
+					}
+					{!historyLoaded &&
+						<div style={styles.loadingIconPadding}>
+							<Icon name="spinner" loading />
+						</div>
+					}
 				</Menu.Item>
 			</Menu>
 		)

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Route, Redirect, Link } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
 import openSocket from 'socket.io-client';
 import MailerEditor from './components/MailerEditor';
-import ConnectionWrapper from './components/ConnectionWrapper'
 import MailerHistory from './components/MailerHistory/MailerHistory'
 import TopBar from './components/TopBar'
 import { convertToRaw } from 'draft-js';
@@ -362,7 +361,7 @@ export default class App extends Component {
 
   	return (
   			<div className="App">
-          <TopBar connection={connection} mailerHistoryCount={mailerHistory.length}/>
+          <TopBar connection={connection} mailerHistoryCount={mailerHistory.length} historyLoaded={mailerHistoryLoaded} />
   				<Route exact path="/" render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditorProps, renderProps.connection)}/>} />
           <Route exact path="/history" render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistoryProps, renderProps.connection)} />} />
   				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />

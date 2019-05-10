@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
-import { Segment, Modal } from 'semantic-ui-react';
-import SubscribersDisplay from '../SubscribersDisplay';
+import React, { Component } from 'react';
+import { Segment, Modal, Header } from 'semantic-ui-react';
+import SubscribersList from '../bits/SubscribersList';
 
 const UIStrings = require('../../config/UIStrings');
 const HtmlToReactParser = require('html-to-react').Parser;
@@ -8,12 +8,13 @@ const htmlToReactParser = new HtmlToReactParser();
 
 const convertMailerResultsToSubscribersList = (mailerResults) => {
 	var resultObject = []
-	for (var i = 0; i < mailerResults.length; i++) {
-
+	mailerResults.map((item) => {
 		resultObject = resultObject.concat({
-			email: mailerResults[i].recipient
+			email: item.recipient
 		})
-	}
+		return 0
+	})
+
 	return resultObject
 }
 
@@ -30,10 +31,12 @@ export default class MailerHistoryViewer extends Component {
 			<Modal trigger={trigger}>
 				<Modal.Header>{mailer.subject}</Modal.Header>
 				<Segment.Group>
-					<Segment>
-						<SubscribersDisplay subscribers={subscribersList} />
+					<Segment basic>
+						<Header as="h3">{UIStrings.SubscribersNoun}</Header>
+						<SubscribersList subscribers={subscribersList} />
 					</Segment>
 					<Segment>
+						<Header as="h3">{UIStrings.ContentNoun}</Header>
 						{ htmlToReactParser.parse(mailer.bodyHTML) }
 					</Segment>
 				</Segment.Group>
