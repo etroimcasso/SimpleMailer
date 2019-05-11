@@ -45,6 +45,7 @@ class App extends Component {
     subscriberInfoMessage: "",
     subscriberError: false,
     mailerBeingSent: false,
+    connection: false,
     subscribersLoaded: false,
     subscribersList: [],
     reloadSubscribersPending: false,
@@ -65,7 +66,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.props.dispatch('CONNECTION_ENABLE')
     socket.on('connect', () => {
       if (this.state.reloadSubscribersPending) {
         this.setState({
@@ -88,18 +88,18 @@ class App extends Component {
         })
         this.getAllMailerResults()
       }
-      this.enableConnection()
+      //this.props.dispatch('CONNECTION_ENABLE')
       this.setState({
-        //connection: true,
+        connection: true,
         reloadSubscribersPending: false,
         reloadMailerHistoryPending: false
       })
     })
 
     socket.on('disconnect', () => {
-      this.disableConnection()
+      //this.props.dispatch('CONNECTION_DISABLE')
       this.setState({
-       // connection: false,
+        connection: false,
         reloadSubscribersPending: true,
         reloadMailerHistoryPending: true,
         reloadMailerHistoryResultsPending: true
@@ -153,7 +153,7 @@ class App extends Component {
       })
     })
 
-    socket.on('noMailerResultss', () => {
+    socket.on('noMailerResults', () => {
       this.setState({
         mailerHistoryResultsLoaded: true
       })
@@ -332,9 +332,10 @@ class App extends Component {
       reloadMailerHistoryPending,
       mailerHistoryResults,
       mailerHistoryResultsLoaded,
+      connection
     } = this.state
 
-    const { connection } = this.props
+    //const { connection } = this.props
 
     const renderProps = {
       connection: {

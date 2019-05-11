@@ -17,8 +17,7 @@ export default class MailerHistory extends Component {
 				</Dimmer>
 				<Container>
 					{	mailerHistory.length > 0 &&
-	
-							<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
+						<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
 					} 
 					{ mailerHistory.length === 0 &&
 						<span>{UIStrings.MailerHistory.NoHistory}</span> 

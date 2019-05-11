@@ -31,7 +31,7 @@ module.exports = {
 		Success: "Sent mailer to " ,
 	},
 	MailerHistory: {
-		NoHistory: "There is no mailer history",
+		NoHistory: "There are no previous mailers",
 		Loading: null,  //"Loading Mailer History",
 		ViewEntryButtonText: 'View',
 		Table: {
