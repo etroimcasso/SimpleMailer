@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Table, Icon, Button, Popup } from 'semantic-ui-react';
 import MailerHistoryViewer from './MailerHistoryViewer';
 
-const convertUTCTimeToLocalTime = require('../../helpers/convertUTCTimeToLocalTime')
+const convertUTCTimeToLocalTime = require('../../helpers/ConvertUTCTimeToLocalTime')
 const UIStrings = require('../../config/UIStrings');
 
 

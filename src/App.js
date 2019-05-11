@@ -8,8 +8,7 @@ import MailerHistory from './components/MailerHistory/MailerHistory'
 import TopBar from './components/TopBar'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-
-
+import { connect } from 'react-redux';
 
 const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
@@ -40,12 +39,11 @@ const getAllMailerResults = (callback) => {
 }
 
 
-export default class App extends Component {
+class App extends Component {
   state = {
     subscriberInfoModalOpen: false,
     subscriberInfoMessage: "",
     subscriberError: false,
-    connection: false,
     mailerBeingSent: false,
     subscribersLoaded: false,
     subscribersList: [],
@@ -67,6 +65,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    this.props.dispatch('CONNECTION_ENABLE')
     socket.on('connect', () => {
       if (this.state.reloadSubscribersPending) {
         this.setState({
@@ -89,16 +88,18 @@ export default class App extends Component {
         })
         this.getAllMailerResults()
       }
+      this.enableConnection()
       this.setState({
-        connection: true,
+        //connection: true,
         reloadSubscribersPending: false,
         reloadMailerHistoryPending: false
       })
     })
 
     socket.on('disconnect', () => {
+      this.disableConnection()
       this.setState({
-        connection: false,
+       // connection: false,
         reloadSubscribersPending: true,
         reloadMailerHistoryPending: true,
         reloadMailerHistoryResultsPending: true
@@ -320,7 +321,6 @@ export default class App extends Component {
 
 	render() {
     const { 
-      connection,
       mailerBeingSent,
       subscribersLoaded,
       subscribersList,
@@ -333,6 +333,8 @@ export default class App extends Component {
       mailerHistoryResults,
       mailerHistoryResultsLoaded,
     } = this.state
+
+    const { connection } = this.props
 
     const renderProps = {
       connection: {
@@ -380,3 +382,12 @@ const redirectAwayFromMailer = () => {
     <Redirect to='/subscribeResults' />
   )
 }
+
+const mapStateToProps = (state) => {
+  return {
+    connection: state.connection
+  }
+}
+
+
+export default connect(mapStateToProps)(App);
