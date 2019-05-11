@@ -75,7 +75,7 @@ class MailerHistoryTableRowItem extends Component {
 
 		const recipientCount = item.mailerResults.length
 		const formatDate = 'MMMM Do YYYY'
-		const formatTime = 'h:mm:ss a'
+		const formatTime = 'h:mm:ss A'
 
 		const timeFormatString = `${formatDate}[, ]${formatTime}`
 
