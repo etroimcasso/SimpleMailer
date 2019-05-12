@@ -145,7 +145,7 @@ class App extends Component {
 
     //Removes subscriber from list
     socket.on('subscriberUnsubscribed', (email) =>{
-      console.log(`REMOVE ${email}`)
+      //console.log(`REMOVE ${email}`)
       this.setState({
         subscribersList: this.state.subscribersList.filter( (item) => {
           return item.email !== email
@@ -172,7 +172,7 @@ class App extends Component {
     })
 
     socket.on('mailerAddedToHistory', mailer => {
-      console.log("ADDED TO HISTORY")
+      //console.log("ADDED TO HISTORY")
       this.setState({
         mailerHistory: this.state.mailerHistory.concat(JSON.parse(mailer))
       })
@@ -328,8 +328,8 @@ class App extends Component {
 
   handleSubscriberDeleteButtonClick = (subscriberObject) => {
 
-    console.log("Subscriber DELETE button click")
-    console.log(subscriberObject)
+    //console.log("Subscriber DELETE button click")
+    //console.log(subscriberObject)
     removeSubscriber(subscriberObject, (error, subscriber) => {
       // Don't need to do anything here since the subscriber list updates automatically whenever a subscriber is added or removed
     })

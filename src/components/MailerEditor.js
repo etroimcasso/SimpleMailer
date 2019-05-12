@@ -4,7 +4,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
-import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
+import { Container, Segment, Dimmer, Loader, Icon, Input, Button } from 'semantic-ui-react';
 import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
@@ -95,14 +95,12 @@ export default class MailerEditor extends Component {
 				/>
 				<Segment.Group>
 					<Segment>
-						<FlexView>
-							<FlexView column grow>
-								<SubjectInput fluid value={subject} onChange={this.handleInputChange} />
-							</FlexView>
-							<FlexView column style={{paddingTop: '1px' }}>
-								<SendEmailButton style={styles.fullWidth} onClick={() => handleSendButtonClick(editorState, subject)} disabled={!enableButton} />
-							</FlexView>
-						</FlexView>
+						<Input action fluid placeholder="Subject" action={{
+							children: UIStrings.SendEmailVerb,
+							onClick:() => handleSendButtonClick(editorState, subject),
+							disabled: !enableButton
+						}} 
+							name="subject" value={subject} onChange={(event) => this.handleInputChange(event.target.name, event.target.value)}  />		
 					</Segment>
 					{ false &&
 					<Segment fluid style={styles.fullWidth}>
