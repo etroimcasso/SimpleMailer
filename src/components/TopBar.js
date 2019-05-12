@@ -51,6 +51,7 @@ export default class TopBar extends Component {
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
 
+
 		return (
 			<Menu inverted icon borderless fixed="top" size="large">
 				<Menu.Item header>
@@ -72,10 +73,10 @@ export default class TopBar extends Component {
 					{UIStrings.TopBar.MailingHistoryText}
 					{ historyLoaded &&
 						<Label circular>
-							{(historyLoaded) ? mailerHistoryCount : (<Icon name="spinner" loading />)}
+							{mailerHistoryCount}
 						</Label>
 					}
-					{!historyLoaded &&
+					{!historyLoaded && 
 						<div style={styles.loadingIconPadding}>
 							<Icon name="spinner" loading />
 						</div>
@@ -85,10 +86,10 @@ export default class TopBar extends Component {
 					{UIStrings.TopBar.SubscribersText}
 					{ subscribersLoaded &&
 						<Label circular>
-							{(subscribersLoaded) ? subscriberCount : (<Icon name="spinner" loading />)}
+							{subscriberCount}
 						</Label>
 					}
-					{ !subscribersLoaded &&
+					{ !subscribersLoaded && 
 						<div style={styles.loadingIconPadding}>
 							<Icon name="spinner" loading />
 						</div>

@@ -13,14 +13,14 @@ export default class SubscriptionPanel extends Component {
 		return(
 			<Segment basic>
 				<Dimmer inverted active={!subscribersLoaded}>
-					<Loader active={!subscribersLoaded} inline>Loading Subscribers</Loader>
+					<Loader active={!subscribersLoaded} inline></Loader>
 				</Dimmer>
 				<Container>
 					{	subscribersList.length > 0 &&
 						<SubscriptionsPanelTable subscribersList={subscribersList} subscribersLoaded={subscribersLoaded} handleSubscriberDeleteButtonClick={handleSubscriberDeleteButtonClick}/>
 					} 
 					{ (subscribersList.length === 0 && subscribersLoaded) &&
-						<span>No Subscribers</span> 
+						<span>{UIStrings.NoSubscribers}</span> 
 					}		
 				</Container>
 			</Segment>

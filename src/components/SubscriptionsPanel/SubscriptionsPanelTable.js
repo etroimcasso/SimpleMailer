@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Table, Icon, Button, Popup } from 'semantic-ui-react';
+import { Table, Icon, Button, Popup, Divider } from 'semantic-ui-react';
 
 const convertUTCTimeToLocalTime = require('../../helpers/ConvertUTCTimeToLocalTime')
 const UIStrings = require('../../config/UIStrings');
@@ -98,7 +98,14 @@ class SubscriptionPanelTableRowItem extends Component {
 						on='click'
 						header={UIStrings.SubscriptionsPanel.ConfirmDeleteMessage}
 						onOpen={this.handleOpen} onClose={this.handleClose}
-						content={<Button color='red' onClick={() => this.handleDeleteButtonClick({email: item.email, id: item._id})}>{UIStrings.SubscriptionsPanel.ConfirmDeleteButtonText}</Button>}
+						content={
+							<Fragment>
+								<Divider clearing />
+								<Button color='red' onClick={() => this.handleDeleteButtonClick({email: item.email, id: item._id})}>
+									{UIStrings.SubscriptionsPanel.ConfirmDeleteButtonText}
+								</Button>
+							</Fragment>
+						}
 						/>
 					</Table.Cell>
 				</Table.Row>
