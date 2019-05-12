@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { Container } from 'semantic-ui-react';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
 import openSocket from 'socket.io-client';
 import MailerEditor from './components/MailerEditor';
 import MailerHistory from './components/MailerHistory/MailerHistory'
+import SubscriptionsPanel from './components/SubscriptionsPanel/SubscriptionsPanel'
 import TopBar from './components/TopBar'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -38,6 +40,16 @@ const getAllMailerResults = (callback) => {
   socket.emit('getAllMailerResults')
 }
 
+//Subscriber is an object of email: and id:
+const removeSubscriber = (subscriber, callback) => {
+  socket.on('subscriberRemoved', (error, subscriber) => callback(error, subscriber))
+  socket.emit('removeSubscriber', subscriber.email, subscriber.id)
+}
+
+const addSubscriber = (email) => {
+    //socket.on('subscriberAdded', (error, subscriber) => callback(error, subscriber))
+    socket.emit('addSubscriber', email)
+} 
 
 class App extends Component {
   state = {
@@ -237,7 +249,7 @@ class App extends Component {
         }
     })
     */
-    socket.emit('addSubscriber', email)
+    addSubscriber(email)
     return redirectAwayFromMailer()
   } 
 
@@ -256,8 +268,12 @@ class App extends Component {
       } 
     })
     */
-    socket.emit('removeSubscriber', email, match.params.id )
+    removeSubscriber({email: email, id: match.params.id}, (error, subscriber) => {})
+
+
+    
     return redirectAwayFromMailer()
+
   }
 
   
@@ -307,11 +323,22 @@ class App extends Component {
 
     }
     
-    sendMailer(message, (error, subscriberEmail) => {
-
-    })
-
+    sendMailer(message, (error, subscriberEmail) => {})
   }
+
+  handleSubscriberDeleteButtonClick = (subscriberObject) => {
+
+    console.log("Subscriber DELETE button click")
+    console.log(subscriberObject)
+    removeSubscriber(subscriberObject, (error, subscriber) => {
+      // Don't need to do anything here since the subscriber list updates automatically whenever a subscriber is added or removed
+    })
+  }
+
+  handleAddSubscriberButtonClick = (email) => {
+    addSubscriber(email)
+  }
+
   closeModalAndConfirmMailerSend = () => {
     this.setState({
       mailerProgressModalOpen: false,
@@ -341,7 +368,7 @@ class App extends Component {
       connection: {
         connection: connection,
       },
-      mailerEditorProps: {
+      mailerEditor: {
         mailerBeingSent: mailerBeingSent,
         subscribersLoaded: subscribersLoaded,
         subscribersList: subscribersList,
@@ -351,12 +378,18 @@ class App extends Component {
         handleModalClose: this.closeModalAndConfirmMailerSend,
         handleSendButtonClick: this.handleSendButtonClick,
       },
-      mailerHistoryProps: {
+      mailerHistory: {
         mailerHistory: mailerHistory,
         mailerHistoryLoaded: mailerHistoryLoaded,
         mailerHistoryResults: mailerHistoryResults,
         mailerHistoryResultsLoaded: mailerHistoryResultsLoaded,
         reloadMailerHistoryPending: reloadMailerHistoryPending,
+      },
+      SubscriptionsPanel: {
+        subscribersList: subscribersList,
+        subscribersLoaded: subscribersLoaded,
+        handleSubscriberDeleteButtonClick: this.handleSubscriberDeleteButtonClick,
+        onSubscriberAdd: this.handleAddSubscriberButtonClick
       }
     }
 
@@ -364,12 +397,15 @@ class App extends Component {
 
   	return (
   			<div className="App">
-          <TopBar connection={connection} mailerHistoryCount={mailerHistory.length} historyLoaded={mailerHistoryLoaded} />
-  				<Route exact path="/" render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditorProps, renderProps.connection)}/>} />
-          <Route exact path="/history" render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistoryProps, renderProps.connection)} />} />
-  				<Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
-          <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
-          <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
+          <TopBar connection={connection} mailerHistoryCount={mailerHistory.length} historyLoaded={mailerHistoryLoaded} subscriberCount={subscribersList.length} subscribersLoaded={subscribersLoaded}/>
+  				<Container style={{height: '100%'}}>
+            <Route exact path="/" render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditor, renderProps.connection)}/>} />
+            <Route exact path="/history" render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistory, renderProps.connection)} />} />
+  				  <Route exact path="/subscriptions" render={props => <SubscriptionsPanel {...props} {...Object.assign(renderProps.SubscriptionsPanel, renderProps.connection)} />} />
+            <Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
+            <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
+            <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
+          </Container>
     		</div>
   		)
   }

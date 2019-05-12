@@ -9,6 +9,17 @@ module.exports = {
 	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
 	NoSubscribers: "There are no subscribers",
 	SendEmailVerb: "Send",
+	SubscriptionsPanel: {
+		Table: {
+			Header: {
+				Email: "Email",
+				JoinDate: "Join Date",
+			},
+		},
+		ConfirmDeleteMessage: "Are you sure?",
+		DeleteButtonText: "Unsubscribe",
+		ConfirmDeleteButtonText: "Confirm Unsubscribe"
+	},
 	TopBar: {
 		MenuHeaderText: "SimpleMailer",
 		ConnectionStatusPopupHeaderText: 'Connection Status',
@@ -16,7 +27,8 @@ module.exports = {
 		ConnectionStatusConnected: 'Connected' ,
 		ConnectionStatusDisconnected: 'Disconnected',
 		MailingHistoryText: "History",
-		NewMailerText: "New Mailer"
+		NewMailerText: "New Mailer",
+		SubscribersText: "Subscribers"
 	},
 	MailerModal: {
 		InProgress: 'Sending Mailer',

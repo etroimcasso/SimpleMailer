@@ -46,7 +46,7 @@ export default class TopBar extends Component {
 	}
 
 	render() {
-		const { connection, mailerHistoryCount, historyLoaded } = this.props
+		const { connection, mailerHistoryCount, historyLoaded, subscriberCount, subscribersLoaded } = this.props
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -76,6 +76,19 @@ export default class TopBar extends Component {
 						</Label>
 					}
 					{!historyLoaded &&
+						<div style={styles.loadingIconPadding}>
+							<Icon name="spinner" loading />
+						</div>
+					}
+				</Menu.Item>
+				<Menu.Item name="subscribers" as={NavLink} to="/subscriptions">
+					{UIStrings.TopBar.SubscribersText}
+					{ subscribersLoaded &&
+						<Label circular>
+							{(subscribersLoaded) ? subscriberCount : (<Icon name="spinner" loading />)}
+						</Label>
+					}
+					{ !subscribersLoaded &&
 						<div style={styles.loadingIconPadding}>
 							<Icon name="spinner" loading />
 						</div>

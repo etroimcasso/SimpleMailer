@@ -19,7 +19,7 @@ export default class MailerHistory extends Component {
 					{	mailerHistory.length > 0 &&
 						<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
 					} 
-					{ mailerHistory.length === 0 &&
+					{ (mailerHistory.length === 0 && mailerHistoryLoaded) &&
 						<span>{UIStrings.MailerHistory.NoHistory}</span> 
 					}		
 				</Container>

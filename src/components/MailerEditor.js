@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
@@ -85,7 +85,7 @@ export default class MailerEditor extends Component {
 
 
 		return(
-			<Container style={{height: '100%'}}>
+			<Fragment>
 				<MailingProgressModal 
 				mailerResults={mailerResults} 
 				totalSubscribers={subscribersList.length}
@@ -104,12 +104,15 @@ export default class MailerEditor extends Component {
 							</FlexView>
 						</FlexView>
 					</Segment>
+					{ false &&
 					<Segment fluid style={styles.fullWidth}>
 						<Dimmer inverted active={!subscribersLoaded}>
 							<Loader active={!subscribersLoaded} inline>{UIStrings.LoadingSubscribers}</Loader>
 						</Dimmer>
-						<SubscribersDisplay subscribers={subscribersList} loaded={subscribersLoaded} />
+
+						 	<SubscribersDisplay subscribers={subscribersList} loaded={subscribersLoaded} /> 
 					</Segment>
+					}
 					<Segment style={styles.fullHeight}>
 						<Editor
   						editorState={editorState}
@@ -120,7 +123,7 @@ export default class MailerEditor extends Component {
 						/>
 					</Segment>
 				</Segment.Group>
-			</Container>
+			</Fragment>
 		)
 	}
 }
