@@ -89,7 +89,7 @@ class MailerHistoryTableRowItem extends Component {
 								{ (errors > 0) &&
 									<Popup 
 									content={UIStrings.GeneralErrors.NotAllEmailsSent} 
-									trigger={<Icon name='attention' />}
+									trigger={<Icon name='exclamation triangle' />}
 									position='top center' />
 								}
 								<span>{(errors === 0) ? recipientCount:`${recipientCount - errors}/${recipientCount}`}</span>

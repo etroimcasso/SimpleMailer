@@ -5,10 +5,8 @@ import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
 import { Container, Segment, Dimmer, Loader, Icon, Input, Button } from 'semantic-ui-react';
-import SendEmailButton from './bits/SendEmailButton';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
-import SubjectInput from './bits/SubjectInput';
 
 const UIStrings = require('../config/UIStrings');
 
@@ -95,7 +93,8 @@ export default class MailerEditor extends Component {
 				/>
 				<Segment.Group>
 					<Segment>
-						<Input action fluid placeholder="Subject" action={{
+						<Input action fluid placeholder={UIStrings.SubjectNoun} icon='quote right' iconPosition='left'
+						action={{
 							children: UIStrings.SendEmailVerb,
 							onClick:() => handleSendButtonClick(editorState, subject),
 							disabled: !enableButton

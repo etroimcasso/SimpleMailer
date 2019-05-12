@@ -1,6 +1,7 @@
 module.exports = {
 	LoadingSubscribers: null, // "Loading Subscriber List",
 	SubscribersNoun: "Subscribers",
+	SubjectNoun: "Subject",
 	ContentNoun: "Content",
 	UnsubscribeError: (email) => `${email} is not subscribed to our mailing list`,
 	UnSubscribeSuccess: (email) => `${email} has been removed from our mailing list`,
