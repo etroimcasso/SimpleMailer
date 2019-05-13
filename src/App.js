@@ -10,7 +10,6 @@ import SubscriptionsPanel from './components/SubscriptionsPanel/SubscriptionsPan
 import TopBar from './components/TopBar'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { connect } from 'react-redux';
 
 const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
@@ -420,11 +419,4 @@ const redirectAwayFromMailer = () => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    connection: state.connection
-  }
-}
-
-
-export default connect(mapStateToProps)(App);
+export default App;
