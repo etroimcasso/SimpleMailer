@@ -2,11 +2,18 @@ import React, { Component } from 'react';
 import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
 import SubscriptionsPanelTable from './SubscriptionsPanelTable';
 import AddSubscriberForm from './AddSubscriberForm';
+
 const UIStrings = require('../../config/UIStrings');
+const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.Subscriptions);
+
 
 
 
 export default class SubscriptionPanel extends Component {
+
+	componentWillMount() {
+		document.title = pageTitle
+	}
 
 	
 	render() {

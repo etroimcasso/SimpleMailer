@@ -3,8 +3,14 @@ import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
 import MailerHistoryTable from './MailerHistoryTable'
 
 const UIStrings = require('../../config/UIStrings');
+const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.History);
+
 
 export default class MailerHistory extends Component {
+
+	componentWillMount() {
+		document.title = pageTitle
+	}
 
 	
 	render() {

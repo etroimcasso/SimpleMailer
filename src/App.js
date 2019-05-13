@@ -16,6 +16,7 @@ const socket = openSocket(hostname.opensocket);
 const UIStrings = require('./config/UIStrings');
 const ReconnectionTimer = require('./helpers/ReconnectionTimer');
 
+
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
 
@@ -74,6 +75,8 @@ class App extends Component {
     this.getAllSubscribers()
     this.getAllMailers()
     this.getAllMailerResults()
+
+    document.title = UIStrings.AppTitle
   }
 
   componentDidMount() {
@@ -389,18 +392,32 @@ class App extends Component {
         subscribersLoaded: subscribersLoaded,
         handleSubscriberDeleteButtonClick: this.handleSubscriberDeleteButtonClick,
         onSubscriberAddClick: this.handleAddSubscriberButtonClick
+      },
+      TopBar: {
+        mailerHistoryCount: mailerHistory.length,
+        historyLoaded: mailerHistoryLoaded,
+        subscriberCount: subscribersList.length,
+        subscribersLoaded: subscribersLoaded
+
       }
+    }
+
+
+    const  protectedRoutes = {
+      root: "/",
+      history: "/history",
+      subscriptions:  "/subscriptions"
     }
 
     
 
   	return (
   			<div className="App">
-          <TopBar connection={connection} mailerHistoryCount={mailerHistory.length} historyLoaded={mailerHistoryLoaded} subscriberCount={subscribersList.length} subscribersLoaded={subscribersLoaded}/>
+          <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions]} render={props => <TopBar {...props} {...Object.assign(renderProps.connection, renderProps.TopBar)} /> } />
   				<Container style={{height: '100%'}}>
-            <Route exact path="/" render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditor, renderProps.connection)}/>} />
-            <Route exact path="/history" render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistory, renderProps.connection)} />} />
-  				  <Route exact path="/subscriptions" render={props => <SubscriptionsPanel {...props} {...Object.assign(renderProps.SubscriptionsPanel, renderProps.connection)} />} />
+            <Route exact path={protectedRoutes.root} render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditor, renderProps.connection)}/>} />
+            <Route exact path={protectedRoutes.history} render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistory, renderProps.connection)} />} />
+  				  <Route exact path={protectedRoutes.subscriptions} render={props => <SubscriptionsPanel {...props} {...Object.assign(renderProps.SubscriptionsPanel, renderProps.connection)} />} />
             <Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
             <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
             <Route path="/subscribeResults" component={this.subscriptionChangeResults} />

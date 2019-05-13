@@ -45,6 +45,7 @@ export default class TopBar extends Component {
 		*/
 	}
 
+
 	render() {
 		const { connection, mailerHistoryCount, historyLoaded, subscriberCount, subscribersLoaded } = this.props
 
@@ -64,7 +65,7 @@ export default class TopBar extends Component {
 					<span style={styles.connectionHeaderText}>{UIStrings.TopBar.ConnectionText}</span>
 				</Menu.Item>
 				<Menu.Item>
-					<span style={styles.appTitleText}>{UIStrings.TopBar.MenuHeaderText}</span>
+					<span style={styles.appTitleText}>{UIStrings.AppTitle}</span>
 				</Menu.Item>
 				<Menu.Item name="mailer" as={NavLink} to="/" exact>
 					{UIStrings.TopBar.NewMailerText}

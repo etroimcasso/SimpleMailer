@@ -8,9 +8,7 @@ import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
 
 const UIStrings = require('../config/UIStrings');
-
-
-
+const pageTitle = require('../helpers/pageTitleFormatter')(UIStrings.PageTitles.NewMailer);
 
 // Styles
 const styles = {
@@ -33,12 +31,8 @@ export default class MailerEditor extends Component {
 		subject: "",
 	}
 
-	componentWillMount = () => {
-		
-	}
-
-	componentDidMount = () => {
-
+	componentWillMount() {
+		document.title = pageTitle
 	}
 
 	

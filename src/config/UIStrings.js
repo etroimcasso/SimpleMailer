@@ -1,4 +1,10 @@
 module.exports = {
+	AppTitle: "SimpleMailer",
+	PageTitles: {
+		NewMailer: "New Mailer",
+		History: "History",
+		Subscriptions: "Subscriptions"
+	},
 	LoadingSubscribers: null, // "Loading Subscriber List",
 	SubscribersNoun: "Subscribers",
 	SubjectNoun: "Subject",
@@ -25,7 +31,6 @@ module.exports = {
 		SubscriberEmailInputPlaceholder: "Enter Email(s)",
 	},
 	TopBar: {
-		MenuHeaderText: "SimpleMailer",
 		ConnectionStatusPopupHeaderText: 'Connection Status',
 		ConnectionText: "",
 		ConnectionStatusConnected: 'Connected' ,
