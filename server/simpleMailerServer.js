@@ -182,7 +182,7 @@ io.on('connection', (client) => {
 							client.emit('sendMailerFinished')
 							console.log('MAILER SENT')
 							MailerController.addMailer(emailMessage.subject, message.messageText, message.html, mailerResults, (error, mailer) => {
-								if (error) console.error("Could not add mailer to history")
+								if (error) console.error(`Could not add mailer to history: ${error}`)
 								else {
 									console.log("mailerAddedToHistory")
 									io.emit('mailerAddedToHistory', JSON.stringify(mailer))
@@ -199,7 +199,7 @@ io.on('connection', (client) => {
 		client.emit('sendMailerFinished')
 		console.log('MAILER SENT')
 		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, mailer) => {
-			if (error) console.error("Could not add mailer to history")
+			if (error) console.error(`Could not add mailer to history: ${error}`)
 			else {
 				console.log("mailerAddedToHistory")
 				io.emit('mailerAddedToHistory', mailer)

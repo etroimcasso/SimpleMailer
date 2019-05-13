@@ -24,9 +24,9 @@ const styles = {
 
 export default class SubscribersList extends Component {
 	render() {
-		const { subscribers } = this.props
+		const { subscribers, style } = this.props
 		return(
-			<Transition.Group as={List} animation='scale' duration={200} relaxed divided style={Object.assign(styles.leftAlignedText, styles.fullWidth, styles.height)} size="small">
+			<Transition.Group as={List} animation='scale' duration={200} relaxed divided style={Object.assign(style,Object.assign(styles.leftAlignedText, styles.fullWidth, styles.autoYOverflow))} size="small">
 				{(subscribers.length > 0) ? subscribers.map((subscriber, index) => <SubscribersListItem key={index} subscriber={subscriber} />) 
 				: <span>{UIStrings.NoSubscribers}</span> }
 			</Transition.Group>

@@ -19,6 +19,13 @@ const convertMailerResultsToSubscribersList = (mailerResults) => {
 	return resultObject
 }
 
+const styles = {
+	height: {
+		height: '21vh',
+	},
+
+}
+
 export default class MailerHistoryViewer extends Component {
 
 	
@@ -37,6 +44,7 @@ export default class MailerHistoryViewer extends Component {
 			<Modal trigger={trigger} >
 				{progressIndicator('top')}
 				<Modal.Header>{mailer.subject}</Modal.Header>
+				<Modal.Content scrolling>
 				<Segment.Group>
 					<Segment basic>
 						<Header as="h3">
@@ -47,13 +55,14 @@ export default class MailerHistoryViewer extends Component {
 								</Label>
 							</span>
 						</Header>
-						<SubscribersList subscribers={subscribersList} />
+						<SubscribersList subscribers={subscribersList} style={styles.height}/>
 					</Segment>
 					<Segment>
 						<Header as="h3">{UIStrings.ContentNoun}</Header>
 						{ htmlToReactParser.parse(mailer.bodyHTML) }
 					</Segment>
 				</Segment.Group>
+				</Modal.Content>
 				{progressIndicator('bottom')}
 			</Modal>
 		)

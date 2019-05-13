@@ -44,7 +44,7 @@ export default class SubscribersDisplay extends Component {
 						}
 				</Accordion.Title>
 				<Accordion.Content active={active} style={Object.assign(styles.height, styles.autoYOverflow)}>
-					<SubscribersList subscribers={subscribers} />
+					<SubscribersList subscribers={subscribers} style={{height: '21vh'}} />
 				</Accordion.Content>
 			</Accordion>
 		)
