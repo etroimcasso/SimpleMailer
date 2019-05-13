@@ -30,8 +30,8 @@ export default class SubscriptionsPanelTable extends Component {
 			<Table striped celled>
 				<Table.Header>
 					<Table.Row>
-						<Table.HeaderCell>{UIStrings.SubscriptionsPanel.Table.Header.Email}</Table.HeaderCell>
-						<Table.HeaderCell>{UIStrings.SubscriptionsPanel.Table.Header.JoinDate}</Table.HeaderCell>
+						<Table.HeaderCell fullWidth >{UIStrings.SubscriptionsPanel.Table.Header.Email}</Table.HeaderCell>
+						<Table.HeaderCell fullWidth >{UIStrings.SubscriptionsPanel.Table.Header.JoinDate}</Table.HeaderCell>
 						<Table.HeaderCell />
 					</Table.Row>
 				</Table.Header>
@@ -77,7 +77,7 @@ class SubscriptionPanelTableRowItem extends Component {
 	}
 
 	render() {
-		const { deletePopupOpen } = this.props
+		const { deletePopupOpen } = this.state
 		const { item, active, handleSubscriberDeleteButtonClick } = this.props
 
 		const formatDate = 'MMMM Do YYYY'
@@ -88,13 +88,13 @@ class SubscriptionPanelTableRowItem extends Component {
 		return(
 			<Fragment>
 				<Table.Row active={active} onMouseEnter={() => this.props.handleHover(item._id)} onMouseLeave={this.props.handleHoverLeave}>
-					<Table.Cell>{item.email}</Table.Cell>
-					<Table.Cell>{convertUTCTimeToLocalTime(item.joined_on, timeFormatString)}</Table.Cell>
-					<Table.Cell>
+					<Table.Cell width={8}>{item.email}</Table.Cell>
+					<Table.Cell width={6}>{convertUTCTimeToLocalTime(item.joined_on, timeFormatString)}</Table.Cell>
+					<Table.Cell width={2}>
 						<Popup 
 						open={deletePopupOpen}
 						subscriber={item} 
-						trigger={<Button color='red'>{UIStrings.SubscriptionsPanel.DeleteButtonText}</Button>} 
+						trigger={<Button color='red' content={UIStrings.SubscriptionsPanel.DeleteButtonText} />}
 						on='click'
 						header={UIStrings.SubscriptionsPanel.ConfirmDeleteMessage}
 						onOpen={this.handleOpen} onClose={this.handleClose}

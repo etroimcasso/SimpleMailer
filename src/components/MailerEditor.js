@@ -1,10 +1,9 @@
 import React, { Component, Fragment } from 'react';
-
+import { Container, Segment, Dimmer, Loader, Icon, Input, Button, Message } from 'semantic-ui-react';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
-import { Container, Segment, Dimmer, Loader, Icon, Input, Button } from 'semantic-ui-react';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
 
@@ -79,7 +78,10 @@ export default class MailerEditor extends Component {
 		const errors = mailerResults.filter((item) => { return item.error }).length
 
 		const noSubscribers = subscribersList.length === 0
-		const enableButton = editorState.getCurrentContent().getPlainText().length > 0 && subject.length >= 3 && connection && !noSubscribers
+		const editorValid = editorState.getCurrentContent().getPlainText().length > 0
+		const subjectValid = subject.length >= 3
+
+		const enableButton = editorValid && subjectValid && connection && !noSubscribers
 
 
 		return(
@@ -93,9 +95,9 @@ export default class MailerEditor extends Component {
 				/>
 				<Segment.Group>
 					<Segment>
-						<Input action fluid placeholder={UIStrings.SubjectNoun} icon='quote right' iconPosition='left'
+						<Input action fluid placeholder={UIStrings.SubjectNoun} icon='quote left' iconPosition='left'
 						action={{
-							children: UIStrings.SendEmailVerb,
+							content: UIStrings.SendEmailVerb,
 							onClick:() => handleSendButtonClick(editorState, subject),
 							disabled: !enableButton
 						}} 

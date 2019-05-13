@@ -389,7 +389,7 @@ class App extends Component {
         subscribersList: subscribersList,
         subscribersLoaded: subscribersLoaded,
         handleSubscriberDeleteButtonClick: this.handleSubscriberDeleteButtonClick,
-        onSubscriberAdd: this.handleAddSubscriberButtonClick
+        onSubscriberAddClick: this.handleAddSubscriberButtonClick
       }
     }
 

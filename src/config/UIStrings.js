@@ -3,6 +3,7 @@ module.exports = {
 	SubscribersNoun: "Subscribers",
 	SubjectNoun: "Subject",
 	ContentNoun: "Content",
+	EmailNoun: "Email",
 	UnsubscribeError: (email) => `${email} is not subscribed to our mailing list`,
 	UnSubscribeSuccess: (email) => `${email} has been removed from our mailing list`,
 	SubscribeSuccess: (email) => `${email} has been added to our mailing list`,
@@ -10,6 +11,7 @@ module.exports = {
 	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
 	NoSubscribers: "There are no subscribers",
 	SendEmailVerb: "Send",
+	AddSubscriberVerb: "Add",
 	SubscriptionsPanel: {
 		Table: {
 			Header: {
@@ -19,7 +21,8 @@ module.exports = {
 		},
 		ConfirmDeleteMessage: "Are you sure?",
 		DeleteButtonText: "Unsubscribe",
-		ConfirmDeleteButtonText: "Confirm Unsubscribe"
+		ConfirmDeleteButtonText: "Confirm Unsubscribe",
+		SubscriberEmailInputPlaceholder: "Enter Email(s)",
 	},
 	TopBar: {
 		MenuHeaderText: "SimpleMailer",

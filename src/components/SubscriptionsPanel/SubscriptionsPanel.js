@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
-import SubscriptionsPanelTable from './SubscriptionsPanelTable'
-
+import SubscriptionsPanelTable from './SubscriptionsPanelTable';
+import AddSubscriberForm from './AddSubscriberForm';
 const UIStrings = require('../../config/UIStrings');
+
+
 
 export default class SubscriptionPanel extends Component {
 
 	
 	render() {
-		const { subscribersList, subscribersLoaded, handleSubscriberDeleteButtonClick, onSubscriberAdd } = this.props
+		const { subscribersList, subscribersLoaded, handleSubscriberDeleteButtonClick, onSubscriberAddClick, connection } = this.props
 
 		return(
 			<Segment basic>
 				<Dimmer inverted active={!subscribersLoaded}>
 					<Loader active={!subscribersLoaded} inline></Loader>
 				</Dimmer>
+				<AddSubscriberForm onClick={onSubscriberAddClick} connection={connection} />
 				<Container>
 					{	subscribersList.length > 0 &&
 						<SubscriptionsPanelTable subscribersList={subscribersList} subscribersLoaded={subscribersLoaded} handleSubscriberDeleteButtonClick={handleSubscriberDeleteButtonClick}/>
@@ -29,8 +32,3 @@ export default class SubscriptionPanel extends Component {
 }
 
 
-/*
-				{ false &&
-				<AddSubscriberForm onSubmit={onSubscriberAdd} />
-				}
-*/
