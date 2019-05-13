@@ -41,10 +41,10 @@ export default class MailerHistoryViewer extends Component {
 
 
 		return (
-			<Modal trigger={trigger} >
+			<Modal trigger={trigger} size="large">
 				{progressIndicator('top')}
 				<Modal.Header>{mailer.subject}</Modal.Header>
-				<Modal.Content scrolling>
+				<Modal.Content>
 				<Segment.Group>
 					<Segment basic>
 						<Header as="h3">
