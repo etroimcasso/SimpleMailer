@@ -6,6 +6,9 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import FlexView from 'react-flexview';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
+import { observer } from "mobx-react"
+import ConnectionStateStore from '../store/ConnectionStateStore'
+const ConnectionState = new ConnectionStateStore()
 
 const UIStrings = require('../config/UIStrings');
 const pageTitle = require('../helpers/pageTitleFormatter')(UIStrings.PageTitles.NewMailer);
@@ -64,8 +67,8 @@ export default class MailerEditor extends Component {
 				mailerProgressModalOpen,
 				subscribersList,
 				subscribersLoaded,
-				connection,
 				handleSendButtonClick } = this.props
+		const { connection } = ConnectionState
 
 
 

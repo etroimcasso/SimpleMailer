@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { Input } from 'semantic-ui-react';
+import { observer } from "mobx-react"
+import ConnectionStateStore from '../../store/ConnectionStateStore'
+const ConnectionState = new ConnectionStateStore()
 
 const UIStrings = require('../../config/UIStrings');
 const InputValidator = require('../../helpers/InputValidator')
@@ -43,7 +46,7 @@ const generateEmailsArray = (emailsString) => {
 	return emailsString.split(/,| /)
 }
 
-export default class AddSubscriberForm extends Component {
+export default observer(class AddSubscriberForm extends Component {
 	state = {
 		subscriber: ""
 	}
@@ -76,7 +79,7 @@ export default class AddSubscriberForm extends Component {
 
 	render() {
 		const { subscriber } = this.state
-		const { connection } = this.props
+		const { connection } = ConnectionState
 
 		const buttonDisabled = !connection
 
@@ -94,4 +97,4 @@ export default class AddSubscriberForm extends Component {
 			</Fragment>
 		)
 	}
-}
+})

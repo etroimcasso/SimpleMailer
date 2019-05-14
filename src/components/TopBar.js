@@ -1,7 +1,9 @@
-//Shows connection status in the top left corner
 import React, { Component } from 'react';
 import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
+import { observer } from "mobx-react"
+import ConnectionStateStore from '../store/ConnectionStateStore'
+const ConnectionState = new ConnectionStateStore()
 
 const UIStrings = require('../config/UIStrings')
 
@@ -24,7 +26,7 @@ const styles = {
 }
 
 
-export default class TopBar extends Component {
+export default observer(class TopBar extends Component {
 	state = {
 		//connection: false
 	}
@@ -47,7 +49,8 @@ export default class TopBar extends Component {
 
 
 	render() {
-		const { connection, mailerHistoryCount, historyLoaded, subscriberCount, subscribersLoaded } = this.props
+		const {  mailerHistoryCount, historyLoaded, subscriberCount, subscribersLoaded } = this.props
+		const { connection } = ConnectionState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -99,4 +102,4 @@ export default class TopBar extends Component {
 			</Menu>
 		)
 	}
-}
+})

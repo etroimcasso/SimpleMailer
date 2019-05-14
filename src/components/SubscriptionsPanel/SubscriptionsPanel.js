@@ -17,14 +17,14 @@ export default class SubscriptionPanel extends Component {
 
 	
 	render() {
-		const { subscribersList, subscribersLoaded, handleSubscriberDeleteButtonClick, onSubscriberAddClick, connection } = this.props
+		const { subscribersList, subscribersLoaded, handleSubscriberDeleteButtonClick, onSubscriberAddClick } = this.props
 
 		return(
 			<Segment basic>
 				<Dimmer inverted active={!subscribersLoaded}>
 					<Loader active={!subscribersLoaded} inline></Loader>
 				</Dimmer>
-				<AddSubscriberForm onClick={onSubscriberAddClick} connection={connection} />
+				<AddSubscriberForm onClick={onSubscriberAddClick} />
 				<Container>
 					{	subscribersList.length > 0 &&
 						<SubscriptionsPanelTable subscribersList={subscribersList} subscribersLoaded={subscribersLoaded} handleSubscriberDeleteButtonClick={handleSubscriberDeleteButtonClick}/>
