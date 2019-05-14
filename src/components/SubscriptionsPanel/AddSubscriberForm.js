@@ -5,7 +5,10 @@ const UIStrings = require('../../config/UIStrings');
 const InputValidator = require('../../helpers/InputValidator')
 
 /*
-This crap isn't needed yet
+This crap isn't needed anymore. It was a functional programming way of getting the proper token by generating arrays from each split call, then
+sorting that array of arrays from the largest array to the smallest, and taking that first array result, which would be the largest, and therefore 
+the result that atually did what was needed.
+
 //To use either space or comma as delimeter
 //These will return arrays
 const splitStringWithSpaces = (string) => string.split(" ")
@@ -13,7 +16,7 @@ const splitStringWithCommas = (string) => string.split(",")
 const generateResultsArray = (results) => {
 	//Now sort this array of objects for the one with the greatest length, since only the valid delimeter will return an array of length greater than 1
 	//Then return only the [0] indexed result to get the actual thing
-	//or I could just use a filter and filter away all results that are less than 1
+	//or I could just use a filter and filter away all results that are less than 2
 	//Also need to check that all are not equal, because if all options are equal than there is only one email address
 
 }
