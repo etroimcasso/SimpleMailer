@@ -11,6 +11,10 @@ import TopBar from './components/TopBar'
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { BrowserRouter } from 'react-router-dom';
+import { observer } from "mobx-react"
+
+const AppStateStore = new require('./store/AppStateStore')()
+
 
 const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
@@ -52,7 +56,8 @@ const addSubscriber = (email) => {
     socket.emit('addSubscriber', email)
 } 
 
-class App extends Component {
+
+export default @observer class App extends Component {
   state = {
     subscriberInfoModalOpen: false,
     subscriberInfoMessage: "",
@@ -104,8 +109,9 @@ class App extends Component {
         this.getAllMailerResults()
       }
       //this.props.dispatch('CONNECTION_ENABLE')
+      AppStateStore.setConnectionDisabled()
       this.setState({
-        connection: true,
+        //connection: true,
         reloadSubscribersPending: false,
         reloadMailerHistoryPending: false
       })
@@ -113,8 +119,9 @@ class App extends Component {
 
     socket.on('disconnect', () => {
       //this.props.dispatch('CONNECTION_DISABLE')
+      AppStateStore.setConnectionDisabled()
       this.setState({
-        connection: false,
+        //connection: false,
         reloadSubscribersPending: true,
         reloadMailerHistoryPending: true,
         reloadMailerHistoryResultsPending: true
@@ -362,8 +369,10 @@ class App extends Component {
       reloadMailerHistoryPending,
       mailerHistoryResults,
       mailerHistoryResultsLoaded,
-      connection
+      //connection
     } = this.state
+
+    const { connection } = AppStateStore
 
     //const { connection } = this.props
 
@@ -438,5 +447,3 @@ const redirectAwayFromMailer = () => {
     <Redirect to='/subscribeResults' />
   )
 }
-
-export default App;
