@@ -14,7 +14,7 @@ const UIStrings = require('../config/UIStrings')
 const styles = {
 	appTitleText: {
 		position: 'relative',
-		paddingTop: '4px',
+		//paddingTop: '4px',
 		left: '-20px'
 	},
 	connectionHeaderText: {

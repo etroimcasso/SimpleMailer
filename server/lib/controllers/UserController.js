@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 module.exports = {
 	//callback(error, userObject)
 	insertUser: (username, password, isUserAdmin, callback) => {
-		console.log("ADDING USER")
+		//console.log("ADDING USER")
 		const normalizedUsename = username.toLowerCase()
 		bcrypt.hash(password, 10, (error, hashedPassword) => {
 			if (error) {
@@ -23,7 +23,7 @@ module.exports = {
 					isAdmin: isUserAdmin
 				}, (error, userObject) => {
 					if (error) {
-						console.log(`adding error ${error}`)
+						console.log(`Could not add user: ${error}`)
 						callback(error, null)
 					}
 					else {

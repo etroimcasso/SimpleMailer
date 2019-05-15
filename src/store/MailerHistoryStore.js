@@ -33,7 +33,7 @@ class MailerHistoryStore {
 
    		socket.on('mailerAddedToHistory', (mailer) => {
    			this.addToMailerHistory(JSON.parse(mailer))
-   			this.getAllMailerResults()
+   			this.getAllMailerResults() //Reload MailerResults
 
    		})
 

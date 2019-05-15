@@ -16,7 +16,7 @@ module.exports = {
 			}, (error, item) => {
 				if (error) console.log(`Could not add mailer results: ${error}`)
 				else {
-					console.log("Adding mailerResult")
+					//console.log("Adding mailerResult")
 					mailerResultsDocument.push(item._id)
 					if (mailerResultsDocument.length === mailerResults.length) {
 						callback(null, mailerResultsDocument)

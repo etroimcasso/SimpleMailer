@@ -180,11 +180,11 @@ io.on('connection', (client) => {
 						if (mailerResults.length === subscribers.length) {
 							//finishMailer(emailMessage, mailerResults, message.messageText, message.html)
 							client.emit('sendMailerFinished')
-							console.log('MAILER SENT')
+							console.log(`Sent Mailer: ${emailMessage.subject}`)
 							MailerController.addMailer(emailMessage.subject, message.messageText, message.html, mailerResults, (error, mailer) => {
 								if (error) console.error(`Could not add mailer to history: ${error}`)
 								else {
-									console.log("mailerAddedToHistory")
+									//console.log("mailerAddedToHistory")
 									io.emit('mailerAddedToHistory', JSON.stringify(mailer))
 								}
 							})
@@ -195,26 +195,14 @@ io.on('connection', (client) => {
 		})
 	})
 
-	const finishMailer = (message, mailerResults, messageText, messageHtml) => {
-		client.emit('sendMailerFinished')
-		console.log('MAILER SENT')
-		MailerController.addMailer(message.subject, messageText, messageHtml, mailerResults, (error, mailer) => {
-			if (error) console.error(`Could not add mailer to history: ${error}`)
-			else {
-				console.log("mailerAddedToHistory")
-				io.emit('mailerAddedToHistory', mailer)
-			}
-		})
-	}
-
 	//Tests the email's connection
 	//   returns false if successful, and an error message if there is an error
 	client.on('testEmail', () => {
 		Emailer.testConnection(function(error, success) {
-			console.log("attempt to verify smtp")
+			//console.log("attempt to verify smtp")
 			var resultError = false
 			if (error != null) {
-				console.debug('Cannot connect to SMTP server')
+				console.error('Cannot connect to SMTP server')
 				resultError = "Cannot Connect to SMTP server"
 			} else {
 				if (success != null) {
@@ -241,7 +229,7 @@ io.on('connection', (client) => {
 
 	client.on('getSubscriberCount', () => {
 		SubscriberController.getSubscriberCount((error, count) => {
-			console.log(`Subscribers Total: ${count}`)
+			//console.log(`Subscribers Total: ${count}`)
 		})
 	})
 
@@ -252,14 +240,13 @@ io.on('connection', (client) => {
 			var resultError = false
 			client.emit('subscriberAdded', error)
 			if (error) {
-				console.log(`ERROR ADDING SUBSCRIBER: ${error}`)
+				console.error(`ERROR ADDING SUBSCRIBER: ${error}`)
 				resultError = error
 			} 
 			if (resultError == false) {
 				const subscriber = item
 				io.emit('newSubscriberAdded', JSON.stringify(subscriber))
 				console.log(`NEW SUBSCRIBER: ${subscriber.email}`)
-				console.log(`Subscriber ID: ${subscriber._id}`)
 				const emailMessage = {
 						senderName: process.env.EMAIL_USER, 
 						senderEmail: process.env.EMAIL_USER,
@@ -288,7 +275,7 @@ io.on('connection', (client) => {
 	})
 
 	client.on('removeSubscriber', (email, id) => {
-		console.log(`Remove ${email} ${id}`)
+		console.log(`UNSUBSCRIBE: ${email} ${id}`)
 
 		if (id && email ) {
 			const query = {
@@ -327,7 +314,7 @@ io.on('connection', (client) => {
 										console.error(`Could not send email - error: ${error}`)
 										resultError = "Count not send email"
 									} else {
-										console.log("Successfully sent Unsubscribe alert email")
+										//console.log("Successfully sent Unsubscribe alert email")
 										resultError = false
 									}
 								})
