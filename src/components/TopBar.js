@@ -82,7 +82,7 @@ export default observer(class TopBar extends Component {
 					{UIStrings.TopBar.MailingHistoryText}
 					{ mailerHistoryLoaded &&
 						<Label circular>
-							{MailerHistoryState.getMailerHistoryCount()}
+							{MailerHistoryState.mailerHistoryCount}
 						</Label>
 					}
 					{!mailerHistoryLoaded && 

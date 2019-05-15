@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
+import { Segment, Dimmer, Loader, Container, Header, Icon } from 'semantic-ui-react';
 import { observer } from "mobx-react"
 import SubscriptionsPanelTable from './SubscriptionsPanelTable';
 import AddSubscriberForm from './AddSubscriberForm';
+import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import SubscriberStore from '../../store/SubscriberStore'
 import openSocket from 'socket.io-client';
 const SubscribersState = new SubscriberStore()
@@ -24,6 +25,10 @@ const addSubscriber = (email) => {
 } 
 
 
+const fullHeight = {
+	height: '100%'
+}
+
 export default observer(class SubscriptionPanel extends Component {
 
 	componentWillMount() {
@@ -43,6 +48,7 @@ export default observer(class SubscriptionPanel extends Component {
 	
 	render() {
 		const { subscribers, subscribersLoaded } = SubscribersState
+		const subscriberCount = SubscribersState.subscriberCount
 
 		return(
 			<Segment basic>
@@ -51,16 +57,11 @@ export default observer(class SubscriptionPanel extends Component {
 				</Dimmer>
 				<AddSubscriberForm onClick={this.handleAddSubscriberButtonClick} />
 				<Container>
-					{	SubscribersState.subscriberCount > 0 &&
+					<ItemsPlaceholderSegment itemCount={subscriberCount} itemsLoaded={subscribersLoaded} noItemsText={UIStrings.NoSubscribers} iconName="user outline">
 						<SubscriptionsPanelTable subscribers={subscribers} subscribersLoaded={subscribersLoaded} handleSubscriberDeleteButtonClick={this.handleSubscriberDeleteButtonClick}/>
-					} 
-					{ (SubscribersState.subscriberCount === 0 && subscribersLoaded) &&
-						<span>{UIStrings.NoSubscribers}</span> 
-					}		
+					</ItemsPlaceholderSegment>
 				</Container>
 			</Segment>
 		)
 	}
 })
-
-

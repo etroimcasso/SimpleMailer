@@ -110,7 +110,7 @@ class MailerHistoryStore {
    		this.mailerHistoryResults = this.mailerHistoryResults.concat(newItem)
    	}
 
-   	getMailerHistoryCount() {
+   	get mailerHistoryCount() {
    		return this.mailerHistory.length
    	}
 
@@ -140,7 +140,7 @@ export default decorate(MailerHistoryStore, {
 	removeFromMailerHistory: action,
 	getAllMailers: action,
 	getAllMailerResults: action,
-	getMailerHistoryCount: action,
+	mailerHistoryCount: computed,
 	setReloadMailerHistoryResultsPending: action,
 	setMailerHistoryResultsLoaded: action,
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
 import MailerHistoryTable from './MailerHistoryTable'
+import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import { observer } from "mobx-react"
 import AppStateStore from '../../store/AppStateStore'
 import MailerHistoryStore from '../../store/MailerHistoryStore'
@@ -21,6 +22,7 @@ export default observer(class MailerHistory extends Component {
 		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResultsLoaded, mailerHistoryResults  } = MailerHistoryState
 
 		const historyLoaded = mailerHistoryLoaded && mailerHistoryResultsLoaded
+		const mailerHistoryCount = MailerHistoryState.mailerHistoryCount
 
 		return(
 			<Segment basic>
@@ -28,12 +30,10 @@ export default observer(class MailerHistory extends Component {
 					<Loader active={!mailerHistoryLoaded} inline>{UIStrings.MailerHistory.Loading}</Loader>
 				</Dimmer>
 				<Container>
-					{	MailerHistoryState.getMailerHistoryCount() > 0 &&
+
+					<ItemsPlaceholderSegment itemCount={mailerHistoryCount} itemsLoaded={historyLoaded} noItemsText={UIStrings.MailerHistory.NoHistory} iconName="envelope outline">
 						<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
-					} 
-					{ (MailerHistoryState.getMailerHistoryCount() === 0 && mailerHistoryLoaded) &&
-						<span>{UIStrings.MailerHistory.NoHistory}</span> 
-					}		
+					</ItemsPlaceholderSegment>
 				</Container>
 			</Segment>
 		)
