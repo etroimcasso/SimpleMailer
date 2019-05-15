@@ -64,20 +64,11 @@ export default observer(class App extends Component {
   componentWillMount() {
     //SubscribersState.getAllSubscribers()
     //MailerHistoryState.getAllMailers()
-    this.getAllMailerResults()
+    //this.getAllMailerResults()
     document.title = UIStrings.AppTitle
   }
 
   componentDidMount() {
-    socket.on('connect', () => {
-      if (AppState.reloadMailerHistoryResultsPending) {
-        this.setState({
-          mailerHistoryResults: [],
-        })
-        this.getAllMailerResults()
-      }
-    })
-
 
     socket.on('mailerSendToSubscriberResult', (error, email) => {
       this.setState({
@@ -88,26 +79,6 @@ export default observer(class App extends Component {
       })
     })
     
-  }
-
-
-  getAllMailerResults = () => {
-    ReconnectionTimer(3000,() => { 
-      if (!AppState.mailerHistoryLoaded) 
-        this.getAllMailerResults() 
-    })
-
-    getAllMailerResults((error, mailerHistoryResults) => {
-      //console.log(`MAILER HISTORY: ${mailerHistoryResults}`)        
-      AppState.setMailerHistoryResultsLoaded(true)
-      if (!error) {
-        this.setState({
-          mailerHistoryResults: JSON.parse(mailerHistoryResults),
-          //mailerHistoryResultsLoaded: true
-        })
-
-      }
-    })
   }
 
 
@@ -184,9 +155,7 @@ export default observer(class App extends Component {
     AppState.setMailerBeingSent(true)
     AppState.setMailerProgressModalOpen(true)
     this.setState({ 
-      //mailerBeingSent: true,
       mailerResults: [],
-      //mailerProgressModalOpen: true
     })
 
     const message = {
@@ -206,18 +175,7 @@ export default observer(class App extends Component {
     sendMailer(message, (error, subscriberEmail) => {})
   }
 
-  handleSubscriberDeleteButtonClick = (subscriberObject) => {
-
-    //console.log("Subscriber DELETE button click")
-    //console.log(subscriberObject)
-    removeSubscriber(subscriberObject, (error, subscriber) => {
-      // Don't need to do anything here since the subscriber list updates automatically whenever a subscriber is added or removed
-    })
-  }
-
-  handleAddSubscriberButtonClick = (email) => {
-    addSubscriber(email)
-  }
+ 
 
   closeModalAndConfirmMailerSend = () => {
     AppState.setMailerProgressModalOpen(false)
@@ -230,16 +188,13 @@ export default observer(class App extends Component {
 	render() {
     const { 
       mailerResults,
-      mailerHistoryResults,
     } = this.state
 
-    //const { connection } = this.props
     const {   
       subscriberInfoMessage,
       mailerBeingSent,
       mailerProgressModalOpen,
-      mailerHistoryResultsLoaded,
-      reloadMailerHistoryResultsPending,
+     
     } = AppState
 
     const { 
@@ -252,13 +207,12 @@ export default observer(class App extends Component {
     const {
       mailerHistory,
       mailerHistoryLoaded,
-      reloadMailerHistoryPending
+      reloadMailerHistoryPending,
+      mailerHistoryResultsLoaded,
+      reloadMailerHistoryResultsPending,
     } = MailerHistoryState
 
     const renderProps = {
-      connection: {
-        connection: false,
-      },
       mailerEditor: {
         mailerBeingSent: mailerBeingSent,
         subscribersLoaded: subscribersLoaded,
@@ -269,23 +223,6 @@ export default observer(class App extends Component {
         handleModalClose: this.closeModalAndConfirmMailerSend,
         handleSendButtonClick: this.handleSendButtonClick,
       },
-      mailerHistory: {
-        mailerHistory: mailerHistory,
-        mailerHistoryLoaded: mailerHistoryLoaded,
-        mailerHistoryResults: mailerHistoryResults,
-        mailerHistoryResultsLoaded: mailerHistoryResultsLoaded,
-        reloadMailerHistoryPending: reloadMailerHistoryPending,
-      },
-      SubscriptionsPanel: {
-        subscribersList: subscribersList,
-        subscribersLoaded: subscribersLoaded,
-        handleSubscriberDeleteButtonClick: this.handleSubscriberDeleteButtonClick,
-        onSubscriberAddClick: this.handleAddSubscriberButtonClick
-      },
-      TopBar: {
-        mailerHistoryCount: mailerHistory.length,
-        historyLoaded: mailerHistoryLoaded
-      }
     }
 
 
@@ -300,11 +237,11 @@ export default observer(class App extends Component {
   	return (
       <BrowserRouter>
   			 <div className="App">
-            <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions]} render={props => <TopBar {...props} {...Object.assign(renderProps.TopBar)} /> } />
+            <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions]} component={TopBar} />
   				  <Container style={{height: '100%'}}>
-              <Route exact path={protectedRoutes.root} render={props => <MailerEditor {...props} {...Object.assign(renderProps.mailerEditor)}/>} />
-              <Route exact path={protectedRoutes.history} render={props => <MailerHistory {...props} {...Object.assign(renderProps.mailerHistory)} />} />
-  				    <Route exact path={protectedRoutes.subscriptions} render={props => <SubscriptionsPanel {...props} {...Object.assign(renderProps.SubscriptionsPanel, renderProps.connection)} />} />
+              <Route exact path={protectedRoutes.root} render={props => <MailerEditor {...props} {...renderProps.mailerEditor}/>} />
+              <Route exact path={protectedRoutes.history} component={MailerHistory} />
+  				    <Route exact path={protectedRoutes.subscriptions} component={SubscriptionsPanel} />
               <Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
               <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
               <Route path="/subscribeResults" component={this.subscriptionChangeResults} />

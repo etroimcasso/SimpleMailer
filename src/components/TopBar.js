@@ -4,8 +4,10 @@ import { NavLink } from 'react-router-dom';
 import { observer } from "mobx-react"
 import ConnectionStateStore from '../store/ConnectionStateStore'
 import SubscriberStore from '../store/SubscriberStore'
+import MailerHistoryStore from '../store/MailerHistoryStore'
 const ConnectionState = new ConnectionStateStore()
 const SubscribersState = new SubscriberStore()
+const MailerHistoryState = new MailerHistoryStore()
 
 const UIStrings = require('../config/UIStrings')
 
@@ -51,9 +53,9 @@ export default observer(class TopBar extends Component {
 
 
 	render() {
-		const {  mailerHistoryCount, historyLoaded } = this.props
 		const { connection } = ConnectionState
 		const { subscribersLoaded } = SubscribersState
+		const { mailerHistory, mailerHistoryLoaded } = MailerHistoryState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -78,12 +80,12 @@ export default observer(class TopBar extends Component {
 				</Menu.Item>
 				<Menu.Item name="history" as={NavLink} to="/history" exact>
 					{UIStrings.TopBar.MailingHistoryText}
-					{ historyLoaded &&
+					{ mailerHistoryLoaded &&
 						<Label circular>
-							{mailerHistoryCount}
+							{MailerHistoryState.getMailerHistoryCount()}
 						</Label>
 					}
-					{!historyLoaded && 
+					{!mailerHistoryLoaded && 
 						<div style={styles.loadingIconPadding}>
 							<Icon name="spinner" loading />
 						</div>

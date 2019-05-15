@@ -3,7 +3,8 @@ import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
 import MailerHistoryTable from './MailerHistoryTable'
 import { observer } from "mobx-react"
 import AppStateStore from '../../store/AppStateStore'
-const AppState = new AppStateStore()
+import MailerHistoryStore from '../../store/MailerHistoryStore'
+const MailerHistoryState = new MailerHistoryStore()
 
 const UIStrings = require('../../config/UIStrings');
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.History);
@@ -17,19 +18,20 @@ export default observer(class MailerHistory extends Component {
 
 	
 	render() {
-		const { mailerHistory, mailerHistoryResults } = this.props
-		const { mailerHistoryLoaded, mailerHistoryResultsLoaded } = AppState
+		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResultsLoaded, mailerHistoryResults  } = MailerHistoryState
+
+		const historyLoaded = mailerHistoryLoaded && mailerHistoryResultsLoaded
 
 		return(
 			<Segment basic>
-				<Dimmer inverted active={!mailerHistoryLoaded || !mailerHistoryResultsLoaded}>
+				<Dimmer inverted active={!historyLoaded}>
 					<Loader active={!mailerHistoryLoaded} inline>{UIStrings.MailerHistory.Loading}</Loader>
 				</Dimmer>
 				<Container>
-					{	mailerHistory.length > 0 &&
+					{	MailerHistoryState.getMailerHistoryCount() > 0 &&
 						<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
 					} 
-					{ (mailerHistory.length === 0 && mailerHistoryLoaded) &&
+					{ (MailerHistoryState.getMailerHistoryCount() === 0 && mailerHistoryLoaded) &&
 						<span>{UIStrings.MailerHistory.NoHistory}</span> 
 					}		
 				</Container>

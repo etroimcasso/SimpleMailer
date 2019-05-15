@@ -25,7 +25,7 @@ export default class SubscriptionsPanelTable extends Component {
 
 	render() {
 		const { activeId } = this.state
-		const { subscribersList, subscribersLoaded, handleSubscriberDeleteButtonClick } = this.props
+		const { subscribers, subscribersLoaded, handleSubscriberDeleteButtonClick } = this.props
 		return(
 			<Table striped celled>
 				<Table.Header>
@@ -36,7 +36,7 @@ export default class SubscriptionsPanelTable extends Component {
 					</Table.Row>
 				</Table.Header>
 				{ 
-					subscribersList.map((item) => {
+					subscribers.map((item) => {
 						return (
 							<SubscriptionPanelTableRowItem item={item} key={item} 
 							handleHover={this.handleRowHover}
