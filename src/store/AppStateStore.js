@@ -55,6 +55,7 @@
 
           socket.on('noMailers', () => {
             this.setMailerHistoryLoaded(true)
+            this.setReloadMailerHistoryPending(false)
           })
 
           socket.on('noMailerResults', () => {

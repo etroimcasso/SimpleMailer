@@ -14,8 +14,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { observer } from "mobx-react"
 import AppStateStore from './store/AppStateStore'
 import SubscriberStore from './store/SubscriberStore'
+import MailerHistoryStore from './store/MailerHistoryStore'
 const AppState = new AppStateStore()
 const SubscribersState = new SubscriberStore()
+const MailerHistoryState = new MailerHistoryStore()
 
 
 const hostname = require('./config/hostname.js');
@@ -55,28 +57,19 @@ const addSubscriber = (email) => {
 
 export default observer(class App extends Component {
   state = {
-    subscribersList: [],
     mailerResults: [],
-    mailerHistory: [],
     mailerHistoryResults: [],
   }
 
   componentWillMount() {
-    SubscribersState.getAllSubscribers()
-    this.getAllMailers()
+    //SubscribersState.getAllSubscribers()
+    //MailerHistoryState.getAllMailers()
     this.getAllMailerResults()
-
     document.title = UIStrings.AppTitle
   }
 
   componentDidMount() {
     socket.on('connect', () => {
-      if (AppState.reloadMailerHistoryPending) {
-        this.setState({
-          mailerHistory: [],
-        })
-        this.getAllMailers()
-      }
       if (AppState.reloadMailerHistoryResultsPending) {
         this.setState({
           mailerHistoryResults: [],
@@ -94,35 +87,9 @@ export default observer(class App extends Component {
         }),
       })
     })
-
-
-    socket.on('mailerAddedToHistory', mailer => {
-      //console.log("ADDED TO HISTORY")
-      this.setState({
-        mailerHistory: this.state.mailerHistory.concat(JSON.parse(mailer))
-      })
-      this.getAllMailerResults() // This isn't needed if MailerHistory requests each item from the server when it's needed
-    })
     
   }
 
-  getAllMailers = () => {
-    ReconnectionTimer(3000,() => { 
-      if (!AppState.mailerHistoryLoaded) 
-        this.getAllMailers() 
-    })
-
-    getAllMailers((error, mailers) => {
-      if (!error) {        
-        AppState.setMailerHistoryLoaded(true)
-        this.setState({
-          mailerHistory: JSON.parse(mailers),
-          //mailerHistoryLoaded: true
-        })
-
-      }
-    })
-  }
 
   getAllMailerResults = () => {
     ReconnectionTimer(3000,() => { 
@@ -263,7 +230,6 @@ export default observer(class App extends Component {
 	render() {
     const { 
       mailerResults,
-      mailerHistory,
       mailerHistoryResults,
     } = this.state
 
@@ -272,20 +238,22 @@ export default observer(class App extends Component {
       subscriberInfoMessage,
       mailerBeingSent,
       mailerProgressModalOpen,
-      mailerHistoryLoaded,
-      reloadMailerHistoryPending,
       mailerHistoryResultsLoaded,
       reloadMailerHistoryResultsPending,
     } = AppState
 
-    console.log("MAIER HISTORY LOADED")
-    console.log(mailerHistoryLoaded)
+    const { 
+      subscribers: subscribersList,   
+      subscribersLoaded,
+      subscriberError,
+      reloadSubscribersPending,
+    } = SubscribersState
 
-    const { subscribers: subscribersList,
-            subscribersLoaded,
-            subscriberError,
-            reloadSubscribersPending,
-          } = SubscribersState
+    const {
+      mailerHistory,
+      mailerHistoryLoaded,
+      reloadMailerHistoryPending
+    } = MailerHistoryState
 
     const renderProps = {
       connection: {
@@ -316,9 +284,7 @@ export default observer(class App extends Component {
       },
       TopBar: {
         mailerHistoryCount: mailerHistory.length,
-        historyLoaded: mailerHistoryLoaded,
-        subscriberCount: subscribersList.length,
-        subscribersLoaded: subscribersLoaded
+        historyLoaded: mailerHistoryLoaded
       }
     }
 

@@ -1,12 +1,8 @@
-import { decorate, observable, action} from "mobx"
+import { decorate, observable, action, computed } from "mobx"
 import openSocket from 'socket.io-client';
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 const ReconnectionTimer = require('../helpers/ReconnectionTimer');
-
-
-
-
 
 class SubscriberStore {
 	subscribers = [] ///Rename all subscribersList props / states to this
@@ -34,7 +30,6 @@ class SubscriberStore {
    		socket.on('noSubscribers', () => {
    		    this.subscribersLoaded = true
    		})
-
 
 
    	}
@@ -78,6 +73,10 @@ class SubscriberStore {
    		})
    	}
 
+   	getSubscriberCount() {
+   		return this.subscribers.length
+   	}
+
 }
 
 export default decorate(SubscriberStore, {
@@ -90,7 +89,8 @@ export default decorate(SubscriberStore, {
 	replaceSubscribersList: action,
 	addToSubscribersList: action,
 	removeFromSubscribersList: action,
-	getAllSubscribers: action
+	getAllSubscribers: action,
+	getSubscriberCount: action,
 
 })
 

@@ -3,7 +3,9 @@ import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { observer } from "mobx-react"
 import ConnectionStateStore from '../store/ConnectionStateStore'
+import SubscriberStore from '../store/SubscriberStore'
 const ConnectionState = new ConnectionStateStore()
+const SubscribersState = new SubscriberStore()
 
 const UIStrings = require('../config/UIStrings')
 
@@ -49,8 +51,9 @@ export default observer(class TopBar extends Component {
 
 
 	render() {
-		const {  mailerHistoryCount, historyLoaded, subscriberCount, subscribersLoaded } = this.props
+		const {  mailerHistoryCount, historyLoaded } = this.props
 		const { connection } = ConnectionState
+		const { subscribersLoaded } = SubscribersState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -90,7 +93,7 @@ export default observer(class TopBar extends Component {
 					{UIStrings.TopBar.SubscribersText}
 					{ subscribersLoaded &&
 						<Label circular>
-							{subscriberCount}
+							{SubscribersState.getSubscriberCount()}
 						</Label>
 					}
 					{ !subscribersLoaded && 
