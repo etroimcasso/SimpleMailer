@@ -13,7 +13,9 @@ import draftToHtml from 'draftjs-to-html';
 import { BrowserRouter } from 'react-router-dom';
 import { observer } from "mobx-react"
 import AppStateStore from './store/AppStateStore'
+import SubscriberStore from './store/SubscriberStore'
 const AppState = new AppStateStore()
+const SubscribersState = new SubscriberStore()
 
 
 const hostname = require('./config/hostname.js');
@@ -24,12 +26,6 @@ const ReconnectionTimer = require('./helpers/ReconnectionTimer');
 
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
-
-//Loads the subscribersList state with data
-const getAllSubscribers = (callback) => {
-  socket.on('getAllSubscribersResult', (error, subscribers) => callback(error, subscribers))
-  socket.emit('getAllSubscribers')
-}
 
 const sendMailer = (message) => {
   socket.emit('sendMailer', message)
@@ -66,7 +62,7 @@ export default observer(class App extends Component {
   }
 
   componentWillMount() {
-    this.getAllSubscribers()
+    SubscribersState.getAllSubscribers()
     this.getAllMailers()
     this.getAllMailerResults()
 
@@ -75,12 +71,6 @@ export default observer(class App extends Component {
 
   componentDidMount() {
     socket.on('connect', () => {
-      if (AppState.reloadSubscribersPending) {
-        this.setState({
-          subscribersList: [],
-        })
-        this.getAllSubscribers()
-      }
       if (AppState.reloadMailerHistoryPending) {
         this.setState({
           mailerHistory: [],
@@ -106,25 +96,6 @@ export default observer(class App extends Component {
     })
 
 
-    //Adds the new subscriber to the list
-    socket.on('newSubscriberAdded', (subscriber) => {
-      subscriber = JSON.parse(subscriber)
-      this.setState({
-        subscribersList: this.state.subscribersList.concat(subscriber)
-      })
-    })
-
-    //Removes subscriber from list
-    socket.on('subscriberUnsubscribed', (email) =>{
-      //console.log(`REMOVE ${email}`)
-      this.setState({
-        subscribersList: this.state.subscribersList.filter( (item) => {
-          return item.email !== email
-        })
-      })
-    })
-
-
     socket.on('mailerAddedToHistory', mailer => {
       //console.log("ADDED TO HISTORY")
       this.setState({
@@ -133,25 +104,6 @@ export default observer(class App extends Component {
       this.getAllMailerResults() // This isn't needed if MailerHistory requests each item from the server when it's needed
     })
     
-  }
-
-  getAllSubscribers = () => {
-    //Start timer
-    //When timer ends getAllSubscribers' again if subscribersLoaded is  false
-    
-    ReconnectionTimer(3000, () => {
-      if (!AppState.subscribersLoaded) this.getAllSubscribers()
-    })
-    
-    getAllSubscribers((error, subscribers) => {
-      if (!error) {
-        this.setState({
-          subscribersList: JSON.parse(subscribers),
-          //subscribersLoaded: true
-        })
-        AppState.setSubscribersLoaded(true)
-      }
-    })
   }
 
   getAllMailers = () => {
@@ -310,7 +262,6 @@ export default observer(class App extends Component {
 
 	render() {
     const { 
-      subscribersList,
       mailerResults,
       mailerHistory,
       mailerHistoryResults,
@@ -319,16 +270,22 @@ export default observer(class App extends Component {
     //const { connection } = this.props
     const {   
       subscriberInfoMessage,
-      subscriberError,
       mailerBeingSent,
-      subscribersLoaded,
       mailerProgressModalOpen,
-      reloadSubscribersPending,
       mailerHistoryLoaded,
       reloadMailerHistoryPending,
       mailerHistoryResultsLoaded,
       reloadMailerHistoryResultsPending,
     } = AppState
+
+    console.log("MAIER HISTORY LOADED")
+    console.log(mailerHistoryLoaded)
+
+    const { subscribers: subscribersList,
+            subscribersLoaded,
+            subscriberError,
+            reloadSubscribersPending,
+          } = SubscribersState
 
     const renderProps = {
       connection: {

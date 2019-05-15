@@ -356,7 +356,7 @@ io.on('connection', (client) => {
 			if (mailers.length > 0) {
 				client.emit('getAllMailersResults', error, JSON.stringify(mailers))
 			} else {
-				client.emit('noMailers')
+				io.emit('noMailers')
 			}
 		})
 	})
@@ -366,7 +366,7 @@ io.on('connection', (client) => {
 			if (results.length > 0) {
 				client.emit('getAllMailerResultsResults', error, JSON.stringify(results))
 			} else {
-				client.emit('noMailerResults')
+				io.emit('noMailerResults')
 			}
 		})
 	})
