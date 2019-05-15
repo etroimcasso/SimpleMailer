@@ -15,7 +15,7 @@ const styles = {
 	appTitleText: {
 		position: 'relative',
 		//paddingTop: '4px',
-		left: '-20px'
+		//left: '-20px'
 	},
 	connectionHeaderText: {
 		paddingTop: '3px'
@@ -62,7 +62,7 @@ export default observer(class TopBar extends Component {
 
 
 		return (
-			<Menu inverted icon borderless fixed="top" size="large">
+			<Menu stackable inverted icon borderless fixed="top" size="large">
 				<Menu.Item header>
 					<Popup hideOnScroll 
 						trigger={(<Icon circular name="circle" color={connectionStatusIconColor} size="small" />)}
