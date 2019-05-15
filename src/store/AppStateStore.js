@@ -35,8 +35,6 @@
       }
 
       addMailerResult(result) {
-        console.log("ADDING RESULT")
-        console.log(result)
         this.mailerResults = this.mailerResults.concat(result)
       }
 
