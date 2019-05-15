@@ -112,29 +112,8 @@ export default observer(class App extends Component {
 
  
 	render() {
-    const {   
-      subscriberInfoMessage,
-      mailerBeingSent,
-      mailerProgressModalOpen,
-     
-    } = AppState
-
-    const { 
-      subscribers: subscribersList,   
-      subscribersLoaded,
-      subscriberError,
-      reloadSubscribersPending,
-    } = SubscribersState
-
-    const {
-      mailerHistory,
-      mailerHistoryLoaded,
-      reloadMailerHistoryPending,
-      mailerHistoryResultsLoaded,
-      reloadMailerHistoryResultsPending,
-    } = MailerHistoryState
-
-    const  protectedRoutes = {
+    
+    const protectedRoutes = {
       root: "/",
       history: "/history",
       subscriptions:  "/subscriptions"

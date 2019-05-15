@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
+import { observer } from "mobx-react"
 import SubscriptionsPanelTable from './SubscriptionsPanelTable';
 import AddSubscriberForm from './AddSubscriberForm';
 import SubscriberStore from '../../store/SubscriberStore'
@@ -23,7 +24,7 @@ const addSubscriber = (email) => {
 } 
 
 
-export default class SubscriptionPanel extends Component {
+export default observer(class SubscriptionPanel extends Component {
 
 	componentWillMount() {
 		document.title = pageTitle
@@ -60,6 +61,6 @@ export default class SubscriptionPanel extends Component {
 			</Segment>
 		)
 	}
-}
+})
 
 
