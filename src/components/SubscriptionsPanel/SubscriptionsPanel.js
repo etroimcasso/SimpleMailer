@@ -50,10 +50,10 @@ export default class SubscriptionPanel extends Component {
 				</Dimmer>
 				<AddSubscriberForm onClick={this.handleAddSubscriberButtonClick} />
 				<Container>
-					{	SubscribersState.getSubscriberCount() > 0 &&
+					{	SubscribersState.subscriberCount > 0 &&
 						<SubscriptionsPanelTable subscribers={subscribers} subscribersLoaded={subscribersLoaded} handleSubscriberDeleteButtonClick={this.handleSubscriberDeleteButtonClick}/>
 					} 
-					{ (SubscribersState.getSubscriberCount() === 0 && subscribersLoaded) &&
+					{ (SubscribersState.subscriberCount === 0 && subscribersLoaded) &&
 						<span>{UIStrings.NoSubscribers}</span> 
 					}		
 				</Container>

@@ -28,7 +28,7 @@ class SubscriberStore {
    		})
 
    		socket.on('noSubscribers', () => {
-   		    this.subscribersLoaded = true
+   		    this.setSubscribersLoaded(true)
    		})
 
 
@@ -73,7 +73,7 @@ class SubscriberStore {
    		})
    	}
 
-   	getSubscriberCount() {
+   	get subscriberCount() {
    		return this.subscribers.length
    	}
 
@@ -90,8 +90,7 @@ export default decorate(SubscriberStore, {
 	addToSubscribersList: action,
 	removeFromSubscribersList: action,
 	getAllSubscribers: action,
-	getSubscriberCount: action,
-
+	subscriberCount: computed,
 })
 
 

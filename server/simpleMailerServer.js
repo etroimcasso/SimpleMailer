@@ -222,7 +222,7 @@ io.on('connection', (client) => {
 			if (subscribers.length > 0) {
 				client.emit('getAllSubscribersResult', error, JSON.stringify(subscribers))
 			} else {
-				client.emit('noSubscribers')
+				io.emit('noSubscribers')
 			}
 		})
 	})

@@ -95,7 +95,7 @@ export default observer(class TopBar extends Component {
 					{UIStrings.TopBar.SubscribersText}
 					{ subscribersLoaded &&
 						<Label circular>
-							{SubscribersState.getSubscriberCount()}
+							{SubscribersState.subscriberCount}
 						</Label>
 					}
 					{ !subscribersLoaded && 
