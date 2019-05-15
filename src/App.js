@@ -215,11 +215,7 @@ export default observer(class App extends Component {
     const renderProps = {
       mailerEditor: {
         mailerBeingSent: mailerBeingSent,
-        subscribersLoaded: subscribersLoaded,
-        subscribersList: subscribersList,
-        reloadSubscribersPending: reloadSubscribersPending,
         mailerResults: mailerResults,
-        mailerProgressModalOpen: mailerProgressModalOpen,
         handleModalClose: this.closeModalAndConfirmMailerSend,
         handleSendButtonClick: this.handleSendButtonClick,
       },

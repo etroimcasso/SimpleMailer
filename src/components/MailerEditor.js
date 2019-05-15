@@ -7,8 +7,12 @@ import FlexView from 'react-flexview';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
 import { observer } from "mobx-react"
+import AppStateStore from '../store/AppStateStore'
 import ConnectionStateStore from '../store/ConnectionStateStore'
+import SubscriberStore from '../store/SubscriberStore'
+const SubscribersState = new SubscriberStore()
 const ConnectionState = new ConnectionStateStore()
+const AppState = new AppStateStore()
 
 const UIStrings = require('../config/UIStrings');
 const pageTitle = require('../helpers/pageTitleFormatter')(UIStrings.PageTitles.NewMailer);
@@ -63,29 +67,27 @@ export default class MailerEditor extends Component {
 
 	render() {
 		const { editorState, subject } = this.state
-		const {  mailerResults, 
-				mailerProgressModalOpen,
-				subscribersList,
-				subscribersLoaded,
+		const { mailerResults, 
 				handleSendButtonClick } = this.props
+		const { mailerProgressModalOpen } = AppState
 		const { connection } = ConnectionState
+		const { subscribers: subscribersList, subscribersLoaded  } = SubscribersState
 
 
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
 
-		const noSubscribers = subscribersList.length === 0
 		const editorValid = editorState.getCurrentContent().getPlainText().length > 0
 		const subjectValid = subject.length >= 3
 
-		const enableButton = editorValid && subjectValid && connection && !noSubscribers
+		const enableButton = editorValid && subjectValid && connection && !SubscribersState.getSubscriberCount()
 
 
 		return(
 			<Fragment>
 				<MailingProgressModal 
 				mailerResults={mailerResults} 
-				totalSubscribers={subscribersList.length}
+				totalSubscribers={SubscribersState.getSubscriberCount()}
 				open={mailerProgressModalOpen}
 				handleConfirmClick={this.closeModalAndConfirmMailerSend}
 				errors={errors}
