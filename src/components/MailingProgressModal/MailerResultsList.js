@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Icon, List, Transition } from 'semantic-ui-react';
-
+import { observer } from "mobx-react"
 const UIStrings = require('../../config/UIStrings')
 
 const listSize = {
 	height: '40vh',
 }
 
-export default class MailerResultsList extends Component {
+export default observer(class MailerResultsList extends Component {
 	render() {
 		const { items } = this.props
 		
@@ -17,7 +17,7 @@ export default class MailerResultsList extends Component {
 			</Transition.Group>
 		)
 	}
-}
+})
 
 class MailerResultsListItem extends Component {
 	render() {

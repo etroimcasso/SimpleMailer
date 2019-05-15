@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Icon, Modal } from 'semantic-ui-react';
-
+import { observer } from "mobx-react"
 import MailingProgressIndicator from './MailingProgressIndicator';
 import MailerResultsList from './MailerResultsList';
 
 const UIStrings = require('../../config/UIStrings')
 
-export default class MailingProgressModal extends Component {
+export default observer(class MailingProgressModal extends Component {
 
 	render() {
 		const {mailerResults, totalSubscribers, open, handleConfirmClick, errors  } = this.props
@@ -44,4 +44,4 @@ export default class MailingProgressModal extends Component {
 			</Modal>
 		)
 	}
-}
+})

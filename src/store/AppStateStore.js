@@ -8,12 +8,12 @@
       subscriberInfoMessage = ""
       mailerBeingSent = false
       mailerProgressModalOpen = false
+      mailerResults = []
 
       constructor() {
           socket.on('sendMailerFinished', () => {
               this.setMailerBeingSent(false)
           })
-
 
       }
 
@@ -33,14 +33,27 @@
       setMailerProgressModalOpen(isOpen) {
       	this.mailerProgressModalOpen = isOpen
       }
+
+      addMailerResult(result) {
+        console.log("ADDING RESULT")
+        console.log(result)
+        this.mailerResults = this.mailerResults.concat(result)
+      }
+
+      replaceMailerResults(result) {
+        this.mailerResults = result
+      }
   }
 export default decorate(AppStateStore, {
 	subscriberInfoModalOpen: observable,
 	subscriberInfoMessage: observable,
 	mailerBeingSent: observable,
-  mailerProgressModalOpen: observable,
+    mailerProgressModalOpen: observable,
+    mailerResults: observable,
 	setMailerBeingSent: action,
 	setSubscriberInfoModalOpen: action,
 	setSubscriberInfoMessage: action,
 	setMailerProgressModalOpen: action,
+  addMailerResult: action,
+  replaceMailerResults: action
 })

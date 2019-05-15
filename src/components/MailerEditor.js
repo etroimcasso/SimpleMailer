@@ -3,6 +3,7 @@ import { Container, Segment, Dimmer, Loader, Icon, Input, Button, Message } from
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import openSocket from 'socket.io-client';
 import FlexView from 'react-flexview';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
@@ -10,12 +11,17 @@ import { observer } from "mobx-react"
 import AppStateStore from '../store/AppStateStore'
 import ConnectionStateStore from '../store/ConnectionStateStore'
 import SubscriberStore from '../store/SubscriberStore'
+import { convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+
 const SubscribersState = new SubscriberStore()
 const ConnectionState = new ConnectionStateStore()
 const AppState = new AppStateStore()
-
 const UIStrings = require('../config/UIStrings');
 const pageTitle = require('../helpers/pageTitleFormatter')(UIStrings.PageTitles.NewMailer);
+const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
+const hostname = require('../config/hostname.js');
+const socket = openSocket(hostname.opensocket);
 
 // Styles
 const styles = {
@@ -30,9 +36,13 @@ const styles = {
 	},
 }
 
+const sendMailer = (message, callback) => {
+	socket.on('mailerSendToSubscriberResult', (error, email) => callback(error, email))
+  	socket.emit('sendMailer', message)
+} 
 
 
-export default class MailerEditor extends Component {
+export default observer(class MailerEditor extends Component {
 	state = {
 		editorState: EditorState.createEmpty(),
 		subject: "",
@@ -42,6 +52,14 @@ export default class MailerEditor extends Component {
 		document.title = pageTitle
 	}
 
+	componentDidMount() {
+		socket.on('mailerSendToSubscriberResult', (error, email) => {
+		  AppState.addMailerResult({
+		          email: email,
+		          error: error
+		  })
+		})
+	}
 	
 
 	onEditorStateChange = (editorState) => {
@@ -62,25 +80,48 @@ export default class MailerEditor extends Component {
 	    subject: "",
 	    editorState: EditorState.createEmpty()
 	  })
-	  this.props.handleModalClose()
+	  AppState.setMailerProgressModalOpen(false)
+	  AppState.replaceMailerResults([])
 	}
+
+	handleSendButtonClick = (editorState, subject) => {
+	  	const currentContent = editorState.getCurrentContent()
+	  	const rawContent = convertToRaw(currentContent)
+	  	const plainText = currentContent.getPlainText() //Plain Text
+	  	const htmlText = convertRawEditorContentToHTML(rawContent)
+
+	  	AppState.setMailerBeingSent(true)
+	  	AppState.setMailerProgressModalOpen(true)
+	 	//AppState.replaceMailerResults([])
+
+	  	const message = {
+	    	senderEmail: null,
+	    	senderName: null,
+	    	receiverEmails: null,
+	    	ccReceivers: null,
+	    	bccReceivers: null,
+	    	subject: subject,
+	    	messageText: plainText,
+	    	html: htmlText,
+	   	 	attachments: null,
+	    	replyTo: null
+	  	}
+	 	sendMailer(message, (error, subscriberEmail) => (error, email) => {})
+	}
+
 
 	render() {
 		const { editorState, subject } = this.state
-		const { mailerResults, 
-				handleSendButtonClick } = this.props
-		const { mailerProgressModalOpen } = AppState
+		const { mailerProgressModalOpen, mailerResults, mailerBeingSent } = AppState
 		const { connection } = ConnectionState
 		const { subscribers: subscribersList, subscribersLoaded  } = SubscribersState
-
-
 
 		const errors = mailerResults.filter((item) => { return item.error }).length
 
 		const editorValid = editorState.getCurrentContent().getPlainText().length > 0
 		const subjectValid = subject.length >= 3
 
-		const enableButton = editorValid && subjectValid && connection && !SubscribersState.getSubscriberCount()
+		const enableButton = editorValid && subjectValid && connection && SubscribersState.getSubscriberCount() > 0
 
 
 		return(
@@ -97,7 +138,7 @@ export default class MailerEditor extends Component {
 						<Input action fluid placeholder={UIStrings.SubjectNoun} icon='quote left' iconPosition='left'
 						action={{
 							content: UIStrings.SendEmailVerb,
-							onClick:() => handleSendButtonClick(editorState, subject),
+							onClick:() => this.handleSendButtonClick(editorState, subject),
 							disabled: !enableButton
 						}} 
 							name="subject" value={subject} onChange={(event) => this.handleInputChange(event.target.name, event.target.value)}  />		
@@ -124,4 +165,4 @@ export default class MailerEditor extends Component {
 			</Fragment>
 		)
 	}
-}
+})

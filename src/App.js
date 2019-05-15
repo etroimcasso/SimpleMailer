@@ -8,8 +8,6 @@ import MailerEditor from './components/MailerEditor';
 import MailerHistory from './components/MailerHistory/MailerHistory'
 import SubscriptionsPanel from './components/SubscriptionsPanel/SubscriptionsPanel'
 import TopBar from './components/TopBar'
-import { convertToRaw } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
 import { BrowserRouter } from 'react-router-dom';
 import { observer } from "mobx-react"
 import AppStateStore from './store/AppStateStore'
@@ -26,22 +24,6 @@ const UIStrings = require('./config/UIStrings');
 const ReconnectionTimer = require('./helpers/ReconnectionTimer');
 
 
-const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
-
-
-const sendMailer = (message) => {
-  socket.emit('sendMailer', message)
-} 
-
-const getAllMailers = (callback) => {
-  socket.on('getAllMailersResults', (error, mailerResults) => callback(error, mailerResults))
-  socket.emit('getAllMailers')
-}
-
-const getAllMailerResults = (callback) => {
-  socket.on('getAllMailerResultsResults', (error, results) => callback(error, results))
-  socket.emit('getAllMailerResults')
-}
 
 //Subscriber is an object of email: and id:
 const removeSubscriber = (subscriber, callback) => {
@@ -50,34 +32,16 @@ const removeSubscriber = (subscriber, callback) => {
 }
 
 const addSubscriber = (email) => {
-    //socket.on('subscriberAdded', (error, subscriber) => callback(error, subscriber))
     socket.emit('addSubscriber', email)
 } 
 
-
 export default observer(class App extends Component {
-  state = {
-    mailerResults: [],
-    mailerHistoryResults: [],
-  }
 
   componentWillMount() {
-    //SubscribersState.getAllSubscribers()
-    //MailerHistoryState.getAllMailers()
-    //this.getAllMailerResults()
     document.title = UIStrings.AppTitle
   }
 
   componentDidMount() {
-
-    socket.on('mailerSendToSubscriberResult', (error, email) => {
-      this.setState({
-        mailerResults: this.state.mailerResults.concat({
-          email: email,
-          error: error
-        }),
-      })
-    })
     
   }
 
@@ -146,50 +110,8 @@ export default observer(class App extends Component {
       )  
   }
 
-  handleSendButtonClick = (editorState, subject) => {
-    const currentContent = editorState.getCurrentContent()
-    const rawContent = convertToRaw(currentContent)
-    const plainText = currentContent.getPlainText() //Plain Text
-    const htmlText = convertRawEditorContentToHTML(rawContent)
-
-    AppState.setMailerBeingSent(true)
-    AppState.setMailerProgressModalOpen(true)
-    this.setState({ 
-      mailerResults: [],
-    })
-
-    const message = {
-      senderEmail: null,
-      senderName: null,
-      receiverEmails: null,
-      ccReceivers: null,
-      bccReceivers: null,
-      subject: subject,
-      messageText: plainText,
-      html: htmlText,
-      attachments: null,
-      replyTo: null
-
-    }
-    
-    sendMailer(message, (error, subscriberEmail) => {})
-  }
-
  
-
-  closeModalAndConfirmMailerSend = () => {
-    AppState.setMailerProgressModalOpen(false)
-    this.setState({
-      //mailerProgressModalOpen: false,
-      mailerResults: [],
-    })
-  }
-
 	render() {
-    const { 
-      mailerResults,
-    } = this.state
-
     const {   
       subscriberInfoMessage,
       mailerBeingSent,
@@ -212,16 +134,6 @@ export default observer(class App extends Component {
       reloadMailerHistoryResultsPending,
     } = MailerHistoryState
 
-    const renderProps = {
-      mailerEditor: {
-        mailerBeingSent: mailerBeingSent,
-        mailerResults: mailerResults,
-        handleModalClose: this.closeModalAndConfirmMailerSend,
-        handleSendButtonClick: this.handleSendButtonClick,
-      },
-    }
-
-
     const  protectedRoutes = {
       root: "/",
       history: "/history",
@@ -235,7 +147,7 @@ export default observer(class App extends Component {
   			 <div className="App">
             <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions]} component={TopBar} />
   				  <Container style={{height: '100%'}}>
-              <Route exact path={protectedRoutes.root} render={props => <MailerEditor {...props} {...renderProps.mailerEditor}/>} />
+              <Route exact path={protectedRoutes.root} component={MailerEditor} />
               <Route exact path={protectedRoutes.history} component={MailerHistory} />
   				    <Route exact path={protectedRoutes.subscriptions} component={SubscriptionsPanel} />
               <Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
