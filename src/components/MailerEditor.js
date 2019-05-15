@@ -36,7 +36,8 @@ const styles = {
 	},
 }
 
-const sendMailer = (message) => {
+const sendMailer = (message, callback) => {
+	socket.on('mailerSendToSubscriberResult', (error, email) => callback(error, email)) 
   	socket.emit('sendMailer', message)
 } 
 
@@ -52,13 +53,9 @@ export default observer(class MailerEditor extends Component {
 	}
 
 	componentDidMount() {
-		socket.on('mailerSendToSubscriberResult', (error, email) => {
-		  AppState.addMailerResult({
-		          email: email,
-		          error: error
-		  })
-		})
+
 	}
+
 	
 
 	onEditorStateChange = (editorState) => {
@@ -79,8 +76,9 @@ export default observer(class MailerEditor extends Component {
 	    subject: "",
 	    editorState: EditorState.createEmpty()
 	  })
+	  AppState.clearMailerResults()
 	  AppState.setMailerProgressModalOpen(false)
-	  AppState.replaceMailerResults([])
+	  
 	}
 
 	handleSendButtonClick = (editorState, subject) => {
@@ -88,9 +86,10 @@ export default observer(class MailerEditor extends Component {
 	  	const rawContent = convertToRaw(currentContent)
 	  	const plainText = currentContent.getPlainText() //Plain Text
 	  	const htmlText = convertRawEditorContentToHTML(rawContent)
+	  	AppState.setMailerProgressModalOpen(true)
 
 
-	 	//AppState.replaceMailerResults([])
+	 	AppState.clearMailerResults()
 
 	  	const message = {
 	    	senderEmail: null,
@@ -106,18 +105,22 @@ export default observer(class MailerEditor extends Component {
 	  	}
 
 	  	AppState.setMailerBeingSent(true)
-	  	AppState.setMailerProgressModalOpen(true)
-	 	sendMailer(message)
+
+	 	sendMailer(message,(error, email) => {
+		  AppState.addMailerResult({
+		          email: email,
+		          error: error
+		  })
+		})
 	}
 
 
 	render() {
 		const { editorState, subject } = this.state
-		const { mailerProgressModalOpen, mailerResults, mailerBeingSent } = AppState
+		const { mailerProgressModalOpen, mailerBeingSent } = AppState
 		const { connection } = ConnectionState
 		const { subscribers: subscribersList, subscribersLoaded  } = SubscribersState
-
-		const errors = mailerResults.filter((item) => { return item.error }).length
+		const mailerResults = AppState.ongoingMailerResults
 
 		const editorValid = editorState.getCurrentContent().getPlainText().length > 0
 		const subjectValid = subject.length >= 3
@@ -128,11 +131,9 @@ export default observer(class MailerEditor extends Component {
 		return(
 			<Fragment>
 				<MailingProgressModal 
-				mailerResults={mailerResults} 
-				totalSubscribers={SubscribersState.subscriberCount}
-				open={mailerProgressModalOpen}
-				handleConfirmClick={this.closeModalAndConfirmMailerSend}
-				errors={errors}
+					handleConfirmClick={this.closeModalAndConfirmMailerSend}
+					open={mailerProgressModalOpen}
+					mailerResults={mailerResults}
 				/>
 				<Segment.Group>
 					<Segment>

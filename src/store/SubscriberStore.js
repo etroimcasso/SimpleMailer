@@ -48,6 +48,8 @@ class SubscriberStore {
 
    	addToSubscribersList(newItem) {
    		this.subscribers = this.subscribers.concat(newItem)
+         console.debug("Add to subs")
+         console.log(this.subscribers.length)
    	}
 
    	removeFromSubscribersList(email) {

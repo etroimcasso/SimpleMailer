@@ -36,7 +36,7 @@ export default class SubscriptionsPanelTable extends Component {
 					</Table.Row>
 				</Table.Header>
 				{ 
-					subscribers.map((item) => {
+					subscribers.slice(0).reverse().map((item) => {
 						return (
 							<SubscriptionPanelTableRowItem item={item} key={item} 
 							handleHover={this.handleRowHover}

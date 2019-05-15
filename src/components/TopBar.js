@@ -62,7 +62,7 @@ export default observer(class TopBar extends Component {
 
 
 		return (
-			<Menu stackable inverted icon borderless fixed="top" size="large">
+			<Menu compact inverted icon borderless fixed="top" size="large">
 				<Menu.Item header>
 					<Popup hideOnScroll 
 						trigger={(<Icon circular name="circle" color={connectionStatusIconColor} size="small" />)}

@@ -1,4 +1,4 @@
-  import {decorate, observable, action } from "mobx"
+  import {decorate, observable, action, computed } from "mobx"
   import openSocket from 'socket.io-client';
   const hostname = require('../config/hostname.js');
   const socket = openSocket(hostname.opensocket);
@@ -36,10 +36,22 @@
 
       addMailerResult(result) {
         this.mailerResults = this.mailerResults.concat(result)
+        this.mailerResults = Array.from(new Set(this.mailerResults.map(a => a.email)))
+             .map(email => {
+               return this.mailerResults.find(a => a.email === email)
+             })
       }
 
-      replaceMailerResults(result) {
-        this.mailerResults = result
+      get mailerResultsCount() {
+        return this.mailerResults.length
+      }
+      get ongoingMailerResults() {
+        return this.mailerResults
+
+      }
+
+      clearMailerResults() {
+        this.mailerResults = this.mailerResults.filter((item) => null)        
       }
   }
 export default decorate(AppStateStore, {
@@ -53,5 +65,7 @@ export default decorate(AppStateStore, {
 	setSubscriberInfoMessage: action,
 	setMailerProgressModalOpen: action,
   addMailerResult: action,
-  replaceMailerResults: action
+  mailerResultsCount: computed,
+  clearMailerResults: action,
+  ongoingMailerResults: computed
 })
