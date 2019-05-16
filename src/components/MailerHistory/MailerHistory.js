@@ -19,8 +19,7 @@ export default observer(class MailerHistory extends Component {
 
 	
 	render() {
-		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResultsLoaded, mailerHistoryResults  } = MailerHistoryState
-
+		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResultsLoaded } = MailerHistoryState
 		const historyLoaded = mailerHistoryLoaded && mailerHistoryResultsLoaded
 		const mailerHistoryCount = MailerHistoryState.mailerHistoryCount
 
@@ -32,7 +31,7 @@ export default observer(class MailerHistory extends Component {
 				<Container>
 
 					<ItemsPlaceholderSegment itemCount={mailerHistoryCount} itemsLoaded={historyLoaded} noItemsText={UIStrings.MailerHistory.NoHistory} iconName="envelope outline">
-						<MailerHistoryTable mailerHistory={mailerHistory} mailerHistoryResults={mailerHistoryResults} />
+						<MailerHistoryTable mailerHistory={mailerHistory} />
 					</ItemsPlaceholderSegment>
 				</Container>
 			</Segment>

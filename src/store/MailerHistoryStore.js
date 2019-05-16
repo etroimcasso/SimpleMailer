@@ -122,6 +122,10 @@ class MailerHistoryStore {
      	this.mailerHistoryResultsLoaded = isLoaded
     }
 
+    get allMailerHistoryResults() { 
+      return this.mailerHistoryResults 
+    }
+
 }
 
 export default decorate(MailerHistoryStore, {
@@ -143,6 +147,7 @@ export default decorate(MailerHistoryStore, {
 	mailerHistoryCount: computed,
 	setReloadMailerHistoryResultsPending: action,
 	setMailerHistoryResultsLoaded: action,
+  allMailerHistoryResults: computed
 
 })
 

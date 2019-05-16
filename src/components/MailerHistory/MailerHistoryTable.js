@@ -1,12 +1,17 @@
 import React, { Component, Fragment } from 'react';
 import { Table, Icon, Button, Popup } from 'semantic-ui-react';
+import { toJS } from 'mobx'
+import { observer } from "mobx-react"
 import MailerHistoryViewer from './MailerHistoryViewer';
+import MailerHistoryStore from '../../store/MailerHistoryStore'
+
+const MailerHistoryState = new MailerHistoryStore()
 
 const convertUTCTimeToLocalTime = require('../../helpers/ConvertUTCTimeToLocalTime')
 const UIStrings = require('../../config/UIStrings');
 
 
-export default class MailerHistoryTable extends Component {
+export default observer(class MailerHistoryTable extends Component {
 	state = {
 		activeId: -1
 	}
@@ -26,7 +31,10 @@ export default class MailerHistoryTable extends Component {
 
 	render() {
 		const { activeId } = this.state
-		const { mailerHistory, mailerHistoryResults } = this.props
+		const { mailerHistory } = this.props
+		const { mailerHistoryResults } = MailerHistoryState 
+		const structuredMailerHistoryResults = toJS(mailerHistoryResults).map((item) => item)
+
 		return(
 			<Table striped celled>
 				<Table.Header>
@@ -38,21 +46,13 @@ export default class MailerHistoryTable extends Component {
 						<Table.HeaderCell />
 					</Table.Row>
 				</Table.Header>
-				{ 
+				{ structuredMailerHistoryResults.length > 0 &&
 					mailerHistory.map((item) => {
-						var results = []
-						//console.log( "mailerRESULT")
-						//console.log(item.mailerResults)
-						const filterFunc = (historyResult) => historyResult._id === item.mailerResults[i]
-						/*
-						item.mailerResults.map((itemResult) => {
-							results = results.concat(mailerHistoryResults.filter(filterFunc))
-
-						})
-						*/
-						for (var i = 0; i < item.mailerResults.length; i++) {
-							results = results.concat(mailerHistoryResults.filter(filterFunc))
-						}
+						const results = item.mailerResults.map((resultItem) => {
+							const filterFunc = (historyResult) => historyResult._id === resultItem
+							return structuredMailerHistoryResults.filter(filterFunc)
+						}).map(resultMapItem => resultMapItem[0])
+						
 						return (
 							<MailerHistoryTableRowItem item={item} key={item} 
 							handleHover={this.handleRowHover}
@@ -64,7 +64,7 @@ export default class MailerHistoryTable extends Component {
 			</Table>
 		)
 	}
-}
+})
 
 
 class MailerHistoryTableRowItem extends Component {
