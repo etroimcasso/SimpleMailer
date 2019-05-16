@@ -48,11 +48,10 @@ export default observer(class MailerHistoryTable extends Component {
 				</Table.Header>
 				{ structuredMailerHistoryResults.length > 0 &&
 					mailerHistory.map((item) => {
-						const results = item.mailerResults.map((resultItem) => {
-							const filterFunc = (historyResult) => historyResult._id === resultItem
-							return structuredMailerHistoryResults.filter(filterFunc)
-						}).map(resultMapItem => resultMapItem[0])
-						
+						const results = item.mailerResults.map((resultItem) => 
+							structuredMailerHistoryResults.filter((historyResult) => 
+							historyResult._id === resultItem))
+						.map(resultMapItem => resultMapItem[0])
 						return (
 							<MailerHistoryTableRowItem item={item} key={item} 
 							handleHover={this.handleRowHover}
