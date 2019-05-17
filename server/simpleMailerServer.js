@@ -12,6 +12,7 @@ const Emailer = require('./lib/Emailer')
 const SubscriberController = require('./lib/controllers/SubscriberController')
 const MailerController = require('./lib/controllers/MailerController')
 const MailerResultController = require('./lib/controllers/MailerResultController')
+const MailerContentController = require('./lib/controllers/MailerContentController')
 const ServerStrings = require('./config/ServerStrings')
 
 app.set('forceSSLOptions', {
@@ -31,6 +32,17 @@ app.use(forceSsl)
 
 const root = require('path').join(__dirname, '..', 'build')
 app.use(express.static(root));
+
+
+/* DEBUG MAILERCONTENTCONTROLLER STUFF */
+console.debug("Directory Contents")
+MailerContentController.getFiles((error, files) => {
+	console.log("Directory Contents")
+	if (error) console.log(error)
+	else console.log(files)
+})
+/* END DEBUG MAILERCONTENTCONTROLLER STUFF */
+
 
 
 //Route for mailer content
