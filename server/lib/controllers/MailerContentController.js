@@ -13,34 +13,35 @@ getFileStatObject = async function (filePath) {
 	} catch (e) {
 		console.log(`Can't get file stats for ${filePath}: ${e}`)
 	}
-	console.log("FSSTAT")
-	console.log(fsStat)
-
 	return fsStat
 }
 
-addFilePath = (file) => `${contentDirectory}${file}`
+addFilePath = (path, file) => `${path}${file}`
 
 module.exports =  {
-	getFiles: async function (callback) {
+	getFiles: async function (directory, callback) {
+		const dir = (directory === "/") ? contentDirectory : path.join(contentDirectory, `${directory}/`)
 		let files
 		try {
-			files = await util.promisify(fs.readdir)(contentDirectory) 
+			files = await util.promisify(fs.readdir)(dir) 
 		} catch (e) {
 			console.error(`Could not read directory: ${e}`)
 		}
 
 		const fileList = files.map(async file =>  { 
+			//console.log(file[0])
+			const fileObject = await getFileStatObject(addFilePath(dir, file))
 			return {
 			//need to construct object { name: , sizeInBytes: }
-			name: file,
-			path: contentDirectory,
-			sizeInBytes: calculateFileSize(await getFileStatObject(addFilePath(file)))
+				name: file,
+				isDir: fileObject.isDirectory(),
+				path: dir,
+				sizeInBytes: calculateFileSize(fileObject)
 			}
 		})
 
 		Promise.all(fileList).then(result => { 
-			console.log(result)
+			//console.log(result)
 			callback(null, result)
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)

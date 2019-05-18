@@ -353,7 +353,7 @@ io.on('connection', (client) => {
 		})
 	})
 
-	client.on('getMailerContentFiles', () => {
+	client.on('getMailerContentFiles', (directory) => {
 		/*
 		MailerContentController.getFiles((error, files) => {
 			if (error) client.emit('getMailerContentFilesResults', error, null)
@@ -361,7 +361,7 @@ io.on('connection', (client) => {
 		})
 		*/
 
-		MailerContentController.getFiles((error, files) => {
+		MailerContentController.getFiles(directory, (error, files) => {
 			client.emit('getMailerContentFilesResults', error, files)
 		})
 

@@ -7,16 +7,9 @@ import openSocket from 'socket.io-client';
 import FlexView from 'react-flexview';
 import MailingProgressModal from './MailingProgressModal/MailingProgressModal';
 import SubscribersDisplay from './SubscribersDisplay';
-import { observer } from "mobx-react"
-import AppStateStore from '../store/AppStateStore'
-import ConnectionStateStore from '../store/ConnectionStateStore'
-import SubscriberStore from '../store/SubscriberStore'
+import { observer, inject } from "mobx-react"
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-
-const SubscribersState = new SubscriberStore()
-const ConnectionState = new ConnectionStateStore()
-const AppState = new AppStateStore()
 const UIStrings = require('../config/UIStrings');
 const pageTitle = require('../helpers/pageTitleFormatter')(UIStrings.PageTitles.NewMailer);
 const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
@@ -42,7 +35,7 @@ const sendMailer = (message, callback) => {
 } 
 
 
-export default observer(class MailerEditor extends Component {
+export default inject("appState", "connectionState", "subscriberState")(observer(class MailerEditor extends Component {
 	state = {
 		editorState: EditorState.createEmpty(),
 		subject: "",
@@ -76,8 +69,8 @@ export default observer(class MailerEditor extends Component {
 	    subject: "",
 	    editorState: EditorState.createEmpty()
 	  })
-	  AppState.clearMailerResults()
-	  AppState.setMailerProgressModalOpen(false)
+	  this.props.appState.clearMailerResults()
+	  this.props.appState.setMailerProgressModalOpen(false)
 	  
 	}
 
@@ -86,10 +79,10 @@ export default observer(class MailerEditor extends Component {
 	  	const rawContent = convertToRaw(currentContent)
 	  	const plainText = currentContent.getPlainText() //Plain Text
 	  	const htmlText = convertRawEditorContentToHTML(rawContent)
-	  	AppState.setMailerProgressModalOpen(true)
+	  	this.props.appState.setMailerProgressModalOpen(true)
 
 
-	 	AppState.clearMailerResults()
+	 	this.props.appState.clearMailerResults()
 
 	  	const message = {
 	    	senderEmail: null,
@@ -104,10 +97,10 @@ export default observer(class MailerEditor extends Component {
 	    	replyTo: null
 	  	}
 
-	  	AppState.setMailerBeingSent(true)
+	  	this.props.appState.setMailerBeingSent(true)
 
 	 	sendMailer(message,(error, email) => {
-		  AppState.addMailerResult({
+		  this.props.appState.addMailerResult({
 		          email: email,
 		          error: error
 		  })
@@ -117,6 +110,7 @@ export default observer(class MailerEditor extends Component {
 
 	render() {
 		const { editorState, subject } = this.state
+		const { appState: AppState, connectionState: ConnectionState, subscriberState: SubscribersState } = this.props
 		const { mailerProgressModalOpen, mailerBeingSent } = AppState
 		const { connection } = ConnectionState
 		const { subscribers: subscribersList, subscribersLoaded  } = SubscribersState
@@ -167,4 +161,4 @@ export default observer(class MailerEditor extends Component {
 			</Fragment>
 		)
 	}
-})
+}))

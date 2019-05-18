@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
-import { observer } from "mobx-react"
+import { observer, inject } from "mobx-react"
 import ConnectionStateStore from '../store/ConnectionStateStore'
 import SubscriberStore from '../store/SubscriberStore'
 import MailerHistoryStore from '../store/MailerHistoryStore'
-import MailerContentStore from '../store/MailerContentStore'
 const ConnectionState = new ConnectionStateStore()
 const SubscribersState = new SubscriberStore()
 const MailerHistoryState = new MailerHistoryStore()
-const MailerContentState = new MailerContentStore()
 
 const UIStrings = require('../config/UIStrings')
 
@@ -32,12 +30,14 @@ const styles = {
 }
 
 
-export default observer(class TopBar extends Component {
+export default inject("mailerContentState", "connectionState")(observer(class TopBar extends Component {
 
 	render() {
+		const { mailerContentState: MailerContentState, connectionState: ConnectionState } = this.props
 		const { connection } = ConnectionState
 		const { subscribersLoaded } = SubscribersState
 		const { mailerHistory, mailerHistoryLoaded } = MailerHistoryState
+		
 		const { mailerContentFilesLoaded } = MailerContentState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
@@ -103,4 +103,4 @@ export default observer(class TopBar extends Component {
 			</Menu>
 		)
 	}
-})
+}))

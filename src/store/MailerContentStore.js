@@ -15,10 +15,13 @@ const socket = openSocket(hostname.opensocket);
 let noTestContentFilterRule = (item) => item.name !== 'testContent.txt'
 
 
+
 class MailerContentStore {
 	mailerContentFiles = []
 	mailerContentFilesLoaded = false
 	reloadMailerContentsFilesPending = true
+	directory = ['/']
+
 
 	constructor() {
 		socket.on('connect', () => {
@@ -31,16 +34,16 @@ class MailerContentStore {
 
 		socket.on('mailerContentFileAdded', (file) => this.addFile(file))
 		socket.on('mailerContentFileRemoved', (file) => this.removeFile(file))
+
 	}
 
-	dispatchGetAllMailerContentFilesSocketMessage(callback) {
+	dispatchGetAllMailerContentFilesSocketMessage(fileDir, callback) {
 		socket.on('getMailerContentFilesResults', (error, files) => callback(error, files))
-		socket.emit('getMailerContentFiles')
+		socket.emit('getMailerContentFiles', fileDir)
 	}
-
 
 	getMailerContentsFiles() {
-		this.dispatchGetAllMailerContentFilesSocketMessage((error, files) => {
+		this.dispatchGetAllMailerContentFilesSocketMessage(this.directory.join(''), (error, files) => {
 			if (!error) {
 				this.clearFilesList()
 				this.replaceFilesList(this.filterOutTestContent(files))
@@ -51,6 +54,7 @@ class MailerContentStore {
 		})
 	}
 
+
 	filterOutTestContent = (list) => list.filter(noTestContentFilterRule)
 	replaceFilesList = (newList) => this.mailerContentFiles = newList
 	clearFilesList = () => this.mailerContentFiles = this.mailerContentFiles.filter((item) => null)
@@ -59,11 +63,25 @@ class MailerContentStore {
 	setFilesLoaded = (loaded) => this.mailerContentFilesLoaded = loaded
 	setReloadFilesPending = (pending) => this.reloadMailerContentsFilesPending = pending
 
+	
+
+	setDirectory = (dir) => {
+		this.directory = dir.split('')
+		this.getMailerContentsFiles()
+	}
+
+	resetDirectory = () => {
+		this.directory.set(['/'])
+	}
+
 	get sortedFileList() {
 		//This is for later
 	}
 
 	get filesCount() { return this.mailerContentFiles.length }
+
+	get currentDirectory() { return this.directory.join('') }
+
 
 
 
@@ -73,13 +91,16 @@ export default decorate(MailerContentStore, {
 	mailerContentFiles: observable,
 	mailerContentFilesLoaded: observable,
 	reloadMailerContentsFilesPending: observable,
+	directory: observable,
 	getMailerContentsFiles: action,
 	replaceFilesList: action,
 	clearFilesList: action,
 	setFilesLoaded: action,
 	setReloadFilesPending: action,
+	setDirectory: action,
 	addFile: action,
 	removeFile: action,
 	sortedFileList: computed,
-	filesCount: computed
+	filesCount: computed,
+	currentDirectory: computed
 })

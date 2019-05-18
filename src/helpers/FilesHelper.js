@@ -4,7 +4,7 @@
 	1: KB
 	2: MB <--Should probably never proceed past this on the internet for years to come when it's just mailing list content 
 	3: GB
-	4: TBs
+	4: TB
 */
 const getFileSizeSuffix = (index) => {
 	switch(index) {
@@ -36,8 +36,6 @@ export default class FilesHelper {
 	//This might be even easier if I just split the file along dots and then take the value of that array.length - 1
 
 	getFileExtension = (filename) => filename.split('.')[filename.split('.').length - 1]
-
-	//getFileName: (filename) => filename.split('').reduceRight((accumulator, currentValue, index, array) => (currentValue === ".") ? accumulator = array.slice(0, index - 1) : accumulator ),
 
 	//Collect all but the last item in the array
 	getFileName =  (filename) => filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))

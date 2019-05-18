@@ -3,22 +3,20 @@
 /* This should 
  	- Have buttons for changing the view type from icon grid to list view
  	- Have buttons for changing the sorting from A-Z, Z-A, Group (by file type), Date Ascend / Descend, File Size, etc 
- 	- Will access the MailerContentStore for its files. Individual items in the file list will handle their own deletions. 
+ 	- Will access the mailerContentState for its files. Individual items in the file list will handle their own deletions. 
  	- This component's parent will handle addition of files / or the Drag and drop component will, when it is implemented
  */
 import React, { Component, Fragment } from 'react'
-import { observer } from "mobx-react"
+import { observer, inject } from "mobx-react"
 import FileList from './FileList'
-import MailerContentStore from '../../store/MailerContentStore'
-const MailerContentState = new MailerContentStore()
 const UIStrings = require('../../config/UIStrings')
 
-export default observer(class FileListViewController extends Component {
-
+export default inject("mailerContentState")(observer(class FileListController extends Component {
 
 	render() {
-		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded } = MailerContentState
-		const numberOfFiles = MailerContentState.filesCount
+		const { mailerContentState } = this.props
+		const { filesCount: numberOfFiles } = mailerContentState
+
 		return(
 			<Fragment>
 				<FileList />
@@ -26,4 +24,4 @@ export default observer(class FileListViewController extends Component {
 		)
 	}
 
-})
+}))
