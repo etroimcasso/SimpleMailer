@@ -16,6 +16,7 @@ module.exports = {
 	SubscribeError: (email) =>  `${email} is already subscribed`,
 	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
 	NoSubscribers: "There are no subscribers",
+	NoFiles: "There are no files",
 	SendEmailVerb: "Send",
 	AddSubscriberVerb: "Add",
 	SubscriptionsPanel: {

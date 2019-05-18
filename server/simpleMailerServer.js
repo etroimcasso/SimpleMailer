@@ -352,11 +352,10 @@ io.on('connection', (client) => {
 
 	client.on('getMailerContentFiles', () => {
 		MailerContentController.getFiles((error, files) => {
-			console.log("Directory Contents")
 			if (error) client.emit('getMailerContentFilesResults', error, null)
 			client.emit('getMailerContentFilesResults', null, files)
 		})
-		/* END DEBUG MAILERCONTENTCONTROLLER STUFF */
+
 	})
 		
 });

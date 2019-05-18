@@ -9,7 +9,7 @@ const socket = openSocket(hostname.opensocket);
 //Should filter out testContent.txt
 //Should contain state of loading like Subscribers and MailerHistory do
 //Loading state is set to completed when file contents are 0 (including testContent.txt being filtered out)
-//Loading state is set to completed when recevives event 'getMailerContentsListingResults' 
+//Loading state is set to completed when receives event 'getMailerContentsListingResults' 
 //Should compute an array that contains arrays of files organized into types using filters 
 
 let noTestContentFilterRule = (item) => item != 'testContent.txt'
@@ -44,11 +44,10 @@ class MailerContentStore {
 			if (!error) {
 				this.clearFilesList()
 				this.replaceFilesList(this.filterOutTestContent(files))
-				this.setFilesLoaded(true)
-				this.setReloadFilesPending(false)
-
-
+				//this.replaceFilesList(files)
 			}
+			this.setFilesLoaded(true)
+			this.setReloadFilesPending(false)
 		})
 	}
 
@@ -75,7 +74,7 @@ export default decorate(MailerContentStore, {
 	mailerContentFilesLoaded: observable,
 	reloadMailerContentsFilesPending: observable,
 	getMailerContentsFiles: action,
-	//replaceFilesList: action,
+	replaceFilesList: action,
 	clearFilesList: action,
 	setFilesLoaded: action,
 	setReloadFilesPending: action,
