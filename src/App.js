@@ -13,13 +13,14 @@ import TopBar from './components/TopBar'
 import FileManager from './components/FileManager'
 import MailerContentStore from './store/MailerContentStore'
 import AppStateStore from './store/AppStateStore'
+import MailerHistoryStore from './store/MailerHistoryStore'
 import ConnectionStateStore from './store/ConnectionStateStore'
 import SubscriberStore from './store/SubscriberStore'
 const ConnectionState = new ConnectionStateStore()
 const MailerContentState = new MailerContentStore()
 const AppState = new AppStateStore()
 const SubscriberState = new SubscriberStore()
-
+const MailerHistoryState = new MailerHistoryStore()
 const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 const UIStrings = require('./config/UIStrings');
@@ -125,7 +126,12 @@ export default observer(class App extends Component {
     
 
   	return (
-      <Provider mailerContentState={MailerContentState} appState={AppState} connectionState={ConnectionState} subscriberState={SubscriberState}>
+      <Provider mailerContentState={MailerContentState} 
+      appState={AppState} 
+      connectionState={ConnectionState} 
+      subscriberState={SubscriberState}
+      mailerHistoryState={MailerHistoryState}
+      >
         <BrowserRouter>
   			   <div className="App">
               <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions, protectedRoutes.fileManager]} component={TopBar} />

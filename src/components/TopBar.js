@@ -2,13 +2,6 @@ import React, { Component } from 'react';
 import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { observer, inject } from "mobx-react"
-import ConnectionStateStore from '../store/ConnectionStateStore'
-import SubscriberStore from '../store/SubscriberStore'
-import MailerHistoryStore from '../store/MailerHistoryStore'
-const ConnectionState = new ConnectionStateStore()
-const SubscribersState = new SubscriberStore()
-const MailerHistoryState = new MailerHistoryStore()
-
 const UIStrings = require('../config/UIStrings')
 
 const styles = {
@@ -30,10 +23,10 @@ const styles = {
 }
 
 
-export default inject("mailerContentState", "connectionState")(observer(class TopBar extends Component {
+export default inject("mailerContentState", "connectionState", "subscriberState", "mailerHistoryState")(observer(class TopBar extends Component {
 
 	render() {
-		const { mailerContentState: MailerContentState, connectionState: ConnectionState } = this.props
+		const { mailerContentState: MailerContentState, connectionState: ConnectionState, subscriberState: SubscribersState, mailerHistoryState: MailerHistoryState } = this.props
 		const { connection } = ConnectionState
 		const { subscribersLoaded } = SubscribersState
 		const { mailerHistory, mailerHistoryLoaded } = MailerHistoryState
