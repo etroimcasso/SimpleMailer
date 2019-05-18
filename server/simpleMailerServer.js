@@ -12,7 +12,7 @@ const Emailer = require('./lib/Emailer')
 const SubscriberController = require('./lib/controllers/SubscriberController')
 const MailerController = require('./lib/controllers/MailerController')
 const MailerResultController = require('./lib/controllers/MailerResultController')
-const MailerContentController = require('./lib/controllers/MailerContentController')
+const FileSystemController = require('./lib/controllers/FileSystemController')
 const ServerStrings = require('./config/ServerStrings')
 
 app.set('forceSSLOptions', {
@@ -355,13 +355,13 @@ io.on('connection', (client) => {
 
 	client.on('getMailerContentFiles', (directory) => {
 		/*
-		MailerContentController.getFiles((error, files) => {
+		FileSystemController.getFiles((error, files) => {
 			if (error) client.emit('getMailerContentFilesResults', error, null)
 			client.emit('getMailerContentFilesResults', null, files)
 		})
 		*/
 
-		MailerContentController.getFiles(directory, (error, files) => {
+		FileSystemController.getFiles(directory, (error, files) => {
 			client.emit('getMailerContentFilesResults', error, files)
 		})
 
