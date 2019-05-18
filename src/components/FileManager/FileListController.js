@@ -11,11 +11,11 @@ import { observer, inject } from "mobx-react"
 import FileList from './FileList'
 const UIStrings = require('../../config/UIStrings')
 
-export default inject("mailerContentState")(observer(class FileListController extends Component {
+export default inject("fileSystemState")(observer(class FileListController extends Component {
 
 	render() {
-		const { mailerContentState } = this.props
-		const { filesCount: numberOfFiles } = mailerContentState
+		const { fileSystemState: FileSystemState } = this.props
+		const { filesCount: numberOfFiles } = FileSystemState
 
 		return(
 			<Fragment>

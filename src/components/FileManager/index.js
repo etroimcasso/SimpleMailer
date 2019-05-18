@@ -7,15 +7,15 @@ import FileListController from './FileListController'
 const UIStrings = require('../../config/UIStrings')
 const FilesHelper = require('../../helpers/FilesHelper')
 
-export default inject("mailerContentState")(observer(class FileManager extends Component {
+export default inject("fileSystemState")(observer(class FileManager extends Component {
 
 	handleFileDeleteButton = () => {
 
 	}
 
 	render() {
-		const { mailerContentState } = this.props
-		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory } = mailerContentState
+		const { fileSystemState: FileSystemState } = this.props
+		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory } = FileSystemState
 
 		return (
 	

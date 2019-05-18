@@ -1,17 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { Table, Icon, Button, Popup } from 'semantic-ui-react';
 import { toJS } from 'mobx'
-import { observer } from "mobx-react"
+import { observer, inject } from "mobx-react"
 import MailerHistoryViewer from './MailerHistoryViewer';
-import MailerHistoryStore from '../../store/MailerHistoryStore'
-
-const MailerHistoryState = new MailerHistoryStore()
-
 const convertUTCTimeToLocalTime = require('../../helpers/ConvertUTCTimeToLocalTime')
 const UIStrings = require('../../config/UIStrings');
 
 
-export default observer(class MailerHistoryTable extends Component {
+export default inject("mailerHistoryState")(observer(class MailerHistoryTable extends Component {
 	state = {
 		activeId: -1
 	}
@@ -31,8 +27,8 @@ export default observer(class MailerHistoryTable extends Component {
 
 	render() {
 		const { activeId } = this.state
-		const { mailerHistory } = this.props
-		const { mailerHistoryResults } = MailerHistoryState 
+		const { mailerHistoryState: MailerHistoryState } = this.props
+		const { mailerHistoryResults, mailerHistory } = MailerHistoryState 
 		const structuredMailerHistoryResults = toJS(mailerHistoryResults).map((item) => item)
 
 		return(
@@ -63,7 +59,7 @@ export default observer(class MailerHistoryTable extends Component {
 			</Table>
 		)
 	}
-})
+}))
 
 
 class MailerHistoryTableRowItem extends Component {

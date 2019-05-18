@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Segment, Dimmer, Loader, Container, Header, Icon } from 'semantic-ui-react';
-import { observer } from "mobx-react"
+import { observer, inject } from "mobx-react"
 import SubscriptionsPanelTable from './SubscriptionsPanelTable';
 import AddSubscriberForm from './AddSubscriberForm';
 import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
-import SubscriberStore from '../../store/SubscriberStore'
 import openSocket from 'socket.io-client';
-const SubscribersState = new SubscriberStore()
+
 const UIStrings = require('../../config/UIStrings');
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.Subscriptions);
 const hostname = require('../../config/hostname.js');
@@ -29,7 +28,7 @@ const fullHeight = {
 	height: '100%'
 }
 
-export default observer(class SubscriptionPanel extends Component {
+export default inject("subscriberState")(observer(class SubscriptionPanel extends Component {
 
 	componentWillMount() {
 		document.title = pageTitle
@@ -47,6 +46,7 @@ export default observer(class SubscriptionPanel extends Component {
 
 	
 	render() {
+		const { subscriberState: SubscribersState } = this.props
 		const { subscribers, subscribersLoaded } = SubscribersState
 		const subscriberCount = SubscribersState.subscriberCount
 
@@ -64,4 +64,4 @@ export default observer(class SubscriptionPanel extends Component {
 			</Segment>
 		)
 	}
-})
+}))

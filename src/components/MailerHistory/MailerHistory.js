@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import { Segment, Dimmer, Loader, Container } from 'semantic-ui-react';
 import MailerHistoryTable from './MailerHistoryTable'
 import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
-import { observer } from "mobx-react"
-import AppStateStore from '../../store/AppStateStore'
-import MailerHistoryStore from '../../store/MailerHistoryStore'
-const MailerHistoryState = new MailerHistoryStore()
+import { observer, inject } from "mobx-react"
 
 const UIStrings = require('../../config/UIStrings');
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.History);
 
 
-export default observer(class MailerHistory extends Component {
+export default inject("mailerHistoryState")(observer(class MailerHistory extends Component {
 
 	componentWillMount() {
 		document.title = pageTitle
@@ -19,6 +16,7 @@ export default observer(class MailerHistory extends Component {
 
 	
 	render() {
+		const { mailerHistoryState: MailerHistoryState } = this.props
 		const { mailerHistory, mailerHistoryLoaded, mailerHistoryResultsLoaded } = MailerHistoryState
 		const historyLoaded = mailerHistoryLoaded && mailerHistoryResultsLoaded
 		const mailerHistoryCount = MailerHistoryState.mailerHistoryCount
@@ -37,5 +35,5 @@ export default observer(class MailerHistory extends Component {
 			</Segment>
 		)
 	}
-})
+}))
 

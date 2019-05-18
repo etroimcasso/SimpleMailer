@@ -4,16 +4,16 @@ import FilesHelper from '../../helpers/FilesHelper'
 const UIStrings = require('../../config/UIStrings')
 const FileHelper = new FilesHelper()
 
-export default inject("mailerContentState")(observer(class FileList extends Component {
+export default inject("fileSystemState")(observer(class FileList extends Component {
 
 	handleFolderClick = (filename) => {
-		this.props.mailerContentState.setDirectory(`${this.props.mailerContentState.currentDirectory}${filename}/`)
+		this.props.fileSystemState.setDirectory(`${this.props.fileSystemState.currentDirectory}${filename}/`)
 	}
 
 
 	render() {
-		const { mailerContentState } = this.props
-		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles } = mailerContentState
+		const { fileSystemState: FileSystemState } = this.props
+		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles } = FileSystemState
 		return(
 			<Fragment>
 					{(numberOfFiles > 0) ? files.map((file) => { 

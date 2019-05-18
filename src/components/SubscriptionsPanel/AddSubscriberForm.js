@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Input } from 'semantic-ui-react';
-import { observer } from "mobx-react"
-import ConnectionStateStore from '../../store/ConnectionStateStore'
-const ConnectionState = new ConnectionStateStore()
+import { observer, inject } from "mobx-react"
+
 
 const UIStrings = require('../../config/UIStrings');
 const InputValidator = require('../../helpers/InputValidator')
@@ -46,7 +45,7 @@ const generateEmailsArray = (emailsString) => {
 	return emailsString.split(/,| /)
 }
 
-export default observer(class AddSubscriberForm extends Component {
+export default inject("connectionState")(observer(class AddSubscriberForm extends Component {
 	state = {
 		subscriber: ""
 	}
@@ -79,9 +78,12 @@ export default observer(class AddSubscriberForm extends Component {
 
 	render() {
 		const { subscriber } = this.state
+		const { connectionState: ConnectionState } = this.props
 		const { connection } = ConnectionState
+		console.log("FUCK YOU FILE")
+		console.log(connection)
 
-		const buttonDisabled = !connection
+		const buttonDisabled = !connection && !InputValidator.fieldIsEmpty(subscriber)
 
 		return(
 			<Fragment>
@@ -92,9 +94,9 @@ export default observer(class AddSubscriberForm extends Component {
 				disabled: buttonDisabled
 			}} 
 			name="subscriber" value={subscriber} onChange={(event) => this.handleInputChange(event.target.name, event.target.value)}  
-			onKeyPress={(event) => this.handleKeyPress(event.key)}
+			onKeyPress={(!buttonDisabled) ? (event) => this.handleKeyPress(event.key) : null}
 			/>
 			</Fragment>
 		)
 	}
-})
+}))

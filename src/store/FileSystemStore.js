@@ -16,7 +16,7 @@ let noTestContentFilterRule = (item) => item.name !== 'testContent.txt'
 
 
 
-class MailerContentStore {
+class FileSystemStore {
 	mailerContentFiles = []
 	mailerContentFilesLoaded = false
 	reloadMailerContentsFilesPending = true
@@ -87,7 +87,7 @@ class MailerContentStore {
 
 }
 
-export default decorate(MailerContentStore, {
+export default decorate(FileSystemStore, {
 	mailerContentFiles: observable,
 	mailerContentFilesLoaded: observable,
 	reloadMailerContentsFilesPending: observable,

@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import { Button, Icon, Modal } from 'semantic-ui-react';
-import { observer } from "mobx-react"
+import { observer, inject } from "mobx-react"
 import MailingProgressIndicator from './MailingProgressIndicator';
 import MailerResultsList from './MailerResultsList';
-import SubscriberStore from '../../store/SubscriberStore'
-import AppStateStore from '../../store/AppStateStore'
-const AppState = new AppStateStore()
-const SubscribersState = new SubscriberStore()
+
 
 
 const UIStrings = require('../../config/UIStrings')
 
-export default observer(class MailingProgressModal extends Component {
+export default inject("subscriberState")(observer(class MailingProgressModal extends Component {
 
 	render() {
-		const { handleConfirmClick, open, mailerResults } = this.props
+		const { handleConfirmClick, open, mailerResults, subscriberState: SubscribersState } = this.props
 
 		const totalSubscribers = SubscribersState.subscriberCount
 		const emailsSent = mailerResults.length
@@ -50,4 +47,4 @@ export default observer(class MailingProgressModal extends Component {
 			</Modal>
 		)
 	}
-})
+}))
