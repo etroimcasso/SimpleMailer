@@ -31,12 +31,15 @@ const ssl_options = {
 app.use(forceSsl)
 
 const root = require('path').join(__dirname, '..', 'build')
+const mailerContentRoot = require('path').join(__dirname, '..', 'mailerContent')
+console.log(`MailerContent root: ${mailerContentRoot}`)
 app.use(express.static(root));
 
 
 //Route for mailer content
 app.get("/mailerContent/:fileName", (req, res, next) => {
-	res.sendFile(req.params.fileName, path.join(root, 'mailerContent/'))
+	 console.log(path.join(mailerContentRoot, 'mailerContent'))
+	res.sendFile(path.join(mailerContentRoot, `${req.params.fileName}`))
 })
 
 
@@ -351,10 +354,18 @@ io.on('connection', (client) => {
 	})
 
 	client.on('getMailerContentFiles', () => {
+		/*
 		MailerContentController.getFiles((error, files) => {
 			if (error) client.emit('getMailerContentFilesResults', error, null)
 			client.emit('getMailerContentFilesResults', null, files)
 		})
+		*/
+
+		MailerContentController.getFiles((error, files) => {
+			client.emit('getMailerContentFilesResults', error, files)
+		})
+
+		
 
 	})
 		

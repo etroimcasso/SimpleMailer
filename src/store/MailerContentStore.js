@@ -12,7 +12,7 @@ const socket = openSocket(hostname.opensocket);
 //Loading state is set to completed when receives event 'getMailerContentsListingResults' 
 //Should compute an array that contains arrays of files organized into types using filters 
 
-let noTestContentFilterRule = (item) => item != 'testContent.txt'
+let noTestContentFilterRule = (item) => item.name !== 'testContent.txt'
 
 
 class MailerContentStore {
@@ -55,7 +55,7 @@ class MailerContentStore {
 	replaceFilesList = (newList) => this.mailerContentFiles = newList
 	clearFilesList = () => this.mailerContentFiles = this.mailerContentFiles.filter((item) => null)
 	addFile = (file) => this.mailerContentFiles = this.mailerContentFiles.concat(file)
-	removeFile = (file) => this.mailerContentFiles = this.mailerContentFiles.filter((item) => item != file)
+	removeFile = (file) => this.mailerContentFiles = this.mailerContentFiles.filter((item) => item !== file)
 	setFilesLoaded = (loaded) => this.mailerContentFilesLoaded = loaded
 	setReloadFilesPending = (pending) => this.reloadMailerContentsFilesPending = pending
 
