@@ -34,38 +34,17 @@ const root = require('path').join(__dirname, '..', 'build')
 app.use(express.static(root));
 
 
-/* DEBUG MAILERCONTENTCONTROLLER STUFF */
-console.debug("Directory Contents")
-MailerContentController.getFiles((error, files) => {
-	console.log("Directory Contents")
-	if (error) console.log(error)
-	else console.log(files)
-})
-/* END DEBUG MAILERCONTENTCONTROLLER STUFF */
-
-
-
 //Route for mailer content
-/*
 app.get("/mailerContent/:fileName", (req, res, next) => {
 	res.sendFile(req.params.fileName, path.join(root, 'mailerContent/'))
 })
-*/
+
 
 //Route for everything else
 
 app.get("*", (req, res) => {
 	res.sendFile('index.html', { root })
 })
-
-
-app.get('/api/home', function(req, res) {
-  res.send('Welcome!');
-});
-
-app.get('/api/secret', function(req, res) {
-  res.send('The password is potato');
-});
 
 const server = https.createServer(ssl_options, app);
 
@@ -76,6 +55,7 @@ http.createServer(app).listen(process.env.HTTP_PORT)
 server.listen(process.env.HTTPS_PORT,() => {
 	console.log(`Listening on port ${process.env.HTTPS_PORT}`)
 })
+
 
 //MongoDBURL Helper
 const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
@@ -368,6 +348,15 @@ io.on('connection', (client) => {
 				io.emit('noMailerResults')
 			}
 		})
+	})
+
+	client.on('getMailerContentFiles', () => {
+		MailerContentController.getFiles((error, files) => {
+			console.log("Directory Contents")
+			if (error) client.emit('getMailerContentFilesResults', error, null)
+			client.emit('getMailerContentFilesResults', null, files)
+		})
+		/* END DEBUG MAILERCONTENTCONTROLLER STUFF */
 	})
 		
 });

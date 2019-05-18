@@ -3,7 +3,7 @@ import openSocket from 'socket.io-client';
 
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
-const ReconnectionTimer = require('../helpers/ReconnectionTimer');
+//const ReconnectionTimer = require('../helpers/ReconnectionTimer');
 
 
 
@@ -11,19 +11,17 @@ class MailerHistoryStore {
 	mailerHistory = [] ///Rename all subscribersList props / states to this
 	mailerHistoryLoaded = false
 	mailerHistoryResults = []
-	reloadMailerHistoryPending = false
+	reloadMailerHistoryPending = true
 	mailerHistoryResultsLoaded = false
-    reloadMailerHistoryResultsPending = false
+  reloadMailerHistoryResultsPending = true
 
    	constructor() {
-   		this.getAllMailers()
-   		this.getAllMailerResults()
+   		//this.getAllMailers()
+   		//this.getAllMailerResults()
 
    		socket.on('connect', () => {
    			if (this.reloadMailerHistoryPending) this.getAllMailers()
    			if (this.reloadMailerHistoryResultsPending) this.getAllMailerResults()
-   			this.setReloadMailerHistoryPending(false)
-   			this.setReloadMailerHistoryResultsPending(false)
    		})
 
    		socket.on('disconnect', () => {
@@ -72,14 +70,17 @@ class MailerHistoryStore {
 	
 	//Reloads subscriber list
 	getAllMailers() {
+    /*
 		ReconnectionTimer(3000, () => {
 		  if (!this.mailerHistoryLoaded) this.getAllMailers()
 		})
+  */
 
    		this.dispatchGetMailerHistorySocketMessage((error, mailerHistory) => {
    			if (!error) {
    				this.replaceMailerHistory(JSON.parse(mailerHistory))
    				this.setMailerHistoryLoaded(true)
+          this.setReloadMailerHistoryPending(false)
    			}
    		})
    	}
@@ -90,15 +91,18 @@ class MailerHistoryStore {
    	}
 
    	getAllMailerResults() {
+      /*
    	  ReconnectionTimer(3000,() => { 
    	    if (!this.mailerHistoryResultsLoaded) 
    	      this.getAllMailerResults() 
    	  })
+      */
 
    	  this.dispatchGetMailerHistoryResultsSocketMessage((error, mailerHistoryResults) => {
    	    if (!error) {
    	      this.setMailerHistoryResultsLoaded(true)
    	      this.replaceMailerHistoryResults(JSON.parse(mailerHistoryResults))
+          this.setReloadMailerHistoryResultsPending(false)
    	    }
    	  })
    	}

@@ -2,19 +2,18 @@ import { decorate, observable, action, computed } from "mobx"
 import openSocket from 'socket.io-client';
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
-const ReconnectionTimer = require('../helpers/ReconnectionTimer');
+//const ReconnectionTimer = require('../helpers/ReconnectionTimer');
 
 class SubscriberStore {
 	subscribers = [] ///Rename all subscribersList props / states to this
 	subscribersLoaded = false
-	reloadSubscribersPending = false
+	reloadSubscribersPending = true
 	subscriberError = false
 
    	constructor() {
-   		this.getAllSubscribers()
+   		//this.getAllSubscribers()
    		socket.on('connect', () => {
    			if (this.reloadSubscribersPending) this.getAllSubscribers()
-   				this.setReloadSubscribersPending(false)
    		})
 
    		socket.on('disconnect', () => {
@@ -63,14 +62,17 @@ class SubscriberStore {
 	
 	//Reloads subscriber list
 	getAllSubscribers() {
+      /*
 		ReconnectionTimer(3000, () => {
 		  if (!this.subscribersLoaded) this.getAllSubscribers()
 		})
+   */
 
    		this.dispatchGetSubscribersSocketMessage((error, subscribers) => {
    			if (!error) {
    				this.replaceSubscribersList(JSON.parse(subscribers))
    				this.setSubscribersLoaded(true)
+               this.setReloadSubscribersPending(false)
    			}
    		})
    	}

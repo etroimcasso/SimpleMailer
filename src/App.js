@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, BrowserRouter } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'; 
@@ -8,14 +8,7 @@ import MailerEditor from './components/MailerEditor';
 import MailerHistory from './components/MailerHistory/MailerHistory'
 import SubscriptionsPanel from './components/SubscriptionsPanel/SubscriptionsPanel'
 import TopBar from './components/TopBar'
-import { BrowserRouter } from 'react-router-dom';
-import { observer } from "mobx-react"
-import AppStateStore from './store/AppStateStore'
-import SubscriberStore from './store/SubscriberStore'
-import MailerHistoryStore from './store/MailerHistoryStore'
-const AppState = new AppStateStore()
-const SubscribersState = new SubscriberStore()
-const MailerHistoryState = new MailerHistoryStore()
+import FileManager from './components/FileManager'
 
 
 const hostname = require('./config/hostname.js');
@@ -35,7 +28,7 @@ const addSubscriber = (email) => {
     socket.emit('addSubscriber', email)
 } 
 
-export default observer(class App extends Component {
+export default class App extends Component {
 
   componentWillMount() {
     document.title = UIStrings.AppTitle
@@ -116,7 +109,8 @@ export default observer(class App extends Component {
     const protectedRoutes = {
       root: "/",
       history: "/history",
-      subscriptions:  "/subscriptions"
+      subscriptions:  "/subscriptions",
+      fileManager: "/files"
     }
 
     
@@ -124,11 +118,12 @@ export default observer(class App extends Component {
   	return (
       <BrowserRouter>
   			 <div className="App">
-            <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions]} component={TopBar} />
+            <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions, protectedRoutes.fileManager]} component={TopBar} />
   				  <Container style={{height: '100%'}}>
               <Route exact path={protectedRoutes.root} component={MailerEditor} />
               <Route exact path={protectedRoutes.history} component={MailerHistory} />
   				    <Route exact path={protectedRoutes.subscriptions} component={SubscriptionsPanel} />
+              <Route exact path={protectedRoutes.fileManager} component={FileManager} />
               <Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
               <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
               <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
@@ -137,7 +132,7 @@ export default observer(class App extends Component {
         </BrowserRouter>
   		)
   }
-})
+}
 
 
 

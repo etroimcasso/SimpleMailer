@@ -5,9 +5,11 @@ import { observer } from "mobx-react"
 import ConnectionStateStore from '../store/ConnectionStateStore'
 import SubscriberStore from '../store/SubscriberStore'
 import MailerHistoryStore from '../store/MailerHistoryStore'
+import MailerContentStore from '../store/MailerContentStore'
 const ConnectionState = new ConnectionStateStore()
 const SubscribersState = new SubscriberStore()
 const MailerHistoryState = new MailerHistoryStore()
+const MailerContentState = new MailerContentStore()
 
 const UIStrings = require('../config/UIStrings')
 
@@ -31,31 +33,12 @@ const styles = {
 
 
 export default observer(class TopBar extends Component {
-	state = {
-		//connection: false
-	}
-
-	componentDidMount() {
-		/*
-		socket.on('connect', () => {
-			this.setState({
-				connection: true,
-			})
-		})
-
-		socket.on('disconnect', () => {
-			this.setState({
-				connection: false,
-			})
-		})
-		*/
-	}
-
 
 	render() {
 		const { connection } = ConnectionState
 		const { subscribersLoaded } = SubscribersState
 		const { mailerHistory, mailerHistoryLoaded } = MailerHistoryState
+		const { mailerContentFilesLoaded } = MailerContentState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -99,6 +82,19 @@ export default observer(class TopBar extends Component {
 						</Label>
 					}
 					{ !subscribersLoaded && 
+						<div style={styles.loadingIconPadding}>
+							<Icon name="spinner" loading />
+						</div>
+					}
+				</Menu.Item>
+				<Menu.Item name="files" as={NavLink} to="/files">
+					{UIStrings.TopBar.FileManagerText}
+					{ mailerContentFilesLoaded &&
+						<Label circular>
+							{MailerContentState.filesCount}
+						</Label>
+					}
+					{ !mailerContentFilesLoaded && 
 						<div style={styles.loadingIconPadding}>
 							<Icon name="spinner" loading />
 						</div>

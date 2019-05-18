@@ -37,7 +37,8 @@ module.exports = {
 		ConnectionStatusDisconnected: 'Disconnected',
 		MailingHistoryText: "History",
 		NewMailerText: "New Mailer",
-		SubscribersText: "Subscribers"
+		SubscribersText: "Subscribers",
+		FileManagerText: "Files"
 	},
 	MailerModal: {
 		InProgress: 'Sending Mailer',
