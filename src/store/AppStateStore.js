@@ -1,7 +1,12 @@
-  import {decorate, observable, action, computed } from "mobx"
-  import openSocket from 'socket.io-client';
-  const hostname = require('../config/hostname.js');
-  const socket = openSocket(hostname.opensocket);
+import {decorate, observable, action, computed } from "mobx"
+import openSocket from 'socket.io-client';
+import { EditorState } from 'draft-js';
+import { convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+const hostname = require('../config/hostname.js');
+const socket = openSocket(hostname.opensocket);
+
+const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
   class AppStateStore {
       subscriberInfoModalOpen = false
@@ -9,6 +14,8 @@
       mailerBeingSent = false
       mailerProgressModalOpen = false
       mailerResults = []
+      editorState = observable.box(EditorState.createEmpty())
+      subject = observable.box('')
 
       constructor() {
           socket.on('sendMailerFinished', () => {
@@ -50,16 +57,50 @@
 
       }
 
-      clearMailerResults() {
-        this.mailerResults = this.mailerResults.filter((item) => null)        
+      setSubject(newSubject) {
+        this.subject.set(newSubject)
       }
+
+      get getSubject() {
+        return this.subject.get()
+      }
+
+      clearMailerResults() {
+        this.mailerResults = this.mailerResults.filter((item) => null)
+      }
+
+      setEditorState(newState) {
+        this.editorState.set(newState)
+      }
+
+      get editorStateObject() {
+        return this.editorState.get()
+      }
+
+      get plainTextContent() {
+        const currentContent = this.editorState.get().getCurrentContent()
+        const rawContent = convertToRaw(currentContent)
+        return currentContent.getPlainText()
+
+      }
+
+      get htmlContent() {
+        const currentContent = this.editorState.get().getCurrentContent()
+        const rawContent = convertToRaw(currentContent)
+        return convertRawEditorContentToHTML(rawContent)
+      }
+
+
   }
+
 export default decorate(AppStateStore, {
 	subscriberInfoModalOpen: observable,
+  editorState: observable,
 	subscriberInfoMessage: observable,
 	mailerBeingSent: observable,
-    mailerProgressModalOpen: observable,
-    mailerResults: observable,
+  mailerProgressModalOpen: observable,
+  subject: observable,
+  mailerResults: observable,
 	setMailerBeingSent: action,
 	setSubscriberInfoModalOpen: action,
 	setSubscriberInfoMessage: action,
@@ -67,5 +108,11 @@ export default decorate(AppStateStore, {
   addMailerResult: action,
   mailerResultsCount: computed,
   clearMailerResults: action,
-  ongoingMailerResults: computed
+  ongoingMailerResults: computed,
+  setEditorState: action,
+  editorStateObject: computed,
+  plainTextContent: computed,
+  htmlContent: computed,
+  setSubject: action,
+  getSubject: computed
 })

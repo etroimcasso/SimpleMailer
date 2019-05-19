@@ -70,6 +70,7 @@ class FileSystemStore {
 
 	resetDirectory = () => {
 		this.directory.set("/")
+		this.getFileListing()
 	}
 
 	get sortedFileList() {

@@ -36,11 +36,7 @@ const sendMailer = (message, callback) => {
 
 
 export default inject("appState", "connectionState", "subscriberState")(observer(class MailerEditor extends Component {
-	state = {
-		editorState: EditorState.createEmpty(),
-		subject: "",
-	}
-
+	
 	componentWillMount() {
 		document.title = pageTitle
 	}
@@ -51,13 +47,6 @@ export default inject("appState", "connectionState", "subscriberState")(observer
 
 	
 
-	onEditorStateChange = (editorState) => {
-    	this.setState({
-      		editorState,
-    	});
-    }
-
-
 	handleInputChange = (name, value) => {
 		this.setState({
 			[name]: value
@@ -65,23 +54,14 @@ export default inject("appState", "connectionState", "subscriberState")(observer
 	}
 
 	closeModalAndConfirmMailerSend = () => {
-	  this.setState({
-	    subject: "",
-	    editorState: EditorState.createEmpty()
-	  })
+	  this.props.appState.setSubject("")
+	  this.props.appState.setEditorState(EditorState.createEmpty())
 	  this.props.appState.clearMailerResults()
 	  this.props.appState.setMailerProgressModalOpen(false)
-	  
 	}
 
-	handleSendButtonClick = (editorState, subject) => {
-	  	const currentContent = editorState.getCurrentContent()
-	  	const rawContent = convertToRaw(currentContent)
-	  	const plainText = currentContent.getPlainText() //Plain Text
-	  	const htmlText = convertRawEditorContentToHTML(rawContent)
+	handleSendButtonClick = () => {
 	  	this.props.appState.setMailerProgressModalOpen(true)
-
-
 	 	this.props.appState.clearMailerResults()
 
 	  	const message = {
@@ -90,9 +70,9 @@ export default inject("appState", "connectionState", "subscriberState")(observer
 	    	receiverEmails: null,
 	    	ccReceivers: null,
 	    	bccReceivers: null,
-	    	subject: subject,
-	    	messageText: plainText,
-	    	html: htmlText,
+	    	subject: this.props.appState.getSubject,
+	    	messageText: this.props.appState.plainTextContent,
+	    	html: this.props.appState.htmlContent,
 	   	 	attachments: null,
 	    	replyTo: null
 	  	}
@@ -109,14 +89,13 @@ export default inject("appState", "connectionState", "subscriberState")(observer
 
 
 	render() {
-		const { editorState, subject } = this.state
 		const { appState: AppState, connectionState: ConnectionState, subscriberState: SubscribersState } = this.props
-		const { mailerProgressModalOpen, mailerBeingSent } = AppState
+		const { mailerProgressModalOpen, mailerBeingSent, getSubject: subject, editorStateObject: editorState } = AppState
 		const { connection } = ConnectionState
 		const { subscribers: subscribersList, subscribersLoaded  } = SubscribersState
 		const mailerResults = AppState.ongoingMailerResults
 
-		const editorValid = editorState.getCurrentContent().getPlainText().length > 0
+		const editorValid = AppState.plainTextContent.length > 0
 		const subjectValid = subject.length >= 3
 
 		const enableButton = editorValid && subjectValid && connection && SubscribersState.subscriberCount > 0
@@ -134,10 +113,10 @@ export default inject("appState", "connectionState", "subscriberState")(observer
 						<Input action fluid placeholder={UIStrings.SubjectNoun} icon='quote left' iconPosition='left'
 						action={{
 							content: UIStrings.SendEmailVerb,
-							onClick:() => this.handleSendButtonClick(editorState, subject),
+							onClick:() => this.handleSendButtonClick(),
 							disabled: !enableButton
 						}} 
-							name="subject" value={subject} onChange={(event) => this.handleInputChange(event.target.name, event.target.value)}  />		
+							name="subject" value={subject} onChange={(event) => AppState.setSubject(event.target.value)}  />		
 					</Segment>
 					{ false &&
 					<Segment fluid style={styles.fullWidth}>
@@ -154,7 +133,7 @@ export default inject("appState", "connectionState", "subscriberState")(observer
   						toolbarClassName="editorToolbar"
   						wrapperClassName="editorWrapper"
   						editorClassName="editorEditor"
-  						onEditorStateChange={this.onEditorStateChange}
+  						onEditorStateChange={(change) => AppState.setEditorState(change)}
 						/>
 					</Segment>
 				</Segment.Group>
