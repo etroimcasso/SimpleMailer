@@ -12,9 +12,6 @@ const socket = openSocket(hostname.opensocket);
 //Loading state is set to completed when receives event 'getMailerContentsListingResults' 
 //Should compute an array that contains arrays of files organized into types using filters 
 
-let noTestContentFilterRule = (item) => item.name !== 'testContent.txt'
-
-
 
 class FileSystemStore {
 	fileListing = []
@@ -46,7 +43,7 @@ class FileSystemStore {
 		this.dispatchGetFileListingSocketMessage(this.directory.get(), (error, files) => {
 			if (!error) {
 				this.clearFilesList()
-				this.replaceFilesList(this.filterOutTestContent(files))
+				this.replaceFilesList(files)
 			}
 			this.setFilesLoaded(true)
 			this.setReloadFilesPending(false)
@@ -54,15 +51,17 @@ class FileSystemStore {
 	}
 
 
-	filterOutTestContent = (list) => list.filter(noTestContentFilterRule)
 	replaceFilesList = (newList) => this.fileListing = newList
-	clearFilesList = () => this.fileListing = this.fileListing.filter((item) => null)
-	addFile = (file) => this.fileListing = this.fileListing.concat(file)
-	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item !== file)
-	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
-	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending
-
 	
+	clearFilesList = () => this.fileListing = this.fileListing.filter((item) => null)
+
+	addFile = (file) => this.fileListing = this.fileListing.concat(file)
+
+	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item !== file)
+
+	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
+
+	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending
 
 	setDirectory = (dir) => {
 		this.directory.set(dir)
