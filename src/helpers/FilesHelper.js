@@ -37,7 +37,8 @@ export default class FilesHelper {
 
 	getFileExtension = (filename) => {
 		const splitName = filename.split('.')
-		return (splitName.length === 1) ? "" : `.${splitName[splitName.length - 1]}`
+		const splitLength = splitName.length
+		return (splitLength === 1) ? "" : `.${splitName[splitLength - 1]}`
 	}
 
 	//Collect all but the last item in the array

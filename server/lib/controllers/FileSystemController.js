@@ -29,14 +29,16 @@ module.exports =  {
 		}
 
 		const fileList = files.map(async file =>  { 
-			//console.log(file[0])
 			const fileObject = await getFileStatObject(addFilePath(dir, file))
 			return {
 			//need to construct object { name: , sizeInBytes: }
 				name: file,
 				isDir: fileObject.isDirectory(),
 				path: dir,
-				sizeInBytes: calculateFileSize(fileObject)
+				sizeInBytes: calculateFileSize(fileObject),
+				created: fileObject.birthtime,
+				accessed: fileObject.atime,
+				modified: fileObject.mtime,
 			}
 		})
 
