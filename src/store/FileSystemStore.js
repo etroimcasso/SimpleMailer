@@ -84,7 +84,18 @@ class FileSystemStore {
 
 	get pathArray() { return this.directory.get().split('/').filter(item => item !== "") }
 
+	openDirectory(filename) {
+		const currentDirectory = this.directory.get()
+		const newDirectory = (currentDirectory === '/') ? `/${filename}/` :`${currentDirectory}${filename}/`
+		this.setDirectory(newDirectory)
+	}
 
+	openParentDirectory = () => {
+		const pathArray = this.pathArray
+		const reduceFunc = (accumulator, currentValue, index, array) => (index >= array.length - 1) ? accumulator : `${accumulator}${currentValue}/`
+		const newDirectory = pathArray.reduce(reduceFunc, '/')
+		this.setDirectory(newDirectory)
+	}
 
 
 }
@@ -105,5 +116,6 @@ export default decorate(FileSystemStore, {
 	sortedFileList: computed,
 	filesCount: computed,
 	currentDirectory: computed,
-	pathArray: computed
+	pathArray: computed,
+	openDirectory: action,
 })

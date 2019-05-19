@@ -82,7 +82,7 @@ export default inject("fileSystemState", "connectionState", "subscriberState", "
 				</Menu.Item>
 				<Menu.Item name="files" as={NavLink} to="/files">
 					{UIStrings.TopBar.FileManagerText}
-					{ mailerContentFilesLoaded &&
+					{ (mailerContentFilesLoaded && false) &&
 						<Label circular>
 							{FileSystemState.filesCount}
 						</Label>

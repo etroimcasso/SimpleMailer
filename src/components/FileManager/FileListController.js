@@ -13,29 +13,16 @@ const UIStrings = require('../../config/UIStrings')
 
 export default inject("fileSystemState")(observer(class FileListController extends Component {
 
-	goToParentDirectory = () => {
-		const pathArray = this.props.fileSystemState.pathArray
-		const reduceFunc = (accumulator, currentValue, index, array) => (index >= array.length - 1) ? accumulator : `${accumulator}${currentValue}/`
-		
-		const newDirectory = pathArray.reduce(reduceFunc, '/')
-		console.log(`New directory: ${newDirectory}`)
-		console.log('pathArray')
-		console.log(pathArray)
-
-		this.props.fileSystemState.setDirectory(newDirectory)
-	}
-
 	render() {
 		const { fileSystemState: FileSystemState } = this.props
 		const { filesCount: numberOfFiles } = FileSystemState
 
 		const pathArray = FileSystemState.pathArray
-		console.log(pathArray)
 
 		return(
 			<Fragment>
 			{ (pathArray.length > 0 ) && 
-				<button onClick={this.goToParentDirectory}> Back</button>
+				<button onClick={FileSystemState.openParentDirectory}> Back</button>
 			}
 				<FileList />
 			</Fragment>
