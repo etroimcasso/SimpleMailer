@@ -20,7 +20,7 @@ class FileSystemStore {
 	mailerContentFiles = []
 	mailerContentFilesLoaded = false
 	reloadMailerContentsFilesPending = true
-	directory = ['/']
+	directory = observable.box("/")
 
 
 	constructor() {
@@ -43,7 +43,7 @@ class FileSystemStore {
 	}
 
 	getMailerContentsFiles() {
-		this.dispatchGetAllMailerContentFilesSocketMessage(this.directory.join(''), (error, files) => {
+		this.dispatchGetAllMailerContentFilesSocketMessage(this.directory.get(), (error, files) => {
 			if (!error) {
 				this.clearFilesList()
 				this.replaceFilesList(this.filterOutTestContent(files))
@@ -66,12 +66,12 @@ class FileSystemStore {
 	
 
 	setDirectory = (dir) => {
-		this.directory = dir.split('')
+		this.directory.set(dir)
 		this.getMailerContentsFiles()
 	}
 
 	resetDirectory = () => {
-		this.directory.set(['/'])
+		this.directory.set("/")
 	}
 
 	get sortedFileList() {
@@ -80,7 +80,9 @@ class FileSystemStore {
 
 	get filesCount() { return this.mailerContentFiles.length }
 
-	get currentDirectory() { return this.directory.join('') }
+	get currentDirectory() { return this.directory.get() }
+
+	get pathArray() { return this.directory.get().split('/').filter(item => item !== "") }
 
 
 
@@ -102,5 +104,6 @@ export default decorate(FileSystemStore, {
 	removeFile: action,
 	sortedFileList: computed,
 	filesCount: computed,
-	currentDirectory: computed
+	currentDirectory: computed,
+	pathArray: computed
 })

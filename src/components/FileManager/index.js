@@ -15,7 +15,8 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 
 	render() {
 		const { fileSystemState: FileSystemState } = this.props
-		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory } = FileSystemState
+		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory, pathArray } = FileSystemState
+		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (
 	
@@ -24,7 +25,7 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 					<Loader active={!filesLoaded} inline></Loader>
 				</Dimmer>
 				{ currentDirectory }
-				<ItemsPlaceholderSegment itemCount={numberOfFiles} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
+				<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
 					<FileListController />
 				</ItemsPlaceholderSegment>
 			</Segment>

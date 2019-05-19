@@ -6,30 +6,22 @@ const FileHelper = new FilesHelper()
 
 export default inject("fileSystemState")(observer(class FileList extends Component {
 
-	handleFolderClick = (filename) => {
-		this.props.fileSystemState.setDirectory(`${this.props.fileSystemState.currentDirectory}${filename}/`)
+	handleFolderOpen = (filename) => {
+		//const reduceFunc = (accumulator, currentValue, index, array) => (array[index] === "/") ? accumulator : accumulator + currentValue
+		const currentDirectory = this.props.fileSystemState.currentDirectory
+		const newDirectory = (currentDirectory === '/') ? `/${filename}/` :`${currentDirectory}${filename}/`
+		this.props.fileSystemState.setDirectory(newDirectory)
 	}
 
-
 	render() {
+
 		const { fileSystemState: FileSystemState } = this.props
 		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles } = FileSystemState
 		return(
 			<Fragment>
 					{(numberOfFiles > 0) ? files.map((file) => { 
-						const fileSizeObject = FileHelper.convertFileSizeToHumanReadable(file.sizeInBytes)
 						return (
-							<div>
-								<span>Name: {`${FileHelper.getFileName(file.name)}`}{(!file.isDir) ? `.${FileHelper.getFileExtension(file.name)}`: null}</span>
-								<br />
-								<span>Size: {fileSizeObject.size.toString().split('.')[0]}{fileSizeObject.unit}</span>
-								<br />
-								<span>Directory: {(file.isDir) ? "true" : "false"}</span>
-								{ file.isDir &&
-									<button onClick={() => this.handleFolderClick(file.name) }>view contents</button>
-								}
-								<hr />
-							</div>
+								<FileListItem onFolderOpen={this.handleFolderOpen} file={file} />
 							)
 				}) : null}
 			</Fragment>
@@ -37,3 +29,25 @@ export default inject("fileSystemState")(observer(class FileList extends Compone
 	}
 
 }))
+
+class FileListItem extends Component {
+
+
+	render() {
+		const { onFolderOpen, file } = this.props
+		const fileSizeObject = FileHelper.convertFileSizeToHumanReadable(file.sizeInBytes)
+		return(
+			<div>
+				<span>Name: {`${FileHelper.getFileName(file.name)}`}{(!file.isDir) ? `.${FileHelper.getFileExtension(file.name)}`: null}</span>
+				<br />
+				<span>Size: {fileSizeObject.size.toString().split('.')[0]}{fileSizeObject.unit}</span>
+				<br />
+				<span>Directory: {(file.isDir) ? "true" : "false"}</span>
+				{ file.isDir &&
+					<button  onClick={() => onFolderOpen(file.name) }>view contents</button>
+				}
+				<hr />
+			</div>
+		)
+	}
+}
