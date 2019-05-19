@@ -17,37 +17,36 @@ let noTestContentFilterRule = (item) => item.name !== 'testContent.txt'
 
 
 class FileSystemStore {
-	mailerContentFiles = []
-	mailerContentFilesLoaded = false
-	reloadMailerContentsFilesPending = true
+	fileListing = []
+	fileListingLoaded = false
+	reloadFileListingPending = true
 	directory = observable.box("/")
 
 
 	constructor() {
 		socket.on('connect', () => {
-			if(this.reloadMailerContentsFilesPending) this.getMailerContentsFiles()
+			if(this.reloadFileListingPending) this.getFileListing()
 		})
 
 		socket.on('disconnect', () => {
 			this.setReloadFilesPending(true)
 		})
 
-		socket.on('mailerContentFileAdded', (file) => this.addFile(file))
-		socket.on('mailerContentFileRemoved', (file) => this.removeFile(file))
+		socket.on('fileAdded', (file) => this.addFile())
+		socket.on('fileRemoved', (file) => this.removeFile())
 
 	}
 
-	dispatchGetAllMailerContentFilesSocketMessage(fileDir, callback) {
-		socket.on('getMailerContentFilesResults', (error, files) => callback(error, files))
-		socket.emit('getMailerContentFiles', fileDir)
+	dispatchGetFileListingSocketMessage(fileDir, callback) {
+		socket.on('getFileListingResults', (error, files) => callback(error, files))
+		socket.emit('getFileListing', fileDir)
 	}
 
-	getMailerContentsFiles() {
-		this.dispatchGetAllMailerContentFilesSocketMessage(this.directory.get(), (error, files) => {
+	getFileListing() {
+		this.dispatchGetFileListingSocketMessage(this.directory.get(), (error, files) => {
 			if (!error) {
 				this.clearFilesList()
 				this.replaceFilesList(this.filterOutTestContent(files))
-				//this.replaceFilesList(files)
 			}
 			this.setFilesLoaded(true)
 			this.setReloadFilesPending(false)
@@ -56,18 +55,18 @@ class FileSystemStore {
 
 
 	filterOutTestContent = (list) => list.filter(noTestContentFilterRule)
-	replaceFilesList = (newList) => this.mailerContentFiles = newList
-	clearFilesList = () => this.mailerContentFiles = this.mailerContentFiles.filter((item) => null)
-	addFile = (file) => this.mailerContentFiles = this.mailerContentFiles.concat(file)
-	removeFile = (file) => this.mailerContentFiles = this.mailerContentFiles.filter((item) => item !== file)
-	setFilesLoaded = (loaded) => this.mailerContentFilesLoaded = loaded
-	setReloadFilesPending = (pending) => this.reloadMailerContentsFilesPending = pending
+	replaceFilesList = (newList) => this.fileListing = newList
+	clearFilesList = () => this.fileListing = this.fileListing.filter((item) => null)
+	addFile = (file) => this.fileListing = this.fileListing.concat(file)
+	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item !== file)
+	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
+	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending
 
 	
 
 	setDirectory = (dir) => {
 		this.directory.set(dir)
-		this.getMailerContentsFiles()
+		this.getFileListing()
 	}
 
 	resetDirectory = () => {
@@ -78,7 +77,7 @@ class FileSystemStore {
 		//This is for later
 	}
 
-	get filesCount() { return this.mailerContentFiles.length }
+	get filesCount() { return this.fileListing.length }
 
 	get currentDirectory() { return this.directory.get() }
 
@@ -101,11 +100,11 @@ class FileSystemStore {
 }
 
 export default decorate(FileSystemStore, {
-	mailerContentFiles: observable,
-	mailerContentFilesLoaded: observable,
-	reloadMailerContentsFilesPending: observable,
+	fileListing: observable,
+	fileListingLoaded: observable,
+	reloadFileListingPending: observable,
 	directory: observable,
-	getMailerContentsFiles: action,
+	getFileListing: action,
 	replaceFilesList: action,
 	clearFilesList: action,
 	setFilesLoaded: action,

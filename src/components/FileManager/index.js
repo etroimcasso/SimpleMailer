@@ -15,7 +15,7 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 
 	render() {
 		const { fileSystemState: FileSystemState } = this.props
-		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory, pathArray } = FileSystemState
+		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory, pathArray } = FileSystemState
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (

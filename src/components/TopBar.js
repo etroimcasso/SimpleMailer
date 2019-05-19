@@ -31,7 +31,7 @@ export default inject("fileSystemState", "connectionState", "subscriberState", "
 		const { subscribersLoaded } = SubscribersState
 		const { mailerHistory, mailerHistoryLoaded } = MailerHistoryState
 		
-		const { mailerContentFilesLoaded } = FileSystemState
+		const { fileListingLoaded } = FileSystemState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -82,12 +82,12 @@ export default inject("fileSystemState", "connectionState", "subscriberState", "
 				</Menu.Item>
 				<Menu.Item name="files" as={NavLink} to="/files">
 					{UIStrings.TopBar.FileManagerText}
-					{ (mailerContentFilesLoaded && false) &&
+					{ (fileListingLoaded && false) &&
 						<Label circular>
 							{FileSystemState.filesCount}
 						</Label>
 					}
-					{ !mailerContentFilesLoaded && 
+					{ !fileListingLoaded && 
 						<div style={styles.loadingIconPadding}>
 							<Icon name="spinner" loading />
 						</div>

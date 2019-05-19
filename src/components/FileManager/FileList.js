@@ -10,7 +10,7 @@ export default inject("fileSystemState")(observer(class FileList extends Compone
 	render() {
 
 		const { fileSystemState: FileSystemState } = this.props
-		const { mailerContentFiles: files, mailerContentFilesLoaded: filesLoaded, filesCount: numberOfFiles } = FileSystemState
+		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles } = FileSystemState
 		return(
 			<Fragment>
 					{(numberOfFiles > 0) ? files.map((file) => { 
