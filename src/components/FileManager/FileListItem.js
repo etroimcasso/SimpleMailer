@@ -12,7 +12,7 @@ export default inject("fileSystemState")(observer(class FileListItem extends Com
 		const fileSizeObject = FileHelper.convertFileSizeToHumanReadable(file.sizeInBytes)
 		return(
 			<div>
-				<span>Name: {`${FileHelper.getFileName(file.name)}`}{(!file.isDir) ? `.${FileHelper.getFileExtension(file.name)}`: null}</span>
+				<span>Name: {`${FileHelper.getFileName(file.name)}${FileHelper.getFileExtension(file.name)}`}</span>
 				<br />
 				<span>Size: {fileSizeObject.size.toString().split('.')[0]}{fileSizeObject.unit}</span>
 				<br />

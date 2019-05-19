@@ -29,8 +29,8 @@ class FileSystemStore {
 			this.setReloadFilesPending(true)
 		})
 
-		socket.on('fileAdded', (file) => this.addFile())
-		socket.on('fileRemoved', (file) => this.removeFile())
+		socket.on('fileAdded', (file) => this.addFile(file))
+		socket.on('fileRemoved', (file) => this.removeFile(file))
 
 	}
 
@@ -57,7 +57,7 @@ class FileSystemStore {
 
 	addFile = (file) => this.fileListing = this.fileListing.concat(file)
 
-	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item !== file)
+	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item.name !== file.name)
 
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
 

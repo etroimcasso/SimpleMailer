@@ -40,19 +40,7 @@ export default inject("appState", "connectionState", "subscriberState")(observer
 	componentWillMount() {
 		document.title = pageTitle
 	}
-
-	componentDidMount() {
-
-	}
-
 	
-
-	handleInputChange = (name, value) => {
-		this.setState({
-			[name]: value
-		})
-	}
-
 	closeModalAndConfirmMailerSend = () => {
 	  this.props.appState.setSubject("")
 	  this.props.appState.setEditorState(EditorState.createEmpty())

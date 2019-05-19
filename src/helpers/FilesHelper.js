@@ -35,7 +35,10 @@ export default class FilesHelper {
 	//getFileExtension: (filename) => filename.split('').reduceRight((accumulator, currentValue, index, array) => (currentValue === ".") ? accumulator = array.slice(index + 1) : accumulator ),
 	//This might be even easier if I just split the file along dots and then take the value of that array.length - 1
 
-	getFileExtension = (filename) => filename.split('.')[filename.split('.').length - 1]
+	getFileExtension = (filename) => {
+		const splitName = filename.split('.')
+		return (splitName.length === 1) ? "" : `.${splitName[splitName.length - 1]}`
+	}
 
 	//Collect all but the last item in the array
 	getFileName =  (filename) => filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
@@ -58,7 +61,7 @@ export default class FilesHelper {
 			4: TB
 		*/
 		//const iterations = [...Array(6).keys()].map(index => index + 1)
-	convertFileSizeToHumanReadable = (filesize) => ([...Array(6).keys()].map(_ => 0)).reduce((acc, cv, index2) => (acc.size.toString().split('.')[0].length <= 3) ? acc : acc = { size: acc.size / 1024, unit: getFileSizeSuffix(index2 + 1)}, { size: filesize, unit: getFileSizeSuffix(0) })
+	convertFileSizeToHumanReadable = (filesize) => ([...Array(6).keys()].map(_ => 0)).reduce((acc, cv, index) => (acc.size.toString().split('.')[0].length <= 3) ? acc : acc = { size: acc.size / 1024, unit: getFileSizeSuffix(index + 1)}, { size: filesize, unit: getFileSizeSuffix(0) })
 
 
 }
