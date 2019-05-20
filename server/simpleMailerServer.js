@@ -107,7 +107,6 @@ const sendMailerEmail = (message, subscriberId, callback) => {
 		})
 	}
 }
-
 //SOCKET SERVER
 io.on('connection', (client) => {
 	/*

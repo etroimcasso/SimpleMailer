@@ -80,8 +80,6 @@ export default inject("connectionState")(observer(class AddSubscriberForm extend
 		const { subscriber } = this.state
 		const { connectionState: ConnectionState } = this.props
 		const { connection } = ConnectionState
-		console.log("FUCK YOU FILE")
-		console.log(connection)
 
 		const buttonDisabled = !connection && !InputValidator.fieldIsEmpty(subscriber)
 

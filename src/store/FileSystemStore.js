@@ -1,7 +1,9 @@
 import { decorate, observable, action, computed } from "mobx"
 import openSocket from 'socket.io-client';
+import FilesHelper from '../helpers/FilesHelper'
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
+const FileHelper = new FilesHelper()
 //const ReconnectionTimer = require('../helpers/ReconnectionTimer');
 
 //Needs to store an array of the file contents of the mailerContent directory.
@@ -44,6 +46,8 @@ class FileSystemStore {
 			if (!error) {
 				this.clearFilesList()
 				this.replaceFilesList(files)
+				console.log("SORTED FILES")
+				console.log(FileHelper.createGroupedFileTypeArray(files))
 			}
 			this.setFilesLoaded(true)
 			this.setReloadFilesPending(false)
@@ -90,9 +94,8 @@ class FileSystemStore {
 	}
 
 	openParentDirectory = () => {
-		const pathArray = this.pathArray
 		const reduceFunc = (accumulator, currentValue, index, array) => (index >= array.length - 1) ? accumulator : `${accumulator}${currentValue}/`
-		const newDirectory = pathArray.reduce(reduceFunc, '/')
+		const newDirectory = this.pathArray.reduce(reduceFunc, '/')
 		this.setDirectory(newDirectory)
 	}
 

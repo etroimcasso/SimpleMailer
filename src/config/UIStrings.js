@@ -3,7 +3,8 @@ module.exports = {
 	PageTitles: {
 		NewMailer: "New Mailer",
 		History: "History",
-		Subscriptions: "Subscriptions"
+		Subscriptions: "Subscriptions",
+		FileManager: "Files",
 	},
 	LoadingSubscribers: null, // "Loading Subscriber List",
 	SubscribersNoun: "Subscribers",

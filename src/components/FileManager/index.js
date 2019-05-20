@@ -6,8 +6,14 @@ import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import FileListController from './FileListController'
 const UIStrings = require('../../config/UIStrings')
 const FilesHelper = require('../../helpers/FilesHelper')
+const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.FileManager);
+
 
 export default inject("fileSystemState")(observer(class FileManager extends Component {
+
+	componentWillMount() {
+		document.title = pageTitle
+	}
 
 	handleFileDeleteButton = () => {
 
@@ -19,16 +25,17 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (
-	
-			<Segment basic>
-				<Dimmer inverted active={!filesLoaded}>
-					<Loader active={!filesLoaded} inline></Loader>
-				</Dimmer>
-				{ currentDirectory }
-				<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
-					<FileListController />
-				</ItemsPlaceholderSegment>
-			</Segment>
+			<Container>
+				<Segment basic>
+					<Dimmer inverted active={!filesLoaded}>
+						<Loader active={!filesLoaded} inline></Loader>
+					</Dimmer>
+					{ currentDirectory }
+					<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
+						<FileListController />
+					</ItemsPlaceholderSegment>
+				</Segment>
+			</Container>
 		)
 	}
 }))

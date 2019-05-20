@@ -25,11 +25,13 @@ export default inject("mailerHistoryState")(observer(class MailerHistoryTable ex
 		})
 	}
 
+	structuredMailerHistoryResults = () => toJS(this.props.mailerHistoryState.mailerHistoryResults).map((item) => item)
+
 	render() {
 		const { activeId } = this.state
 		const { mailerHistoryState: MailerHistoryState } = this.props
 		const { mailerHistoryResults, mailerHistory } = MailerHistoryState 
-		const structuredMailerHistoryResults = toJS(mailerHistoryResults).map((item) => item)
+		const structuredMailerHistoryResults = this.structuredMailerHistoryResults()
 
 		return(
 			<Table striped celled>
