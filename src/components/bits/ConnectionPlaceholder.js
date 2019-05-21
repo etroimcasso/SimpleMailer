@@ -19,8 +19,8 @@ export default inject("connectionState")(observer(class ConnectionPlaceholder ex
 			{ !connection && 
 				<Header icon>
 					<Icon.Group size='big'>
-						<Icon name='world' color='grey'/>
-						<Icon name='dont' />
+						<Icon name='exclamation triangle' color='grey'/>
+						{ false && <Icon name='dont' /> }
 					</Icon.Group>
 					<br />
 					{UIStrings.NoConnection}

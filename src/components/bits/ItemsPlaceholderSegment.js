@@ -1,9 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { observer } from "mobx-react"
 import { Segment, Header, Icon } from 'semantic-ui-react';
 
 
-export default observer(class ItemsPlaceholderSegment extends Component {
+export default class ItemsPlaceholderSegment extends Component {
 	render() {
 		const { itemCount, noItemsText, iconName, itemsLoaded } = this.props
 
@@ -27,5 +26,5 @@ export default observer(class ItemsPlaceholderSegment extends Component {
 			</Segment>		
 		)
 	}
-})
+}
 
