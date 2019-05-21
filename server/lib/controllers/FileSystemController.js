@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const contentDirectory = path.join(__dirname,'../../../mailerContent/')
 const util = require('util');
+const FileTypeGroups = require('../../config/FileTypeGroups')
 
 
 const getFileStatObject = async function (filePath) { 
@@ -17,8 +18,6 @@ const getFileStatObject = async function (filePath) {
 const addFilePath = (path, file) => `${path}${file}`
 
 const getFileExtension = (filename) => {
-	//console.log("file to split: ")
-	//console.log(filename)
 	const splitName = filename.split('.')
 	const splitLength = splitName.length
 	return (splitLength === 1) ? "" : `.${splitName[splitLength - 1]}`
@@ -60,80 +59,45 @@ const convertFileSizeToHumanReadable = (filesize) => {
 
 
 const createGroupedFileTypeArray = (fileList) => {
-		const sortTypes = [
-			{
-				type: "images",
-				extensions: ['.jpg','.jpeg','.jfif','.png','.gif','.bmp']
-			},
-			{
-				type: "pdf",
-				extensions:['.pdf']
-			},
-			{
-				type:"ms-office-doc",
-				extensions: ['.doc','.docx','.xls','.xlsx']
-			},
-			{
-				type: "text",
-				extensions: ['.txt','.rtf']
-			},
-			{
-				type: "web",
-				extensions: ['.html']
-			},
-			{
-				type: "none",
-			 	extensions: ['']
-			},
-			{ 
-				type: "directory",
-				extensions: ['']
-			},
-		]
-		//Doesn't include provision for dot files with file extensions
-		const filterFunc = (currentFile, fileExtension, sortType) => 
-			(getFileExtension(currentFile.name) === fileExtension && !currentFile.isDir) 
-				? true 
-					: (currentFile.isDir)
-						? ((sortType.type === 'directory') ? true : false)
-						: (getFileExtension(currentFile.name).length === 0) 
-							? (getFileName(currentFile.name).length === 0)
-									? false //No file name, no file extension
-									: ((sortType.type === 'none')  
-										? true 
-										: false )//No file extension
-							: (getFileName(currentFile.name).length === 0 )  //File extension
-								? ((sortType.type === 'none')  
-										? true
-										: false) //File extension, no name
-									: false
-
-		const groupedFilesWithoutOthers = sortTypes.map(sortType => {
-			return { 
-				type: sortType.type, 
-				files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => filterFunc(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
-			}
-		})
-		const flattenedSortGroup = groupedFilesWithoutOthers.reduce((flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type }))), [])
-
-		//combine flattenedSortGroup with fileList
-		//filter out all that have a non-null type property
-		const combinedList = flattenedSortGroup.concat(fileList)
-		const otherFiles = { 
-			type: 'other',
-			files: combinedList.filter(item => !item.type).map(file => file)
+	//Doesn't include provision for dot files with file extensions -- TODO
+	//THIS FILTER FUNCTION HAS A SERIOUS BUG --- NEEDS REWORKING
+	const filterFunc = (currentFile, fileExtension, sortType) => 
+		(getFileExtension(currentFile.name) === fileExtension && !currentFile.isDir) 
+			? true 
+				: (currentFile.isDir)
+					? ((sortType.type === 'directory') ? true : false)
+					: (getFileExtension(currentFile.name).length === 0) 
+						? (getFileName(currentFile.name).length === 0)
+								? false //No file name, no file extension
+								: ((sortType.type === 'none' && !currentFile.isDir)  
+									? true 
+									:  false   )//No file extension
+						: (getFileName(currentFile.name).length === 0 )  //File extension
+							? ((sortType.type === 'none')  
+									? true
+									: false) //File extension, no name
+								: false
+	const groupedFilesWithoutOthers = FileTypeGroups.map(sortType => {
+		return { 
+			type: sortType.type, 
+			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => filterFunc(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
 		}
-		
-		return groupedFilesWithoutOthers.concat(otherFiles)
+	})
+	const flattenedSortGroup = groupedFilesWithoutOthers.reduce((flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type }))), [])
+
+	//combine flattenedSortGroup with fileList
+	//filter out all that have a non-null type property
+
+	const combinedList = flattenedSortGroup.concat(fileList)
+	const otherFiles = { 
+		type: 'other',
+		files: combinedList.filter(item => !item.type).map(file => file)
+	}		
+
+	return groupedFilesWithoutOthers.concat(otherFiles)
 
 
-		//TO GET OTHERS TYPE
-		// Take resulting sorted list, and create a new list by filtering out all objects that exist in the other list
-		//OR make a set from the sortedFilteredList and the fileList, then combine that set with the rest of the sortedFileList
-		//EVERYTHING NOT IN SORTED FILE LIST NEEDS TO BE IN THE 'OTHER' CATEGORY
-		//flatten sortedList down to just filenames, and compare that against the unsorted list and filter out all items that are in both lists
-
-	}
+}
 
 
 
@@ -165,6 +129,11 @@ module.exports =  {
 
 		Promise.all(fileList).then(result => { 
 			//console.log(result)
+			console.log(`###############################`)
+			console.log(`DIRECTORY CHANGE: ${dir}`)
+			console.log(createGroupedFileTypeArray(result).map(item => { return { type: item.type, files: item.files.map(file => console.log(file.name)) } } ))
+			console.log('TOTAL FILES')
+			console.log(createGroupedFileTypeArray(result).reduce((acc, cv, index) => acc + cv.files.length ,0))
 			callback(null, (grouped) ? createGroupedFileTypeArray(result) : result)
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)

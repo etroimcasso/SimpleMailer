@@ -45,6 +45,7 @@ class FileSystemStore {
 			if (!error) {
 				this.clearFilesList()
 				this.replaceFilesList(files)
+				//console.log(files)
 			}
 			this.setFilesLoaded(true)
 			this.setReloadFilesPending(false)
