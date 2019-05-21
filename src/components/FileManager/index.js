@@ -3,9 +3,9 @@ import React, { Component, Fragment } from 'react';
 import { observer, inject } from "mobx-react"
 import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
+import ConnectionPlaceholder from '../bits/ConnectionPlaceholder'
 import FileListController from './FileListController'
 const UIStrings = require('../../config/UIStrings')
-const FilesHelper = require('../../helpers/FilesHelper')
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.FileManager);
 
 
@@ -31,9 +31,11 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 						<Loader active={!filesLoaded} inline></Loader>
 					</Dimmer>
 					{ currentDirectory }
-					<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
-						<FileListController />
-					</ItemsPlaceholderSegment>
+					<ConnectionPlaceholder>
+						<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
+							<FileListController />
+						</ItemsPlaceholderSegment>
+					</ConnectionPlaceholder>
 				</Segment>
 			</Container>
 		)

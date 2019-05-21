@@ -352,7 +352,7 @@ io.on('connection', (client) => {
 		})
 	})
 
-	client.on('getFileListing' , (directory) => {
+	client.on('getFileListing' , (directory, grouped) => {
 		/*
 		FileSystemController.getFiles((error, files) => {
 			if (error) client.emit('getMailerContentFilesResults', error, null)
@@ -360,7 +360,7 @@ io.on('connection', (client) => {
 		})
 		*/
 
-		FileSystemController.getFiles(directory, (error, files) => {
+		FileSystemController.getFiles(directory, grouped, (error, files) => {
 			client.emit('getFileListingResults', error, files)
 		})
 

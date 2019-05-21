@@ -18,6 +18,7 @@ module.exports = {
 	GenericSubscribeResult: "You should receive an email shortly confirming your subscription / cancellation. Please check your spam folder if you do not receive an email.",
 	NoSubscribers: "There are no subscribers",
 	NoFiles: "There are no files",
+	NoConnection: "No Connection to Server",
 	SendEmailVerb: "Send",
 	AddSubscriberVerb: "Add",
 	SubscriptionsPanel: {
