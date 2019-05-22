@@ -57,7 +57,6 @@ const formatFileSize = (fileSizeObject) =>{
 		3: GB
 		4: TB
 	*/
-	//const iterations = [...Array(6).keys()].map(index => index + 1)
 const convertFileSizeToHumanReadable = (filesize) => {
 	const fileSizeSuffixes = ["B","KB","MB","GB","TB","PB","EB"]
 	const reduceFunc = (acc, cv, index) => (acc.size.toString().split('.')[0].length <= 3) ? acc : acc = { size: acc.size / 1024, unit: fileSizeSuffixes[index + 1]}
@@ -80,27 +79,8 @@ const noExtension = (file) => getFileExtension(file.name).length === 0 || getFil
 const extensionsMatch = (file, extension) => getFileExtension(file.name) === extension
 
 
-const createGroupedFileTypeArray = (fileList) => {
-	//Doesn't include provision for dot files with file extensions -- TODO
-	//THIS FILTER FUNCTION HAS A SERIOUS BUG --- NEEDS REWORKING
-	const oldFilterFunc = (currentFile, fileExtension, sortType) => 
-		(extensionsMatch(currentFile.name, fileExtension) && !isDirectory(currentFile)) 
-			? true 
-				: (currentFile.isDir)
-					? ((sortType.type === 'directory') ? true : false)
-					: (getFileExtension(currentFile.name).length === 0) 
-						? (getFileName(currentFile.name).length === 0)
-								? false //No file name, no file extension
-								: ((sortType.type === 'none' && !currentFile.isDir)  
-									? true 
-									:  false   )//No file extension
-						: (getFileName(currentFile.name).length === 0 )  //File extension
-							? ((sortType.type === 'none')  
-									? true
-									: false) //File extension, no name
-								: false
-
-	const newFilterFunc = (currentFile, fileExtension, sortType) => {
+const createGroupedFileTypeArray = (fileList, flattened) => {
+	const fileGroupingFilter = (currentFile, fileExtension, sortType) => {
 	//If directory, add entry ONLY if the sortType is directory
 	//If it's a dot file, use getFileExtension on it to get the file extension
 	//	From there use the normal thing
@@ -114,6 +94,13 @@ const createGroupedFileTypeArray = (fileList) => {
 		}
 		else { //Directories are excluded
 			if (isDotFile(currentFile)) {
+				const splitName = currentFile.name.split('.')
+				console.log(`Is dot file: ${isDotFile(currentFile)}`)
+				console.log(`name: ${currentFile.name}`)
+				console.log(`another test: ${splitName.length}`)
+				if (splitName[0] === '' && splitName.length === 2 )
+					if(sortType.type === 'none') return true
+					else return false
 				if (extensionsMatch(currentFile, fileExtension)) return true
 				else return false
 			}
@@ -126,22 +113,22 @@ const createGroupedFileTypeArray = (fileList) => {
 	const groupedFilesWithoutOthers = FileTypeGroups.map(sortType => {
 		return { 
 			type: sortType.type, 
-			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => newFilterFunc(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
+			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => fileGroupingFilter(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
 		}
 	})
-	const flattenedSortGroup = groupedFilesWithoutOthers.reduce((flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type }))), [])
+	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type })))
+	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
 	//combine flattenedSortGroup with fileList
 	//filter out all that have a non-null type property
-
 	const combinedList = flattenedSortGroup.concat(fileList)
 	const otherFiles = { 
 		type: 'other',
 		files: combinedList.filter(item => !item.type).map(file => file)
 	}		
+	const fullList = groupedFilesWithoutOthers.concat(otherFiles)
 
-	return groupedFilesWithoutOthers.concat(otherFiles)
-
+	return (flattened) ? fullList.reduce(flattenListFunc, []) : fullList
 
 }
 
@@ -179,7 +166,7 @@ module.exports =  {
 			//console.log(createGroupedFileTypeArray(result).map(item => { return { type: item.type, files: item.files.map(file => file ).length } } ))
 			//console.log('TOTAL FILES')
 			//console.log(createGroupedFileTypeArray(result).reduce((acc, cv, index) => acc + cv.files.length ,0))
-			callback(null, (grouped) ? createGroupedFileTypeArray(result) : result)
+			callback(null, (grouped) ? createGroupedFileTypeArray(result, true) : result)
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)
 		})
