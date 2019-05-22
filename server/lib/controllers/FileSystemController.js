@@ -18,7 +18,6 @@ const getFileStatObject = async function (filePath) {
 const addFilePath = (path, file) => `${path}${file}`
 
 const getFileExtension = (filename) => {
-	//console.log(`filename ${filename}`)
 	const splitName = filename.split('.')
 	const splitLength = splitName.length
 	return (splitLength === 1) ? "" : `.${splitName[splitLength - 1]}`
@@ -26,13 +25,8 @@ const getFileExtension = (filename) => {
 
 //Collect all but the last item in the array
 const getFileName =  (filename) => {
-	//return getFileNameWithDotSupport(filename)
 	return filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
 }
-
-const getFileNameWithDotSupport = (filename) => filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - ((array[0] === '') ? 1: 2)) ? accumulator : accumulator.concat(currentValue))
-
-
 
 const formatFileSize = (fileSizeObject) =>{ 
 	const splitSize = fileSizeObject.size.toString().split('.')
@@ -76,11 +70,11 @@ const isDotFile = (file) => {
 }
 const noName = (file) => getFileName(file.name).length === 0 || getFileName(file.name) === ''
 const noExtension = (file) => getFileExtension(file.name).length === 0 || getFileExtension(file.name) === ''
-const extensionsMatch = (file, extension) => getFileExtension(file.name) === extension
+const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension
 
 
 const createGroupedFileTypeArray = (fileList, flattened) => {
-	const fileGroupingFilter = (currentFile, fileExtension, sortType) => {
+	const fileTypeGroupingFilter = (currentFile, fileExtension, sortType) => {
 	//If directory, add entry ONLY if the sortType is directory
 	//If it's a dot file, use getFileExtension on it to get the file extension
 	//	From there use the normal thing
@@ -95,9 +89,6 @@ const createGroupedFileTypeArray = (fileList, flattened) => {
 		else { //Directories are excluded
 			if (isDotFile(currentFile)) {
 				const splitName = currentFile.name.split('.')
-				console.log(`Is dot file: ${isDotFile(currentFile)}`)
-				console.log(`name: ${currentFile.name}`)
-				console.log(`another test: ${splitName.length}`)
 				if (splitName[0] === '' && splitName.length === 2 )
 					if(sortType.type === 'none') return true
 					else return false
@@ -113,7 +104,7 @@ const createGroupedFileTypeArray = (fileList, flattened) => {
 	const groupedFilesWithoutOthers = FileTypeGroups.map(sortType => {
 		return { 
 			type: sortType.type, 
-			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => fileGroupingFilter(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
+			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
 		}
 	})
 	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type })))

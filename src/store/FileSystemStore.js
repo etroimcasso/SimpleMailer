@@ -2,7 +2,6 @@ import { decorate, observable, action, computed } from "mobx"
 import openSocket from 'socket.io-client';
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
-//const ReconnectionTimer = require('../helpers/ReconnectionTimer');
 
 //Needs to store an array of the file contents of the mailerContent directory.
 //Should respond to events 'mailerContentFileAdded' and 'mailerContentFileRemoved' to change contents of list
@@ -19,6 +18,7 @@ class FileSystemStore {
 	reloadFileListingPending = true
 	directory = observable.box("/")
 	grouped = true
+	replaceFilesListPending = true
 
 
 	constructor() {
@@ -33,6 +33,10 @@ class FileSystemStore {
 		socket.on('fileAdded', (file) => this.addFile(file))
 		socket.on('fileRemoved', (file) => this.removeFile(file))
 
+		this.directory.observe((change) => {
+			this.getFileListing()
+		})
+
 	}
 
 	dispatchGetFileListingSocketMessage(fileDir, callback) {
@@ -43,15 +47,17 @@ class FileSystemStore {
 	getFileListing() {
 		this.dispatchGetFileListingSocketMessage(this.directory.get(), (error, files) => {
 			if (!error) {
-				this.clearFilesList()
-				this.replaceFilesList(files)
-				console.log(files)
+				if (this.replaceFilesListPending === true) {
+					this.replaceFilesList(files)
+					this.setFilesListReplacePending(false)
+				}
 			}
 			this.setFilesLoaded(true)
 			this.setReloadFilesPending(false)
 		})
 	}
 
+	setFilesListReplacePending = (pending) => this.replaceFilesListPending = pending
 
 	replaceFilesList = (newList) => this.fileListing = newList
 	
@@ -66,17 +72,13 @@ class FileSystemStore {
 	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending
 
 	setDirectory = (dir) => {
+		this.setFilesListReplacePending(true)
 		this.directory.set(dir)
-		this.getFileListing()
 	}
 
 	resetDirectory = () => {
+		this.setFilesListReplacePending(true)
 		this.directory.set("/")
-		this.getFileListing()
-	}
-
-	get sortedFileList() {
-		//This is for later
 	}
 
 	get filesCount() { return this.fileListing.length }
@@ -113,9 +115,9 @@ export default decorate(FileSystemStore, {
 	setDirectory: action,
 	addFile: action,
 	removeFile: action,
-	sortedFileList: computed,
 	filesCount: computed,
 	currentDirectory: computed,
 	pathArray: computed,
 	openDirectory: action,
+	setFilesListReplacePending: action,
 })
