@@ -103,6 +103,7 @@ const createGroupedFileTypeArray = (fileList, flattened) => {
 
 	const groupedFilesWithoutOthers = FileTypeGroups.map(sortType => {
 		return { 
+			name: sortType.name,
 			type: sortType.type, 
 			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
 		}
@@ -151,13 +152,7 @@ module.exports =  {
 		})
 
 		Promise.all(fileList).then(result => { 
-			//console.log(result)
-			//console.log(`###############################`)
-			//console.log(`DIRECTORY CHANGE: ${dir}`)
-			//console.log(createGroupedFileTypeArray(result).map(item => { return { type: item.type, files: item.files.map(file => file ).length } } ))
-			//console.log('TOTAL FILES')
-			//console.log(createGroupedFileTypeArray(result).reduce((acc, cv, index) => acc + cv.files.length ,0))
-			callback(null, (grouped) ? createGroupedFileTypeArray(result, true) : result)
+			callback(null, (grouped) ? createGroupedFileTypeArray(result, false) : result)
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)
 		})
