@@ -35,3 +35,4 @@ src/config/hostname.js
 futureFeatures.md
 
 mailerContent/*
+certs/*

@@ -10,7 +10,7 @@ const getFileStatObject = async function (filePath) {
 	try {
 		fsStat = await util.promisify(fs.stat)(filePath)
 	} catch (e) {
-		console.log(`Can't get file stats for ${filePath}: ${e}`)
+		console.error(`Can't get file stats for ${filePath}: ${e}`)
 	}
 	return fsStat
 }
@@ -18,13 +18,20 @@ const getFileStatObject = async function (filePath) {
 const addFilePath = (path, file) => `${path}${file}`
 
 const getFileExtension = (filename) => {
+	//console.log(`filename ${filename}`)
 	const splitName = filename.split('.')
 	const splitLength = splitName.length
 	return (splitLength === 1) ? "" : `.${splitName[splitLength - 1]}`
 }
 
 //Collect all but the last item in the array
-const getFileName =  (filename) => filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
+const getFileName =  (filename) => {
+	//return getFileNameWithDotSupport(filename)
+	return filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
+}
+
+const getFileNameWithDotSupport = (filename) => filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - ((array[0] === '') ? 1: 2)) ? accumulator : accumulator.concat(currentValue))
+
 
 
 const formatFileSize = (fileSizeObject) =>{ 
@@ -57,12 +64,27 @@ const convertFileSizeToHumanReadable = (filesize) => {
 	return fileSizeSuffixes.reduce(reduceFunc, { size: filesize, unit: fileSizeSuffixes[0] })
 }
 
+const isDirectory = (file) => file.isDir
+const isDotFile = (file) => {
+	//Dot files have a name that starts with a dot OR an extension only	
+	if (noName(file)) { // No File name
+		if (noExtension(file)) return false// No File Extension
+		else return true//Just file extension = dot file
+	} else { // File name
+		if (noExtension(file)) return false //File name, no extension
+		else return Array.from(file.name)[0] === '.'
+	}
+}
+const noName = (file) => getFileName(file.name).length === 0 || getFileName(file.name) === ''
+const noExtension = (file) => getFileExtension(file.name).length === 0 || getFileExtension(file.name) === ''
+const extensionsMatch = (file, extension) => getFileExtension(file.name) === extension
+
 
 const createGroupedFileTypeArray = (fileList) => {
 	//Doesn't include provision for dot files with file extensions -- TODO
 	//THIS FILTER FUNCTION HAS A SERIOUS BUG --- NEEDS REWORKING
-	const filterFunc = (currentFile, fileExtension, sortType) => 
-		(getFileExtension(currentFile.name) === fileExtension && !currentFile.isDir) 
+	const oldFilterFunc = (currentFile, fileExtension, sortType) => 
+		(extensionsMatch(currentFile.name, fileExtension) && !isDirectory(currentFile)) 
 			? true 
 				: (currentFile.isDir)
 					? ((sortType.type === 'directory') ? true : false)
@@ -77,10 +99,34 @@ const createGroupedFileTypeArray = (fileList) => {
 									? true
 									: false) //File extension, no name
 								: false
+
+	const newFilterFunc = (currentFile, fileExtension, sortType) => {
+	//If directory, add entry ONLY if the sortType is directory
+	//If it's a dot file, use getFileExtension on it to get the file extension
+	//	From there use the normal thing
+	//if it's not a dot file, use the standard procedure of file extension matching
+		if (isDirectory(currentFile) ) {
+			if (sortType.type === 'directory') return true
+			else return false 
+		} else if (noExtension(currentFile)) {
+			if (sortType.type === 'none') return true
+			else return false
+		}
+		else { //Directories are excluded
+			if (isDotFile(currentFile)) {
+				if (extensionsMatch(currentFile, fileExtension)) return true
+				else return false
+			}
+			if (extensionsMatch(currentFile, fileExtension)) return true
+			else return false
+		}
+
+	}
+
 	const groupedFilesWithoutOthers = FileTypeGroups.map(sortType => {
 		return { 
 			type: sortType.type, 
-			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => filterFunc(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
+			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => newFilterFunc(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
 		}
 	})
 	const flattenedSortGroup = groupedFilesWithoutOthers.reduce((flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type }))), [])
@@ -115,7 +161,6 @@ module.exports =  {
 		const fileList = files.map(async file =>  { 
 			const fileObject = await getFileStatObject(addFilePath(dir, file))
 			return {
-			//need to construct object { name: , sizeInBytes: }
 				name: file,
 				isDir: fileObject.isDirectory(),
 				path: dir,
@@ -129,11 +174,11 @@ module.exports =  {
 
 		Promise.all(fileList).then(result => { 
 			//console.log(result)
-			console.log(`###############################`)
-			console.log(`DIRECTORY CHANGE: ${dir}`)
-			console.log(createGroupedFileTypeArray(result).map(item => { return { type: item.type, files: item.files.map(file => console.log(file.name)) } } ))
-			console.log('TOTAL FILES')
-			console.log(createGroupedFileTypeArray(result).reduce((acc, cv, index) => acc + cv.files.length ,0))
+			//console.log(`###############################`)
+			//console.log(`DIRECTORY CHANGE: ${dir}`)
+			//console.log(createGroupedFileTypeArray(result).map(item => { return { type: item.type, files: item.files.map(file => file ).length } } ))
+			//console.log('TOTAL FILES')
+			//console.log(createGroupedFileTypeArray(result).reduce((acc, cv, index) => acc + cv.files.length ,0))
 			callback(null, (grouped) ? createGroupedFileTypeArray(result) : result)
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)
