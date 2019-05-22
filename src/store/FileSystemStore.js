@@ -17,7 +17,7 @@ class FileSystemStore {
 	fileListingLoaded = false
 	reloadFileListingPending = true
 	directory = observable.box("/")
-	grouped = true
+	grouped = false
 	replaceFilesListPending = true
 
 
@@ -50,6 +50,7 @@ class FileSystemStore {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
 					this.setFilesListReplacePending(false)
+					console.log(files)
 				}
 			}
 			this.setFilesLoaded(true)

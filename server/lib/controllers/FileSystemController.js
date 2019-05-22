@@ -3,6 +3,7 @@ const path = require('path');
 const contentDirectory = path.join(__dirname,'../../../mailerContent/')
 const util = require('util');
 const FileTypeGroups = require('../../config/FileTypeGroups')
+const ServerStrings = require('../../config/ServerStrings')
 
 
 const getFileStatObject = async function (filePath) { 
@@ -73,7 +74,7 @@ const noExtension = (file) => getFileExtension(file.name).length === 0 || getFil
 const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension
 
 
-const createGroupedFileTypeArray = (fileList, flattened) => {
+const createGroupedFileTypeArray = (fileList, flattened = false) => {
 	const fileTypeGroupingFilter = (currentFile, fileExtension, sortType) => {
 	//If directory, add entry ONLY if the sortType is directory
 	//If it's a dot file, use getFileExtension on it to get the file extension
@@ -114,11 +115,11 @@ const createGroupedFileTypeArray = (fileList, flattened) => {
 	//combine flattenedSortGroup with fileList
 	//filter out all that have a non-null type property
 	const combinedList = flattenedSortGroup.concat(fileList)
-	const otherFiles = { 
+	const fullList = groupedFilesWithoutOthers.concat({ 
+		name: ServerStrings.FileSorting.GroupNames.Other,
 		type: 'other',
 		files: combinedList.filter(item => !item.type).map(file => file)
-	}		
-	const fullList = groupedFilesWithoutOthers.concat(otherFiles)
+	})
 
 	return (flattened) ? fullList.reduce(flattenListFunc, []) : fullList
 
@@ -152,7 +153,7 @@ module.exports =  {
 		})
 
 		Promise.all(fileList).then(result => { 
-			callback(null, (grouped) ? createGroupedFileTypeArray(result, false) : result)
+			callback(null, (grouped) ? createGroupedFileTypeArray(result) : result)
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)
 		})

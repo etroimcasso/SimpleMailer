@@ -1,74 +1,77 @@
+const GroupNames = require('./ServerStrings').FileSorting.GroupNames
+
 module.exports = [
 	{
-		name: 'Images',
+		name: GroupNames.Images,
 		type: 'images',
 		extensions: ['.jpg','.jpeg','.jfif','.png','.gif','.bmp'],
 
 	},
 	{
-		name: 'Videos',
+		name: GroupNames.Videos,
 		type: 'video',
 		extensions:['.mp4','.avi','.mkv','.wmv'],
 
 	},
 	{
-		name: 'PDF Documents',
+		name: GroupNames.PDF,
 		type: 'pdf',
 		extensions:['.pdf'],
 
 	},
 	{
-		name: 'Word Documents',
+		name: GroupNames.Word,
 		type:'word',
 		extensions: ['.doc','.docx'],
 
 	},
 	{
-		name: 'Excel Spreadsheets',
+		name: GroupNames.Excel,
 		type: 'excel',
 		extensions: ['.xls','.xlsx'],
 
 	},
 	{
-		name: 'Powerpoint Presentations',
+		name: GroupNames.Powerpoint,
 		type: 'powerpoint',
 		extensions: ['.ppt','.pps'],
 
 	},
 	{
-		name: 'Text Documents',
+		name: GroupNames.Text,
 		type: 'text',
 		extensions: ['.txt','.rtf'],
 
 	},
 	{
-		name: 'No Extension',
+		name: GroupNames.NoExtension,
 		type: 'none',
 	 	extensions: [''],
 
 	},
 	{ 
-		name: 'Directorys',
+		name: GroupNames.Directories,
 		type: 'directory',
 		extensions: [''],
 
 	},
 	{
-		name: 'Coding Files',
+		name: GroupNames.Coding,
 		type: 'code',
 		extensions: ['.js','.jsx','.css','.html','.cpp','.h','.c','.php','.py'],
 
 	},
 	{
-		name: 'Executable',
+		name: GroupNames.Executables,
 		type: 'executable',
 		extensions: ['.exe','.app','.vb','.elf'],
 
 	},
 	{
-		name: 'Test Files',
-		type: 'test',
-		extensions:['.test', '.file'],
+		name: GroupNames.Archives,
+		type: 'archives',
+		extensions:['.zip', '.rar','.tgz','.7z','.tar','.gz','.bz2'],
 
 	},
+
 ]

@@ -11,5 +11,22 @@ module.exports = {
 	UnsubscribeEmail: {
 		Subject: (email) => `Rx4Pain -- ${email} has been removed from our mailing  list`,
 		BodyText: (email) => `Your email address ${email} has been removed from the Rx4Pain mailing  list.`,
+	},
+	FileSorting: {
+		GroupNames: {
+			Images: 'Images',
+			Videos: 'Videos',
+			PDF: 'PDF Documents',
+			Word: 'Word Documents',
+			Excel: 'Excel Spreadsheets',
+			Powerpoint: 'Powerpoint Presentations',
+			Text: 'Text Documents',
+			NoExtension: 'No Extension',
+			Directories: 'Directories',
+			Coding: 'Code Files',
+			Executables: 'Executables',
+			Archives: 'Archives',
+			Other: 'The Best Burritos in Town'
+		}
 	}
 }
