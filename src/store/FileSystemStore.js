@@ -50,7 +50,7 @@ class FileSystemStore {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
 					this.setFilesListReplacePending(false)
-					console.log(files)
+					//console.log(files)
 				}
 			}
 			this.setFilesLoaded(true)

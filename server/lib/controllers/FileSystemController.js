@@ -87,15 +87,13 @@ const createGroupedFileTypeArray = (fileList, flattened = false) => {
 			if (sortType.type === 'none') return true
 			else return false
 		}
-		else { //Directories are excluded
+		else { //Directories are excluded, file has extension
 			if (isDotFile(currentFile)) {
 				const splitName = currentFile.name.split('.')
 				if (splitName[0] === '' && splitName.length === 2 )
 					if(sortType.type === 'none') return true
 					else return false
-				if (extensionsMatch(currentFile, fileExtension)) return true
-				else return false
-			}
+			} //File has extension, did not match the previous cases
 			if (extensionsMatch(currentFile, fileExtension)) return true
 			else return false
 		}

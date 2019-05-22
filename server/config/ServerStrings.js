@@ -26,7 +26,7 @@ module.exports = {
 			Coding: 'Code Files',
 			Executables: 'Executables',
 			Archives: 'Archives',
-			Other: 'The Best Burritos in Town'
+			Other: 'Others'
 		}
 	}
 }

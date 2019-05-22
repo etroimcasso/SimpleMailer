@@ -359,7 +359,6 @@ io.on('connection', (client) => {
 			client.emit('getMailerContentFilesResults', null, files)
 		})
 		*/
-
 		FileSystemController.getFiles(directory, grouped, (error, files) => {
 			client.emit('getFileListingResults', error, files)
 		})
