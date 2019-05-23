@@ -17,7 +17,7 @@ class FileSystemStore {
 	fileListingLoaded = false
 	reloadFileListingPending = true
 	directory = observable.box("/")
-	grouped = false
+	flattenedGroups = true
 	replaceFilesListPending = true
 
 
@@ -30,8 +30,8 @@ class FileSystemStore {
 			this.setReloadFilesPending(true)
 		})
 
-		socket.on('fileAdded', (file) => this.addFile(file))
-		socket.on('fileRemoved', (file) => this.removeFile(file))
+		//socket.on('fileAdded', (file) => this.addFile(file))
+		//socket.on('fileRemoved', (file) => this.removeFile(file))
 
 		this.directory.observe((change) => {
 			this.getFileListing()
@@ -41,7 +41,7 @@ class FileSystemStore {
 
 	dispatchGetFileListingSocketMessage(fileDir, callback) {
 		socket.on('getFileListingResults', (error, files) => callback(error, files))
-		socket.emit('getFileListing', fileDir, this.grouped)
+		socket.emit('getFileListing', fileDir)
 	}
 
 	getFileListing() {
@@ -50,7 +50,7 @@ class FileSystemStore {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
 					this.setFilesListReplacePending(false)
-					//console.log(files)
+					console.log(files)
 				}
 			}
 			this.setFilesLoaded(true)

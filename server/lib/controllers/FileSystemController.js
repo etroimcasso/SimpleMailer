@@ -74,24 +74,24 @@ const noExtension = (file) => getFileExtension(file.name).length === 0 || getFil
 const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension
 
 
-const createGroupedFileTypeArray = (fileList, flattened = false) => {
-	const fileTypeGroupingFilter = (currentFile, fileExtension, sortType) => {
-	//If directory, add entry ONLY if the sortType is directory
+const createGroupedFileTypeArray = fileList => {
+	const fileTypeGroupingFilter = (currentFile, fileExtension, sortGroup) => {
+	//If directory, add entry ONLY if the sortGroup is directory
 	//If it's a dot file, use getFileExtension on it to get the file extension
 	//	From there use the normal thing
 	//if it's not a dot file, use the standard procedure of file extension matching
 		if (isDirectory(currentFile) ) {
-			if (sortType.type === 'directory') return true
+			if (sortGroup.type === 'directory') return true
 			else return false 
 		} else if (noExtension(currentFile)) {
-			if (sortType.type === 'none') return true
+			if (sortGroup.type === 'none') return true
 			else return false
 		}
 		else { //Directories are excluded, file has extension
 			if (isDotFile(currentFile)) {
 				const splitName = currentFile.name.split('.')
 				if (splitName[0] === '' && splitName.length === 2 )
-					if(sortType.type === 'none') return true
+					if(sortGroup.type === 'none') return true
 					else return false
 			} //File has extension, did not match the previous cases
 			if (extensionsMatch(currentFile, fileExtension)) return true
@@ -100,26 +100,33 @@ const createGroupedFileTypeArray = (fileList, flattened = false) => {
 
 	}
 
-	const groupedFilesWithoutOthers = FileTypeGroups.map(sortType => {
+	const groupedFilesWithoutOthers = FileTypeGroups.map(sortGroup => {
 		return { 
-			name: sortType.name,
-			type: sortType.type, 
-			files: sortType.extensions.map(fileExtension => fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortType))).reduce((acc, cv)=> acc.concat(cv))
+			name: sortGroup.name,
+			type: sortGroup.type, 
+			icon: sortGroup.icon,
+			color: sortGroup.color,
+			files: sortGroup.extensions.map(fileExtension => fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortGroup))).reduce((acc, cv)=> acc.concat(cv))
 		}
 	})
-	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type })))
+	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type, typeName: sortGroup.name, icon: sortGroup.icon, color: sortGroup.color })))
 	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
 	//combine flattenedSortGroup with fileList
 	//filter out all that have a non-null type property
 	const combinedList = flattenedSortGroup.concat(fileList)
-	const fullList = groupedFilesWithoutOthers.concat({ 
+	const otherFiles = { 
 		name: ServerStrings.FileSorting.GroupNames.Other,
 		type: 'other',
+		color: ServerStrings.FileSorting.GroupColors.Other,
 		files: combinedList.filter(item => !item.type).map(file => file)
-	})
+	}
 
-	return (flattened) ? fullList.reduce(flattenListFunc, []) : fullList
+	
+	const flattenedOthers = otherFiles.files.map((currentFile) => {
+		return Object.assign(currentFile, { type: 'other', typeName: ServerStrings.FileSorting.GroupNames.Other, icon: ServerStrings.FileSorting.IconNames.Other, color: ServerStrings.FileSorting.GroupColors.Other })
+	})
+	return flattenedSortGroup.concat(flattenedOthers)
 
 }
 
@@ -127,7 +134,7 @@ const createGroupedFileTypeArray = (fileList, flattened = false) => {
 
 
 module.exports =  {
-	getFiles: async function (directory, grouped, callback) {
+	getFiles: async function (directory, callback) {
 		const dir = (directory === "/") ? contentDirectory : path.join(contentDirectory, `${directory}/`)
 		let files
 		try {
@@ -151,7 +158,7 @@ module.exports =  {
 		})
 
 		Promise.all(fileList).then(result => { 
-			callback(null, (grouped) ? createGroupedFileTypeArray(result) : result)
+			callback(null, createGroupedFileTypeArray(result))
 		}).catch(error => {
 			console.log(`Cannot retrieve file information: ${error}`)
 		})

@@ -27,6 +27,36 @@ module.exports = {
 			Executables: 'Executables',
 			Archives: 'Archives',
 			Other: 'Others'
-		}
+		},
+		GroupColors: {
+			Images: null,
+			Videos: null,
+			PDF: 'red',
+			Word: 'blue',
+			Excel: 'green',
+			Powerpoint: 'red',
+			Text: null,
+			NoExtension: null,
+			Directories: 'orange',
+			Coding: null,
+			Executables: null,
+			Archives: null,
+			Other: null,
+		},
+		IconNames: {
+			Images: 'file image outline',
+			Videos: 'file video outline',
+			PDF: 'file pdf',
+			Word: 'file word outline',
+			Excel: 'file excel',
+			Powerpoint: 'file powerpoint',
+			Text: 'file alternate',
+			NoExtension: 'file',
+			Directories: 'folder',
+			Coding: 'file code',
+			Executables: 'file',
+			Archives: 'file archive',
+			Other: 'file'
+		},
 	}
 }
