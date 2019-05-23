@@ -58,28 +58,27 @@ const convertFileSizeToHumanReadable = (filesize) => {
 	return fileSizeSuffixes.reduce(reduceFunc, { size: filesize, unit: fileSizeSuffixes[0] })
 }
 
-const isDirectory = (file) => file.isDir
-const isDotFile = (file) => {
-	//Dot files have a name that starts with a dot OR an extension only	
-	if (noName(file)) { // No File name
-		if (noExtension(file)) return false// No File Extension
-		else return true//Just file extension = dot file
-	} else { // File name
-		if (noExtension(file)) return false //File name, no extension
-		else return Array.from(file.name)[0] === '.'
-	}
-}
-const noName = (file) => getFileName(file.name).length === 0 || getFileName(file.name) === ''
-const noExtension = (file) => getFileExtension(file.name).length === 0 || getFileExtension(file.name) === ''
-const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension
+
 
 
 const createGroupedFileTypeArray = fileList => {
+	const isDirectory = (file) => file.isDir
+	const isDotFile = (file) => {
+		//Dot files have a name that starts with a dot OR an extension only	
+		if (noName(file)) { // No File name
+			if (noExtension(file)) return false// No File Extension
+			else return true//Just file extension = dot file
+		} else { // File name
+			if (noExtension(file)) return false //File name, no extension
+			else return Array.from(file.name)[0] === '.'
+		}
+	}
+	const noName = (file) => getFileName(file.name).length === 0 || getFileName(file.name) === ''
+	const noExtension = (file) => getFileExtension(file.name).length === 0 || getFileExtension(file.name) === ''
+	const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension
+	const splitName = (file) => file.name.split('.')
+	const dotFileHasNoExtension = (file) => splitName(file)[0] === '' && splitName(file).length === 2 
 	const fileTypeGroupingFilter = (currentFile, fileExtension, sortGroup) => {
-	//If directory, add entry ONLY if the sortGroup is directory
-	//If it's a dot file, use getFileExtension on it to get the file extension
-	//	From there use the normal thing
-	//if it's not a dot file, use the standard procedure of file extension matching
 		if (isDirectory(currentFile) ) {
 			if (sortGroup.type === 'directory') return true
 			else return false 
@@ -89,9 +88,8 @@ const createGroupedFileTypeArray = fileList => {
 		}
 		else { //Directories are excluded, file has extension
 			if (isDotFile(currentFile)) {
-				const splitName = currentFile.name.split('.')
-				if (splitName[0] === '' && splitName.length === 2 )
-					if(sortGroup.type === 'none') return true
+				if (dotFileHasNoExtension(currentFile)) //Dot file has no extension
+					if(sortGroup.type === 'none') return true 
 					else return false
 			} //File has extension, did not match the previous cases
 			if (extensionsMatch(currentFile, fileExtension)) return true
@@ -106,12 +104,16 @@ const createGroupedFileTypeArray = fileList => {
 			type: sortGroup.type, 
 			icon: sortGroup.icon,
 			color: sortGroup.color,
-			files: sortGroup.extensions.map(fileExtension => fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortGroup))).reduce((acc, cv)=> acc.concat(cv))
+			files: sortGroup.extensions.map(fileExtension => 
+				fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortGroup))).reduce((acc, cv)=> acc.concat(cv))
 		}
 	})
 
-	const generateFlatItemAddition =(type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
-	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, generateFlatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
+	const flatItemAddition =(type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
+	const flattenListFunc = (flattenedList, sortGroup) => 
+		flattenedList.concat(sortGroup.files.map(currentFile => 
+			Object.assign(currentFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
+
 	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
 	//combine flattenedSortGroup with fileList
@@ -126,7 +128,7 @@ const createGroupedFileTypeArray = fileList => {
 
 	
 	const flattenedOthers = otherFiles.files.map((currentFile) => {
-		return Object.assign(currentFile, generateFlatItemAddition('other', ServerStrings.FileSorting.GroupNames.Other, ServerStrings.FileSorting.IconNames.Other, ServerStrings.FileSorting.GroupColors.Other))
+		return Object.assign(currentFile, flatItemAddition('other', ServerStrings.FileSorting.GroupNames.Other, ServerStrings.FileSorting.IconNames.Other, ServerStrings.FileSorting.GroupColors.Other))
 	})
 	return flattenedSortGroup.concat(flattenedOthers)
 

@@ -21,9 +21,9 @@ export default inject("fileSystemState")(observer(class FileListController exten
 
 		return(
 			<Fragment>
-			{ (pathArray.length > 0 ) && 
-				<button onClick={FileSystemState.openParentDirectory}> Back</button>
-			}
+				{ (pathArray.length > 0 ) && 
+					<button onClick={FileSystemState.openParentDirectory}> Back</button>
+				}
 				<FileList />
 			</Fragment>
 		)
