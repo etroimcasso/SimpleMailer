@@ -117,11 +117,13 @@ class FileManagerStore {
 	}
 
 	setDirectory = (dir) => {
+		this.setReloadFilesPending(true)
 		this.setFilesListReplacePending(true)
 		this.directory.set(dir)
 	}
 
 	resetDirectory = () => {
+		this.setReloadFilesPending(true)
 		this.setFilesListReplacePending(true)
 		this.directory.set("/")
 	}
@@ -134,12 +136,14 @@ class FileManagerStore {
 
 
 	openDirectory(filename) {
+		this.setReloadFilesPending(true)
 		const currentDirectory = this.directory.get()
 		const newDirectory = (currentDirectory === '/') ? `/${filename}/` :`${currentDirectory}${filename}/`
 		this.setDirectory(newDirectory)
 	}
 
 	openParentDirectory = () => {
+		this.setReloadFilesPending(true)
 		const reduceFunc = (accumulator, currentValue, index, array) => (index >= array.length - 1) ? accumulator : `${accumulator}${currentValue}/`
 		const newDirectory = this.pathArray.reduce(reduceFunc, '/')
 		this.setDirectory(newDirectory)
