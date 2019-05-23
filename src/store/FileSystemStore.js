@@ -16,9 +16,11 @@ class FileSystemStore {
 	fileListing = []
 	fileListingLoaded = false
 	reloadFileListingPending = true
-	directory = observable.box("/")
+	directory = observable.box('/')
 	flattenedGroups = true
 	replaceFilesListPending = true
+	sortTypes = ['XYZ']
+	directoriesFirst = true
 
 
 	constructor() {
@@ -37,6 +39,10 @@ class FileSystemStore {
 			this.getFileListing()
 		})
 
+		this.sortTypes.observe((change) => {
+			this.replaceFilesList(this.fileListing)
+		})
+
 	}
 
 	dispatchGetFileListingSocketMessage(fileDir, callback) {
@@ -50,7 +56,6 @@ class FileSystemStore {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
 					this.setFilesListReplacePending(false)
-					console.log(files)
 				}
 			}
 			this.setFilesLoaded(true)
@@ -58,9 +63,11 @@ class FileSystemStore {
 		})
 	}
 
+
+
 	setFilesListReplacePending = (pending) => this.replaceFilesListPending = pending
 
-	replaceFilesList = (newList) => this.fileListing = newList
+	replaceFilesList = (newList) => this.fileListing = this.sortFiles(newList)
 	
 	clearFilesList = () => this.fileListing = this.fileListing.filter((item) => null)
 
@@ -71,6 +78,43 @@ class FileSystemStore {
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
 
 	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending
+
+	sortFiles = (files) => {
+		//Apply a reduction to the sortType list
+		//For each sortType, apply the sort then return the value to the accumlator
+		//The resulting array should be sorted with the filter types
+
+		const sortAlphabetically = (a, b) => a.name > b.name
+		const sortAlphabeticallyReverse = (a, b) => a.name < b.name
+		const sortLargestFirst = (a, b) => a.size < b.size
+		const sortSmallestFirst = (a, b) => a.size > b.size
+		const sortOldestFirst = (a, b) => a.created > b.created
+		const sortNewestFirst = (a, b) => a.created > b.created
+		const onlyDirectories = item => item.isDir
+		const noDirectories = item => !item.isDir
+
+		const thisSort = (sortType) => { 
+				/*	ABC: Alphabetically, ZYX: Reverse Alphabetically, OLDEST: Oldest first, NEWEST: Newest first, LARGEST: largest file, SMALLEST: smallest */
+				switch(sortType) {
+					case 'ABC': return sortAlphabetically
+					case 'ZYX': return sortAlphabeticallyReverse
+					case 'LARGEST': return sortLargestFirst
+					case 'SMALLEST': return sortSmallestFirst
+					case 'OLDEST': return sortOldestFirst
+					case 'NEWEST': return sortNewestFirst
+			}
+		}
+
+		const preProcessedSort = this.sortTypes.reduce((sortedList, sortType) => sortedList.sort(thisSort(sortType)), files)
+		const onlyDirectoryFiles = (this.directoriesFirst) ? preProcessedSort.filter(onlyDirectories) : []
+
+
+		const sortedFiles = (this.directoriesFirst) 
+			? onlyDirectoryFiles.reduce((sortedList, sortType) => sortedList.sort(thisSort(sortType)), onlyDirectoryFiles).concat(preProcessedSort.filter(noDirectories))
+			: preProcessedSort
+
+		return sortedFiles
+	}
 
 	setDirectory = (dir) => {
 		this.setFilesListReplacePending(true)
@@ -87,6 +131,7 @@ class FileSystemStore {
 	get currentDirectory() { return this.directory.get() }
 
 	get pathArray() { return this.directory.get().split('/').filter(item => item !== "") }
+
 
 	openDirectory(filename) {
 		const currentDirectory = this.directory.get()
@@ -108,8 +153,11 @@ export default decorate(FileSystemStore, {
 	fileListingLoaded: observable,
 	reloadFileListingPending: observable,
 	directory: observable,
+	directoriesFirst: observable,
+	sortTypes: observable,
 	getFileListing: action,
 	replaceFilesList: action,
+	replaceWithSortedFilesList: action,
 	clearFilesList: action,
 	setFilesLoaded: action,
 	setReloadFilesPending: action,

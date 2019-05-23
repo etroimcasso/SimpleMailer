@@ -8,8 +8,9 @@
  */
 import React, { Component, Fragment } from 'react'
 import { observer, inject } from "mobx-react"
-import FileList from './FileList'
 import { Container, Segment } from 'semantic-ui-react'
+import FileList from './FileList'
+
 const UIStrings = require('../../config/UIStrings')
 
 const styles = {
@@ -30,13 +31,8 @@ export default inject("fileSystemState")(observer(class FileListContainer extend
 
 		return(
 			<Container>
-
-				{ (pathArray.length > 0 ) && 
-					<button onClick={FileSystemState.openParentDirectory}> Back</button>
-				}
 				<Segment style={styles.fileListFlex }>
-
-				<FileList />
+					<FileList />
 				</Segment>
 			</Container>
 		)

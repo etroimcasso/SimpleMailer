@@ -78,7 +78,7 @@ module.exports = [
 		type: 'code',
 		icon: IconNames.Coding,
 		color: GroupColors.Coding,
-		extensions: ['.js','.jsx','.css','.html','.cpp','.h','.c','.php','.py'],
+		extensions: ['.js','.jsx','.css','.html','.cpp','.h','.c','.php','.py','.json','.md'],
 
 	},
 	{

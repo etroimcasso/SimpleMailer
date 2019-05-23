@@ -5,6 +5,7 @@ import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import ConnectionPlaceholder from '../bits/ConnectionPlaceholder'
 import FileListContainer from './FileListContainer'
+import FileListToolbar from './FileListToolbar'
 const UIStrings = require('../../config/UIStrings')
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.FileManager);
 
@@ -21,7 +22,7 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 
 	render() {
 		const { fileSystemState: FileSystemState } = this.props
-		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray } = FileSystemState
+		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray } = FileSystemState
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (
@@ -32,6 +33,7 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 					</Dimmer>
 					<ConnectionPlaceholder>
 						<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
+							<FileListToolbar />
 							<FileListContainer />
 						</ItemsPlaceholderSegment>
 					</ConnectionPlaceholder>

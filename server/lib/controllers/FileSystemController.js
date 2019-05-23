@@ -110,9 +110,7 @@ const createGroupedFileTypeArray = fileList => {
 	})
 
 	const flatItemAddition = (type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
-	const flattenListFunc = (flattenedList, sortGroup) => 
-		flattenedList.concat(sortGroup.files.map(currentFile => 
-			Object.assign(currentFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
+	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
 
 	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
@@ -127,10 +125,12 @@ const createGroupedFileTypeArray = fileList => {
 	}
 
 	
-	const flattenedOthers = otherFiles.files.map((currentFile) => {
-		return Object.assign(currentFile, flatItemAddition('other', ServerStrings.FileSorting.GroupNames.Other, ServerStrings.FileSorting.IconNames.Other, ServerStrings.FileSorting.GroupColors.Other))
-	})
-	return flattenedSortGroup.concat(flattenedOthers)
+	const flattenedOthers = otherFiles.files.map((currentFile) => 
+		Object.assign(currentFile, flatItemAddition('other', ServerStrings.FileSorting.GroupNames.Other, ServerStrings.FileSorting.IconNames.Other, ServerStrings.FileSorting.GroupColors.Other))
+	)
+
+	const excludeSpecialFiles = (item) => item.name !== '.DS_Store' && item.name !== 'Thumbs.db'
+	return flattenedSortGroup.concat(flattenedOthers).filter(excludeSpecialFiles)
 
 }
 
