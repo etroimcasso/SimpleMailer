@@ -9,25 +9,37 @@
 import React, { Component, Fragment } from 'react'
 import { observer, inject } from "mobx-react"
 import FileList from './FileList'
+import { Container, Segment } from 'semantic-ui-react'
 const UIStrings = require('../../config/UIStrings')
 
-export default inject("fileSystemState")(observer(class FileListController extends Component {
+const styles = {
+	fileListFlex: {
+		display: 'flex',
+		flexWrap: 'wrap',
+		width: '100%',
+		height: '100%'
+	}
+}
+
+
+export default inject("fileSystemState")(observer(class FileListContainer extends Component {
 
 	render() {
 		const { fileSystemState: FileSystemState } = this.props
-		const { filesCount: numberOfFiles } = FileSystemState
-
-		const pathArray = FileSystemState.pathArray
+		const { filesCount: numberOfFiles, pathArray } = FileSystemState
 
 		return(
-			<Fragment>
+			<Container>
+
 				{ (pathArray.length > 0 ) && 
 					<button onClick={FileSystemState.openParentDirectory}> Back</button>
 				}
+				<Segment style={styles.fileListFlex }>
+
 				<FileList />
-			</Fragment>
+				</Segment>
+			</Container>
 		)
 	}
 
 }))
-//

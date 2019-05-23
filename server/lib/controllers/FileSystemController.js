@@ -109,7 +109,7 @@ const createGroupedFileTypeArray = fileList => {
 		}
 	})
 
-	const flatItemAddition =(type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
+	const flatItemAddition = (type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
 	const flattenListFunc = (flattenedList, sortGroup) => 
 		flattenedList.concat(sortGroup.files.map(currentFile => 
 			Object.assign(currentFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))

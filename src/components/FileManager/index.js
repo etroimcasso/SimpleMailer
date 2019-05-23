@@ -4,7 +4,7 @@ import { observer, inject } from "mobx-react"
 import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
 import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import ConnectionPlaceholder from '../bits/ConnectionPlaceholder'
-import FileListController from './FileListController'
+import FileListContainer from './FileListContainer'
 const UIStrings = require('../../config/UIStrings')
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.FileManager);
 
@@ -21,7 +21,7 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 
 	render() {
 		const { fileSystemState: FileSystemState } = this.props
-		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles, currentDirectory, pathArray } = FileSystemState
+		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray } = FileSystemState
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (
@@ -30,10 +30,9 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 					<Dimmer inverted active={!filesLoaded}>
 						<Loader active={!filesLoaded} inline></Loader>
 					</Dimmer>
-					{ currentDirectory }
 					<ConnectionPlaceholder>
 						<ItemsPlaceholderSegment itemCount={itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
-							<FileListController />
+							<FileListContainer />
 						</ItemsPlaceholderSegment>
 					</ConnectionPlaceholder>
 				</Segment>

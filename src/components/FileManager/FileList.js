@@ -1,8 +1,16 @@
 import React, { Component, Fragment } from 'react'
 import { observer, inject } from "mobx-react"
-import { List } from 'semantic-ui-react'
 import FileListCardItem from './FileListCardItem'
 const UIStrings = require('../../config/UIStrings')
+
+const styles = {
+	fileListItemCard: {
+		width: '200px',
+		height: '150px',
+		maxWidth: '200px',
+		maxHeight: '150px'
+	}
+}
 
 export default inject("fileSystemState")(observer(class FileList extends Component {
 
@@ -11,15 +19,15 @@ export default inject("fileSystemState")(observer(class FileList extends Compone
 		const { fileSystemState: FileSystemState } = this.props
 		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles } = FileSystemState
 		return(
-			<List>
-					{(numberOfFiles > 0) ? files.map((file) => { 
-						return (
-								<List.Item>
-									<FileListCardItem file={file} />
-								</List.Item>
-							)
+			<Fragment>
+				{(numberOfFiles > 0) ? files.map((file) => { 
+					return (
+						<div style={styles.fileListItemCard}>
+							<FileListCardItem file={file} />
+						</div>
+					)
 				}) : null}
-			</List>
+			</Fragment>
 		)
 	}
 

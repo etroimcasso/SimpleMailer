@@ -14,8 +14,8 @@ module.exports = [
 		type: 'video',
 		icon: IconNames.Videos,
 		color: GroupColors.Videos,
-		extensions:['.mp4','.avi','.mkv','.wmv'],
-
+		extensions:['.mp4','.m4v','.mpg','.mpeg','.avi','.mkv','.wmv','.webm','.flv',
+		'.vob','.ogv','.gifv','.mov','.mp2','.m2v','.3gp',],
 	},
 	{
 		name: GroupNames.PDF,
