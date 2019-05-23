@@ -23,11 +23,11 @@ const styles = {
 }
 
 
-export default inject("fileSystemState")(observer(class FileListContainer extends Component {
+export default inject("fileManagerState")(observer(class FileListContainer extends Component {
 
 	render() {
-		const { fileSystemState: FileSystemState } = this.props
-		const { filesCount: numberOfFiles, pathArray } = FileSystemState
+		const { fileManagerState: FileManagerState } = this.props
+		const { filesCount: numberOfFiles, pathArray } = FileManagerState
 
 		return(
 			<Container>

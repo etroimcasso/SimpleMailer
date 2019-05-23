@@ -11,13 +11,13 @@ import MailerHistory from './components/MailerHistory/MailerHistory'
 import SubscriptionsPanel from './components/SubscriptionsPanel/SubscriptionsPanel'
 import TopBar from './components/TopBar'
 import FileManager from './components/FileManager'
-import FileSystemStore from './store/FileSystemStore'
+import FileManagerStore from './store/FileManagerStore'
 import AppStateStore from './store/AppStateStore'
 import MailerHistoryStore from './store/MailerHistoryStore'
 import ConnectionStateStore from './store/ConnectionStateStore'
 import SubscriberStore from './store/SubscriberStore'
 const ConnectionState = new ConnectionStateStore()
-const FileSystemState = new FileSystemStore()
+const FileManagerState = new FileManagerStore()
 const AppState = new AppStateStore()
 const SubscriberState = new SubscriberStore()
 const MailerHistoryState = new MailerHistoryStore()
@@ -126,7 +126,7 @@ export default observer(class App extends Component {
     
 
   	return (
-      <Provider fileSystemState={FileSystemState} 
+      <Provider fileManagerState={FileManagerState} 
       appState={AppState} 
       connectionState={ConnectionState} 
       subscriberState={SubscriberState}

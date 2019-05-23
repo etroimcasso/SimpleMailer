@@ -23,15 +23,15 @@ const styles = {
 }
 
 
-export default inject("fileSystemState", "connectionState", "subscriberState", "mailerHistoryState")(observer(class TopBar extends Component {
+export default inject("fileManagerState", "connectionState", "subscriberState", "mailerHistoryState")(observer(class TopBar extends Component {
 
 	render() {
-		const { fileSystemState: FileSystemState, connectionState: ConnectionState, subscriberState: SubscribersState, mailerHistoryState: MailerHistoryState } = this.props
+		const { fileManagerState: FileManagerState, connectionState: ConnectionState, subscriberState: SubscribersState, mailerHistoryState: MailerHistoryState } = this.props
 		const { connection } = ConnectionState
 		const { subscribersLoaded } = SubscribersState
 		const { mailerHistory, mailerHistoryLoaded } = MailerHistoryState
 		
-		const { fileListingLoaded } = FileSystemState
+		const { fileListingLoaded } = FileManagerState
 
 		//const connectionStatusIconName = (connection) ? "circle" : "circle"
 		const connectionStatusIconColor = (connection) ? "green" : "red"
@@ -84,7 +84,7 @@ export default inject("fileSystemState", "connectionState", "subscriberState", "
 					{UIStrings.TopBar.FileManagerText}
 					{ (fileListingLoaded && false) &&
 						<Label circular>
-							{FileSystemState.filesCount}
+							{FileManagerState.filesCount}
 						</Label>
 					}
 					{ !fileListingLoaded && 

@@ -12,12 +12,12 @@ const styles = {
 	}
 }
 
-export default inject("fileSystemState")(observer(class FileList extends Component {
+export default inject("fileManagerState")(observer(class FileList extends Component {
 
 	render() {
 
-		const { fileSystemState: FileSystemState } = this.props
-		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles } = FileSystemState
+		const { fileManagerState: FileManagerState } = this.props
+		const { fileListing: files, fileListingLoaded: filesLoaded, filesCount: numberOfFiles } = FileManagerState
 		return(
 			<Fragment>
 				{(numberOfFiles > 0) ? files.map((file) => { 

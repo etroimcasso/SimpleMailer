@@ -27,13 +27,13 @@ const styles = {
 	}
 }
 
-export default inject("fileSystemState")(observer(class FileListCardItem extends Component {
+export default inject("fileManagerState")(observer(class FileListCardItem extends Component {
 
 	state = {
 		hover: false
 	}
 
-	handleDirectoryClick = () => this.props.fileSystemState.openDirectory(this.props.file.name)
+	handleDirectoryClick = () => this.props.fileManagerState.openDirectory(this.props.file.name)
 	handleFileClick = () => (console.log("THIS NEEDS SOMETHING TO DO!"))
 	toggleHover = () => {
 		this.setState({
@@ -42,7 +42,7 @@ export default inject("fileSystemState")(observer(class FileListCardItem extends
 	}
 
 	render() {
-		const { fileSystemState: FileSystemState, file } = this.props
+		const { fileManagerState: FileManagerState, file } = this.props
 		const { hover } = this.state
 		const isDirectory = file.isDir
 		const fileNameTooLong = file.name.length > maxCharactersToDisplayInFileName

@@ -4,17 +4,17 @@ import { Menu, Icon } from 'semantic-ui-react';
 const UIStrings = require('../../config/UIStrings')
 
 
-export default inject("fileSystemState")(observer(class FileListToolbar extends Component {
+export default inject("fileManagerState")(observer(class FileListToolbar extends Component {
 
 	render() {
-		const { fileSystemState: FileSystemState } = this.props
-		const { pathArray } = FileSystemState
+		const { fileManagerState: FileManagerState } = this.props
+		const { pathArray } = FileManagerState
 
 		const inRootDirectory = pathArray.length === 0
 
 		return (
 			<Menu>
-					<button disabled={inRootDirectory} onClick={FileSystemState.openParentDirectory}> Back</button>
+					<button disabled={inRootDirectory} onClick={FileManagerState.openParentDirectory}> Back</button>
 			</Menu>
 		)
 	}

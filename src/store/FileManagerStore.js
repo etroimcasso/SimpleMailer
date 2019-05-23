@@ -12,7 +12,7 @@ const socket = openSocket(hostname.opensocket);
 //Should compute an array that contains arrays of files organized into types using filters 
 
 
-class FileSystemStore {
+class FileManagerStore {
 	fileListing = []
 	fileListingLoaded = false
 	reloadFileListingPending = true
@@ -148,7 +148,7 @@ class FileSystemStore {
 
 }
 
-export default decorate(FileSystemStore, {
+export default decorate(FileManagerStore, {
 	fileListing: observable,
 	fileListingLoaded: observable,
 	reloadFileListingPending: observable,

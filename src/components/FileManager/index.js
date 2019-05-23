@@ -10,7 +10,7 @@ const UIStrings = require('../../config/UIStrings')
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.FileManager);
 
 
-export default inject("fileSystemState")(observer(class FileManager extends Component {
+export default inject("fileManagerState")(observer(class FileManager extends Component {
 
 	componentWillMount() {
 		document.title = pageTitle
@@ -21,8 +21,8 @@ export default inject("fileSystemState")(observer(class FileManager extends Comp
 	}
 
 	render() {
-		const { fileSystemState: FileSystemState } = this.props
-		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray } = FileSystemState
+		const { fileManagerState: FileManagerState } = this.props
+		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray } = FileManagerState
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (
