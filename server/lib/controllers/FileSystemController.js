@@ -109,7 +109,9 @@ const createGroupedFileTypeArray = fileList => {
 			files: sortGroup.extensions.map(fileExtension => fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortGroup))).reduce((acc, cv)=> acc.concat(cv))
 		}
 	})
-	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, { type: sortGroup.type, typeName: sortGroup.name, icon: sortGroup.icon, color: sortGroup.color })))
+
+	const generateFlatItemAddition =(type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
+	const flattenListFunc = (flattenedList, sortGroup) => flattenedList.concat(sortGroup.files.map(currentFile => Object.assign(currentFile, generateFlatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
 	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
 	//combine flattenedSortGroup with fileList
@@ -124,7 +126,7 @@ const createGroupedFileTypeArray = fileList => {
 
 	
 	const flattenedOthers = otherFiles.files.map((currentFile) => {
-		return Object.assign(currentFile, { type: 'other', typeName: ServerStrings.FileSorting.GroupNames.Other, icon: ServerStrings.FileSorting.IconNames.Other, color: ServerStrings.FileSorting.GroupColors.Other })
+		return Object.assign(currentFile, generateFlatItemAddition('other', ServerStrings.FileSorting.GroupNames.Other, ServerStrings.FileSorting.IconNames.Other, ServerStrings.FileSorting.GroupColors.Other))
 	})
 	return flattenedSortGroup.concat(flattenedOthers)
 
