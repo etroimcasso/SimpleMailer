@@ -23,7 +23,7 @@ class FileManagerStore {
 	directory = observable.box('/')
 	flattenedGroups = true
 	replaceFilesListPending = true
-	sortTypes = ['ZYX']
+	sortTypes = ['ABC']
 	directoriesFirst = true
 
 
@@ -42,11 +42,6 @@ class FileManagerStore {
 		this.directory.observe((change) => {
 			this.getFileListing()
 		})
-
-		this.sortTypes.observe((change) => {
-			this.replaceFilesList(this.fileListing)
-		})
-
 	}
 
 	dispatchGetFileListingSocketMessage(fileDir, callback) {
@@ -60,6 +55,7 @@ class FileManagerStore {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
 					this.setReplaceFilesListPending(false)
+					console.log(`**********FILES***********\n${files}\n***********END FILES*********`)
 				}
 			}
 			this.setFilesLoaded(true)
@@ -88,27 +84,50 @@ class FileManagerStore {
 		//For each sortType, apply the sort then return the value to the accumlator
 		//The resulting array should be sorted with the filter types
 
-		const sortAlphabetically = (a, b) => a.name.toLowerCase() > b.name.toLowerCase()
-		const sortAlphabeticallyReverse = (a, b) => b.name.toLowerCase() > a.name.toLowerCase()
-		const sortLargestFirst = (a, b) => a.size < b.size
-		const sortSmallestFirst = (a, b) => a.size > b.size
-		const sortOldestFirst = (a, b) => a.created > b.created
-		const sortNewestFirst = (a, b) => a.created < b.created
+
+		const sortAlphabetically = (a, b) => {
+			const aName = a.name.toLowerCase()
+			const bName = b.name.toLowerCase()
+			return (aName > bName) ? 1 : (bName > aName) ? -1 : 0
+		}		
+		const sortAlphabeticallyReverse = (a, b) => {
+			const aName = a.name.toLowerCase()
+			const bName = b.name.toLowerCase()
+			return (aName > bName) ? -1 : (bName > aName) ? 1 : 0
+		}
+		const sortLargestFirst = (a, b) => {
+			const aSize = a.sizeInBytes
+			const bSize = b.sizeInBytes
+			return (aSize > bSize) ? -1 : (bSize > aSize) ? 1 : 0
+		}
+		const sortSmallestFirst = (a, b) => {
+			const aSize = a.sizeInBytes
+			const bSize = b.sizeInBytes
+			return (aSize > bSize) ? 1 : (bSize > aSize) ? -1 : 0
+		}
+		const sortOldestFirst = (a, b) => {
+			const aCreated = a.created
+			const bCreated = b.created
+			return (aCreated > bCreated) ? 1 : (bCreated > aCreated) ? -1 : 0
+		}
+		const sortNewestFirst = (a, b) => {
+			const aCreated = a.created
+			const bCreated = b.created
+			return (aCreated > bCreated) ? -1 : (bCreated > aCreated) ? 1 : 0
+		}
 		const onlyDirectories = item => item.isDir
 		const noDirectories = item => !item.isDir
 
 		const thisSort = (sortType) => { 
 				/*	ABC: Alphabetically, ZYX: Reverse Alphabetically, OLDEST: Oldest first, NEWEST: Newest first, LARGEST: largest file, SMALLEST: smallest */
-				console.log("SORT TYPPE")
-				console.log(sortType)
 				switch(sortType) {
 					case 'ABC': return sortAlphabetically
-					case 'ZYX': return sortAlphabeticallyReverse
+					case 'ZYX': return sortAlphabeticallyReverse 
 					case 'LARGEST': return sortLargestFirst
 					case 'SMALLEST': return sortSmallestFirst
 					case 'OLDEST': return sortOldestFirst
 					case 'NEWEST': return sortNewestFirst
-					default: return (item) => item
+					default: return item => item
 			}
 		}
 
@@ -116,10 +135,8 @@ class FileManagerStore {
 
 		const preProcessedSort = this.sortTypes.reduce(sortListReduceFunc, files)
 		const onlyDirectoryFiles = (this.directoriesFirst) ? preProcessedSort.filter(onlyDirectories) : []
-
-
-		const sortedFiles = (this.directoriesFirst) 
-			? onlyDirectoryFiles.reduce(sortListReduceFunc, onlyDirectoryFiles).concat(preProcessedSort.filter(noDirectories))
+		const sortedFiles = (this.directoriesFirst && onlyDirectoryFiles.length > 1) 
+			? this.sortTypes.reduce(sortListReduceFunc, onlyDirectoryFiles).concat(preProcessedSort.filter(noDirectories))
 			: preProcessedSort
 
 		return sortedFiles
@@ -158,6 +175,11 @@ class FileManagerStore {
 		this.setDirectory(newDirectory)
 	}
 
+	setSortType = (newSortType) => {
+		this.sortTypes = [newSortType]
+		this.replaceFilesList(this.fileListing)
+	}
+
 
 }
 
@@ -183,4 +205,5 @@ export default decorate(FileManagerStore, {
 	pathArray: computed,
 	openDirectory: action,
 	setReplaceFilesListPending: action,
+	setSortType: action,
 })
