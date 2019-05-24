@@ -7,7 +7,6 @@
  	- This component's parent will handle addition of files / or the Drag and drop component will, when it is implemented
  */
 import React, { Component, Fragment } from 'react'
-import { observer, inject } from "mobx-react"
 import { Container, Segment } from 'semantic-ui-react'
 import FileList from './FileList'
 
@@ -23,12 +22,9 @@ const styles = {
 }
 
 
-export default inject("fileManagerState")(observer(class FileListContainer extends Component {
+export default class FileListContainer extends Component {
 
 	render() {
-		const { fileManagerState: FileManagerState } = this.props
-		const { filesCount: numberOfFiles, pathArray } = FileManagerState
-
 		return(
 			<Container>
 				<Segment style={styles.fileListFlex }>
@@ -38,4 +34,4 @@ export default inject("fileManagerState")(observer(class FileListContainer exten
 		)
 	}
 
-}))
+}

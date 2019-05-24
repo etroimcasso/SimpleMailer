@@ -30,8 +30,12 @@ const styles = {
 export default inject("fileManagerState")(observer(class FileListCardItem extends Component {
 
 	state = {
-		hover: false
+		hover: false,
+		selected: false
 	}
+	//TODO: Check selected
+	//if selected, trigger click action
+	//If not selected, trigger select action
 
 	handleDirectoryClick = () => this.props.fileManagerState.openDirectory(this.props.file.name)
 	handleFileClick = () => (console.log("THIS NEEDS SOMETHING TO DO!"))
@@ -43,7 +47,7 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 
 	render() {
 		const { fileManagerState: FileManagerState, file } = this.props
-		const { hover } = this.state
+		const { hover, selected } = this.state
 		const isDirectory = file.isDir
 		const fileNameTooLong = file.name.length > maxCharactersToDisplayInFileName
 		const fileName = (fileNameTooLong) ? `${file.name.slice(0,maxCharactersToDisplayInFileName)}...` : file.name

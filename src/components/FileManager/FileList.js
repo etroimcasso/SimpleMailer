@@ -10,6 +10,12 @@ const styles = {
 		height: '150px',
 		maxWidth: '200px',
 		maxHeight: '150px'
+	},
+	centeredDivContainer: {
+		display: 'flex',
+		flexAlign: 'center',
+		justifyContent: 'center',
+		width: '100%',
 	}
 }
 
@@ -27,7 +33,16 @@ export default inject("fileManagerState")(observer(class FileList extends Compon
 							<FileListCardItem file={file} />
 						</div>
 					)
-				}) : null}
+				}) : (
+				<div style={styles.centeredDivContainer}>
+					<ItemsPlaceholderSegment 
+							itemCount={0}
+							noItemsText={UIStrings.FileManager.EmptyDirectory}
+							itemsLoaded={true} 
+							iconName='folder open'
+					/>
+				</div>
+					)}
 			</Fragment>
 		)
 	}

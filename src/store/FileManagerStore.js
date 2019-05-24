@@ -12,6 +12,10 @@ const socket = openSocket(hostname.opensocket);
 //Should compute an array that contains arrays of files organized into types using filters 
 
 
+
+//EVERY PRESS OF BACK BUTTON REMOVES ONE SECTION OF LIST and adds that full path to history array
+//EVERY PRESS OF FORWARD BUTTON removes most recent history array item and changes directory to that full path
+
 class FileManagerStore {
 	fileListing = []
 	fileListingLoaded = false
@@ -19,7 +23,7 @@ class FileManagerStore {
 	directory = observable.box('/')
 	flattenedGroups = true
 	replaceFilesListPending = true
-	sortTypes = ['XYZ']
+	sortTypes = ['ZYX']
 	directoriesFirst = true
 
 
@@ -55,7 +59,7 @@ class FileManagerStore {
 			if (!error) {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
-					this.setFilesListReplacePending(false)
+					this.setReplaceFilesListPending(false)
 				}
 			}
 			this.setFilesLoaded(true)
@@ -65,7 +69,7 @@ class FileManagerStore {
 
 
 
-	setFilesListReplacePending = (pending) => this.replaceFilesListPending = pending
+	setReplaceFilesListPending = (pending) => this.replaceFilesListPending = pending
 
 	replaceFilesList = (newList) => this.fileListing = this.sortFiles(newList)
 	
@@ -84,17 +88,19 @@ class FileManagerStore {
 		//For each sortType, apply the sort then return the value to the accumlator
 		//The resulting array should be sorted with the filter types
 
-		const sortAlphabetically = (a, b) => a.name > b.name
-		const sortAlphabeticallyReverse = (a, b) => a.name < b.name
+		const sortAlphabetically = (a, b) => a.name.toLowerCase() > b.name.toLowerCase()
+		const sortAlphabeticallyReverse = (a, b) => b.name.toLowerCase() > a.name.toLowerCase()
 		const sortLargestFirst = (a, b) => a.size < b.size
 		const sortSmallestFirst = (a, b) => a.size > b.size
 		const sortOldestFirst = (a, b) => a.created > b.created
-		const sortNewestFirst = (a, b) => a.created > b.created
+		const sortNewestFirst = (a, b) => a.created < b.created
 		const onlyDirectories = item => item.isDir
 		const noDirectories = item => !item.isDir
 
 		const thisSort = (sortType) => { 
 				/*	ABC: Alphabetically, ZYX: Reverse Alphabetically, OLDEST: Oldest first, NEWEST: Newest first, LARGEST: largest file, SMALLEST: smallest */
+				console.log("SORT TYPPE")
+				console.log(sortType)
 				switch(sortType) {
 					case 'ABC': return sortAlphabetically
 					case 'ZYX': return sortAlphabeticallyReverse
@@ -102,15 +108,18 @@ class FileManagerStore {
 					case 'SMALLEST': return sortSmallestFirst
 					case 'OLDEST': return sortOldestFirst
 					case 'NEWEST': return sortNewestFirst
+					default: return (item) => item
 			}
 		}
 
-		const preProcessedSort = this.sortTypes.reduce((sortedList, sortType) => sortedList.sort(thisSort(sortType)), files)
+		const sortListReduceFunc = (sortedList, sortType) => sortedList.sort(thisSort(sortType))
+
+		const preProcessedSort = this.sortTypes.reduce(sortListReduceFunc, files)
 		const onlyDirectoryFiles = (this.directoriesFirst) ? preProcessedSort.filter(onlyDirectories) : []
 
 
 		const sortedFiles = (this.directoriesFirst) 
-			? onlyDirectoryFiles.reduce((sortedList, sortType) => sortedList.sort(thisSort(sortType)), onlyDirectoryFiles).concat(preProcessedSort.filter(noDirectories))
+			? onlyDirectoryFiles.reduce(sortListReduceFunc, onlyDirectoryFiles).concat(preProcessedSort.filter(noDirectories))
 			: preProcessedSort
 
 		return sortedFiles
@@ -118,13 +127,13 @@ class FileManagerStore {
 
 	setDirectory = (dir) => {
 		this.setReloadFilesPending(true)
-		this.setFilesListReplacePending(true)
+		this.setReplaceFilesListPending(true)
 		this.directory.set(dir)
 	}
 
 	resetDirectory = () => {
 		this.setReloadFilesPending(true)
-		this.setFilesListReplacePending(true)
+		this.setReplaceFilesListPending(true)
 		this.directory.set("/")
 	}
 
@@ -166,11 +175,12 @@ export default decorate(FileManagerStore, {
 	setFilesLoaded: action,
 	setReloadFilesPending: action,
 	setDirectory: action,
+	resetDirectory: action,
 	addFile: action,
 	removeFile: action,
 	filesCount: computed,
 	currentDirectory: computed,
 	pathArray: computed,
 	openDirectory: action,
-	setFilesListReplacePending: action,
+	setReplaceFilesListPending: action,
 })

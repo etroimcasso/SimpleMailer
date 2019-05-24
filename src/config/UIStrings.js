@@ -11,6 +11,7 @@ module.exports = {
 	SubjectNoun: "Subject",
 	ContentNoun: "Content",
 	EmailNoun: "Email",
+	
 	UnsubscribeError: (email) => `${email} is not subscribed to our mailing list`,
 	UnSubscribeSuccess: (email) => `${email} has been removed from our mailing list`,
 	SubscribeSuccess: (email) => `${email} has been added to our mailing list`,
@@ -70,5 +71,12 @@ module.exports = {
 	},
 	GeneralErrors: {
 		NotAllEmailsSent: "Not all emails could be sent"
+	},
+	FileManager: {
+		EmptyDirectory: "This directory is empty",
+		Toolbar: {
+			PreviousDirectory: "Back",
+			HomeDirectory: "Home"
+		}
 	}
 }

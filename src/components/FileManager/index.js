@@ -26,7 +26,6 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
 
 		return (
-			<Container>
 				<Segment basic>
 					<Dimmer inverted active={!filesLoaded}>
 						<Loader active={!filesLoaded} inline></Loader>
@@ -38,7 +37,6 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 						</ItemsPlaceholderSegment>
 					</ConnectionPlaceholder>
 				</Segment>
-			</Container>
 		)
 	}
 }))

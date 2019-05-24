@@ -37,8 +37,8 @@ app.use(express.static(root));
 
 
 //Route for mailer content
-app.get("/mailerContent/:fileName", (req, res, next) => {
-	 console.log(path.join(mailerContentRoot, 'mailerContent'))
+app.get("/mailerContent/:fileName(*)", (req, res, next) => {
+	 console.log(path.join(mailerContentRoot, `${req.params.fileName}`))
 	res.sendFile(path.join(mailerContentRoot, `${req.params.fileName}`))
 })
 
