@@ -13,8 +13,13 @@ export default inject("fileManagerState")(observer(class FileListToolbar extends
 		const inRootDirectory = pathArray.length === 0
 
 		return (
-			<Menu>
-					<button disabled={inRootDirectory} onClick={FileManagerState.openParentDirectory}> Back</button>
+			<Menu icon='labeled' attached="top">
+					<Menu.Item 
+					disabled={inRootDirectory} 
+					onClick={FileManagerState.openParentDirectory}>
+						<Icon name='chevron left' /> 
+						Back
+					</Menu.Item>
 			</Menu>
 		)
 	}

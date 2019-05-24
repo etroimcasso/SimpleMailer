@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { observer, inject } from "mobx-react"
 import FileListCardItem from './FileListCardItem'
+import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 const UIStrings = require('../../config/UIStrings')
 
 const styles = {
