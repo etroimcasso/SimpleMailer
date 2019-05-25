@@ -38,10 +38,10 @@ export default inject("fileManagerState", "connectionState", "subscriberState", 
 
 
 		return (
-			<Menu compact inverted icon borderless fixed="top" size="large">
+			<Menu inverted compact icon borderless fixed="top" size="large">
 				<Menu.Item header>
 					<Popup hideOnScroll 
-						trigger={(<Icon circular name="circle" color={connectionStatusIconColor} size="small" />)}
+						trigger={(<Icon name="circle" color={connectionStatusIconColor} size="small" />)}
 						on="hover"
 						>
 					<span style={(connection) ? null : styles.redText }>{(connection) ? UIStrings.TopBar.ConnectionStatusConnected : UIStrings.TopBar.ConnectionStatusDisconnected}</span>

@@ -106,7 +106,7 @@ and
 The unsubscribe link is sent to each subscriber when they sign up and when they receive mailers.
 
 # Serving Static Content In Mailers
-Desired content can be stored in `/mailerContent`	 and accessed via `hostname/mailerContent/filename`
+Desired content can be stored in `/mailerContent`	 and accessed via `hostname/mailerContent/filename`    
 Subdirectories are supported.
 
 

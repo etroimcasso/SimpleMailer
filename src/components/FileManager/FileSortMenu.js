@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
-import { Menu, Divider } from 'semantic-ui-react';
+import { Menu, Divider, Header } from 'semantic-ui-react';
 const UIStrings = require('../../config/UIStrings')
 
 export default inject('fileManagerState')(observer(class FileSortMenu extends Component {
@@ -15,61 +15,115 @@ export default inject('fileManagerState')(observer(class FileSortMenu extends Co
 	sortSmallest = () => this.props.fileManagerState.setSortType('SMALLEST')
 	toggleDirectoriesFirst = () => this.props.fileManagerState.toggleDirectoriesFirst()
 
+
+
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
 		const { directoriesFirst } = FileManagerState
 		const sortType = FileManagerState.sortTypes[0]
 
+		const headerSize = 'h4'
+		const activeItemSize = 'h3'
+
 		return(
 			<Menu text vertical >
-				<Menu.Header>Sort:</Menu.Header>
-				<Menu.Item
-				active={sortType === 'ABC'}
-				onClick={(sortType !== 'ABC') ? this.sortABC : null}>
-					Alphabetically
-				</Menu.Item>
-				<Menu.Item
-				active={sortType === 'ZYX'} 
-				onClick={(sortType !== 'ZYX') ? this.sortZYX : null}>
-					Reverse Alphabetically
-				</Menu.Item>
-	
-				<Menu.Item
-				active={sortType === 'NEWEST'} onClick={(sortType !== 'NEWEST') ? this.sortNewest : null}>
-					Newest First
-				</Menu.Item>
-	
-				<Menu.Item
-				active={sortType === 'OLDEST'} 
-				onClick={(sortType !== 'OLDEST') ? this.sortOldest : null}>
-					Oldest First
-				</Menu.Item>
-	
-				<Menu.Item
-				active={sortType === 'SMALLEST'} 
-				onClick={(sortType !== 'SMALLEST') ? this.sortSmallest : null}>
-					Smallest First
-				</Menu.Item>
-	
-				<Menu.Item
-				active={sortType === 'LARGEST'} 
-				onClick={(sortType !== 'LARGEST') ? this.sortLargest : null}>
-					Largest First
-				</Menu.Item>
+				<Menu.Header as={headerSize}>
+					{UIStrings.FileManager.SortMenu.MenuHeader}
+				</Menu.Header>
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='ABC' 
+				sortFunction={this.sortABC}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Abc}
+				activeItemSize={activeItemSize} />
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='ZYX' 
+				sortFunction={this.sortZYX}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Zyx}
+				activeItemSize={activeItemSize} />
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='NEWEST' 
+				sortFunction={this.sortNewest}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Newest}
+				activeItemSize={activeItemSize} />
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='OLDEST' 
+				sortFunction={this.sortOldest}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Oldest}
+				activeItemSize={activeItemSize} />
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='SMALLEST' 
+				sortFunction={this.sortSmallest}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Smallest}
+				activeItemSize={activeItemSize} />
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='LARGEST' 
+				sortFunction={this.sortLargest}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Largest}
+				activeItemSize={activeItemSize} />	
+
 				<Divider horizontal />
 
-				<Menu.Header>Directories First:</Menu.Header>
+				<Menu.Header as={headerSize}>
+					Directories First:
+				</Menu.Header>
 				<Menu.Item
 				active={directoriesFirst} 
 				onClick={(directoriesFirst) ? null : this.toggleDirectoriesFirst}>
-					Yes
+					{directoriesFirst &&
+						<Header as={activeItemSize}>
+							{ UIStrings.FileManager.SortMenu.MenuNames.DirectoriesFirst.Yes }
+						</Header>
+					}
+					{ !directoriesFirst &&
+						<Fragment>
+							{ UIStrings.FileManager.SortMenu.MenuNames.DirectoriesFirst.Yes }
+						</Fragment>
+					}
 				</Menu.Item>	
 				<Menu.Item
 				active={!directoriesFirst} 
 				onClick={(!directoriesFirst) ? null : this.toggleDirectoriesFirst}>
-					No
+					{!directoriesFirst &&
+						<Header as={activeItemSize}>
+							{ UIStrings.FileManager.SortMenu.MenuNames.DirectoriesFirst.No }
+						</Header>
+					}
+					{ directoriesFirst &&
+						<Fragment>
+							{ UIStrings.FileManager.SortMenu.MenuNames.DirectoriesFirst.No }
+						</Fragment>
+					}
 				</Menu.Item>
 			</Menu>
 		)
 	}
 }))
+
+const TextMenuSortTypeToggleItem = (props) => (
+	<Menu.Item
+	active={props.sortType === props.expectedSortType}
+	onClick={(props.sortType !== props.expectedSortType) ? props.sortFunction : null}>
+		{props.sortType === props.expectedSortType &&
+			<Header as={props.activeItemSize}>
+				{props.itemText}
+			</Header>
+		}
+		{ props.sortType !== props.expectedSortType &&
+			<Fragment>
+				{props.itemText}
+			</Fragment>
+		}
+	</Menu.Item>
+	)

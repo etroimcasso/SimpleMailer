@@ -116,6 +116,8 @@ class FileItemContextMenuPopup extends Component {
 		return (
 			<Popup 
 			position='right center'
+			flowing
+			inverted
 			disabled={disabled}
 			open={open} 
 			onClose={onClose}
@@ -123,7 +125,7 @@ class FileItemContextMenuPopup extends Component {
 			trigger={trigger}
 			hoverable={true}>
 				<Header as='h3'>{filename}</Header>
-				<Divider fitted />
+				<Divider />
 				{children}
 				
 			</Popup>
@@ -134,7 +136,9 @@ class FileItemContextMenuPopup extends Component {
 class FileContextMenu extends Component {
 	render() {
 		return (
-			<Menu vertical text size="big">
+			<Menu inverted vertical text size="big">
+				<Menu.Item link>Get Info...</Menu.Item>
+				<Divider horizontal />
 				<Menu.Item link>Rename...</Menu.Item>
 			</Menu>
 		)

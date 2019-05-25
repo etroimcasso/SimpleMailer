@@ -77,6 +77,22 @@ module.exports = {
 		Toolbar: {
 			PreviousDirectory: "Back",
 			HomeDirectory: "Home"
+		},
+		SortMenu: {
+			MenuHeader: 'Sort:',
+			MenuNames: {
+				Abc: 'A to Z',
+				Zyx: 'Z to A',
+				Newest: 'Newest First',
+				Oldest: 'Oldest First',
+				Largest: 'Largest First',
+				Smallest: 'Smallest First',
+				DirectoriesFirst: {
+					Name: "Directories First",
+					Yes: "Yes",
+					No: "No",
+				}
+			}
 		}
 	}
 }
