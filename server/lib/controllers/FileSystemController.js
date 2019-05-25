@@ -63,6 +63,8 @@ const convertFileSizeToHumanReadable = (filesize) => {
 
 const createGroupedFileTypeArray = fileList => {
 	const isDirectory = (file) => file.isDir
+	const noName = (file) => getFileName(file.name).length === 0 || getFileName(file.name) === ''
+	const noExtension = (file) => getFileExtension(file.name).length === 0 || getFileExtension(file.name) === ''
 	const isDotFile = (file) => {
 		//Dot files have a name that starts with a dot OR an extension only	
 		if (noName(file)) { // No File name
@@ -73,9 +75,7 @@ const createGroupedFileTypeArray = fileList => {
 			else return Array.from(file.name)[0] === '.'
 		}
 	}
-	const noName = (file) => getFileName(file.name).length === 0 || getFileName(file.name) === ''
-	const noExtension = (file) => getFileExtension(file.name).length === 0 || getFileExtension(file.name) === ''
-	const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension
+	const extensionsMatch = (file, extension) => getFileExtension(file.name).toLowerCase() === extension.toLowerCase()
 	const splitName = (file) => file.name.split('.')
 	const dotFileHasNoExtension = (file) => splitName(file)[0] === '' && splitName(file).length === 2 
 	const fileTypeGroupingFilter = (currentFile, fileExtension, sortGroup) => {

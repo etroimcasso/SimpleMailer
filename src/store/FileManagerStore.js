@@ -26,6 +26,8 @@ class FileManagerStore {
 	sortTypes = ['ABC']
 	directoriesFirst = true
 	contextMenu = observable.box('')
+	allFilterTypes = ['']
+	currentFilterTypes = ['']
 
 
 	constructor() {
@@ -52,6 +54,7 @@ class FileManagerStore {
 		this.dispatchGetFileListingSocketMessage(this.directory.get(), (error, files) => {
 			if (!error) {
 				if (this.replaceFilesListPending === true) {
+					this.replaceAllFilterTypes(this.getAllFilterTypes(files))
 					this.replaceFilesList(files)
 					this.setReplaceFilesListPending(false)
 					this.resetContextMenu()
@@ -68,7 +71,7 @@ class FileManagerStore {
 
 	setReplaceFilesListPending = (pending) => this.replaceFilesListPending = pending
 
-	replaceFilesList = (newList) => this.fileListing = this.sortFiles(newList)
+	replaceFilesList = (newList) => this.fileListing = this.filterFiles(this.sortFiles(newList))
 	
 	clearFilesList = () => this.fileListing = this.fileListing.filter((item) => null)
 
@@ -82,9 +85,45 @@ class FileManagerStore {
 
 	toggleDirectoriesFirst = () => {
 		this.directoriesFirst = !this.directoriesFirst
+		//Update file listing
 		this.replaceFilesList(this.fileListing)
 	}
 
+	getAllFilterTypes = () => {
+		//Get filter types by inspecting each file
+		//Using a reduce, add each { typeName: typeName, type: type } to the accumulator if its 
+		//  type value cannot be found in the accumulator array
+	}
+
+	replaceAllFilterTypes = (filterTypes) => this.allFilterTypes = filterTypes
+
+	resetAllFilterTypes = () => this.allFilterTypes = ['']
+
+	resetCurrentFilterTypes = () => {
+
+
+	}
+
+	addCurrentFilterType = (filterType) => {
+		//Concat the new filterType to the array if it cannot be found in the array
+
+		//Update file listing
+		this.replaceFilesList(this.fileListing)
+	}
+
+
+	removeCurrentFilterType = (filterType) => {
+		//Find the index of the filter type and remove the object at that index
+
+		//Update file listing
+		this.replaceFilesList(this.fileListing)
+	}
+
+	filterFiles = (files) => {
+		//Create an array for each filterType (file.type === filterType)
+		//Combine these arrays into a single object array and return it
+
+	}
 
 	sortFiles = (files) => {
 		//Apply a reduction to the sortType list
@@ -201,8 +240,12 @@ export default decorate(FileManagerStore, {
 	sortTypes: observable,
 	contextMenu: observable,
 	directoriesFirst: observable,
+	allFilterTypes: observable,
+	currentFilterTypes: observable,
 	getFileListing: action,
 	replaceFilesList: action,
+	resetAllFilterTypes: action,
+	replaceAllFilterTypes: action,
 	replaceWithSortedFilesList: action,
 	clearFilesList: action,
 	setFilesLoaded: action,
