@@ -30,7 +30,7 @@ export default inject("fileManagerState")(observer(class FileList extends Compon
 				{(numberOfFiles > 0) ? files.map((file) => { 
 					return (
 						<div style={styles.fileListItemCard}>
-							<FileListCardItem file={file} />
+							<FileListCardItem key={file.name} file={file} />
 						</div>
 					)
 				}) : (

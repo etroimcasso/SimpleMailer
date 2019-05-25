@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment, createRef } from 'react'
 import { observer, inject } from "mobx-react"
-import { Card, Icon, Image} from 'semantic-ui-react'
+import { Card, Icon, Image, Popup } from 'semantic-ui-react'
 const UIStrings = require('../../config/UIStrings')
 
 const maxCharactersToDisplayInFileName = 32
@@ -31,8 +31,11 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 
 	state = {
 		hover: false,
-		selected: false
+		selected: false,
 	}
+
+	 contextRef = createRef()
+
 	//TODO: Check selected
 	//if selected, trigger click action
 	//If not selected, trigger select action
@@ -45,6 +48,18 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 		})
 	}
 
+	handleClick = (event) => {
+		if (this.props.fileManagerState.contextMenuName.length === 0) this.props.file.isDir ? this.handleDirectoryClick() : this.handleFileClick()
+	}
+
+	handleRightClick = (event) => {
+		event.preventDefault()
+		this.props.fileManagerState.setContextMenu(this.props.file.name)
+	}
+
+	closePopup = () => this.props.fileManagerState.resetContextMenu()
+
+
 	render() {
 		const { fileManagerState: FileManagerState, file } = this.props
 		const { hover, selected } = this.state
@@ -54,19 +69,27 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 
 
 		return(
-			<div style={styles.cardSize}>
-				<Card onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onClick={(isDirectory) ? this.handleDirectoryClick : this.handleFileClick} style={(hover) ? styles.cardSize : Object.assign(styles.noBorder, styles.cardSize)}>
-					<Card.Content>
-						<div style={styles.centeredContentFlexDiv}>
-							<Icon size="huge" name={file.icon} color={file.color || 'grey'} />
-						</div>
-						<Card.Header style={{width: '100%', wordWrap: 'break-word'}}>{fileName}</Card.Header>
-						{ !isDirectory &&
-							<Card.Meta>{file.size}</Card.Meta>
-						}
-					</Card.Content>
-				</Card>
-			</div>
+			<Fragment>
+				<Popup open={file.name === FileManagerState.contextMenuName} position='top center'
+					onClose={this.closePopup}
+					context={this.contextRef}>
+					THIS IS A TEST FOR {file.name}
+				</Popup>
+				<div style={styles.cardSize} ref={this.contextRef}>
+					<Card onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onContextMenu={(event) => this.handleRightClick(event)} onClick={(event) => this.handleClick(event)} style={(hover) ? styles.cardSize : Object.assign(styles.noBorder, styles.cardSize)}>
+	
+						<Card.Content>
+							<div style={styles.centeredContentFlexDiv}>
+								<Icon size="huge" name={file.icon} color={file.color || 'grey'} />
+							</div>
+							<Card.Header style={{width: '100%', wordWrap: 'break-word'}}>{fileName}</Card.Header>
+							{ !isDirectory &&
+								<Card.Meta>{file.size}</Card.Meta>
+							}
+						</Card.Content>
+					</Card>
+				</div>
+			</Fragment>
 		)
 	}
 }))

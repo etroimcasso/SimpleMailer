@@ -25,6 +25,7 @@ class FileManagerStore {
 	replaceFilesListPending = true
 	sortTypes = ['ABC']
 	directoriesFirst = true
+	contextMenu = observable.box('')
 
 
 	constructor() {
@@ -55,7 +56,7 @@ class FileManagerStore {
 				if (this.replaceFilesListPending === true) {
 					this.replaceFilesList(files)
 					this.setReplaceFilesListPending(false)
-					console.log(`**********FILES***********\n${files}\n***********END FILES*********`)
+					this.resetContextMenu()
 				}
 			}
 			this.setFilesLoaded(true)
@@ -63,7 +64,9 @@ class FileManagerStore {
 		})
 	}
 
+	resetContextMenu = () => this.contextMenu.set('')
 
+	setContextMenu = (filename) => this.contextMenu.set(filename)
 
 	setReplaceFilesListPending = (pending) => this.replaceFilesListPending = pending
 
@@ -160,6 +163,8 @@ class FileManagerStore {
 
 	get pathArray() { return this.directory.get().split('/').filter(item => item !== "") }
 
+	get contextMenuName() { return this.contextMenu.get()}
+
 
 	openDirectory(filename) {
 		this.setReloadFilesPending(true)
@@ -190,6 +195,7 @@ export default decorate(FileManagerStore, {
 	directory: observable,
 	directoriesFirst: observable,
 	sortTypes: observable,
+	contextMenu: observable,
 	getFileListing: action,
 	replaceFilesList: action,
 	replaceWithSortedFilesList: action,
@@ -198,10 +204,13 @@ export default decorate(FileManagerStore, {
 	setReloadFilesPending: action,
 	setDirectory: action,
 	resetDirectory: action,
+	setContextMenu: action,
+	resetContextMenu: action,
 	addFile: action,
 	removeFile: action,
 	filesCount: computed,
 	currentDirectory: computed,
+	contextMenuName: computed,
 	pathArray: computed,
 	openDirectory: action,
 	setReplaceFilesListPending: action,
