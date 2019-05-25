@@ -1,6 +1,6 @@
-import React, { Component, Fragment, createRef } from 'react'
+import React, { Component, Fragment } from 'react'
 import { observer, inject } from "mobx-react"
-import { Card, Icon, Image, Popup } from 'semantic-ui-react'
+import { Card, Icon, Image, Popup, Menu, Header, Divider } from 'semantic-ui-react'
 const UIStrings = require('../../config/UIStrings')
 
 const maxCharactersToDisplayInFileName = 32
@@ -34,8 +34,6 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 		selected: false,
 	}
 
-	 contextRef = createRef()
-
 	//TODO: Check selected
 	//if selected, trigger click action
 	//If not selected, trigger select action
@@ -49,15 +47,27 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 	}
 
 	handleClick = (event) => {
-		if (this.props.fileManagerState.contextMenuName.length === 0) this.props.file.isDir ? this.handleDirectoryClick() : this.handleFileClick()
+		this.props.fileManagerState.resetContextMenu()
+		 this.props.file.isDir ? this.handleDirectoryClick() : this.handleFileClick()
 	}
 
 	handleRightClick = (event) => {
+		const fileManagerState = this.props.fileManagerState
+		const contextMenuName = fileManagerState.contextMenuName
+		const filename = this.props.file.name
+		//console.log(`Old context: ${contextMenuName}` )
+		//console.log(`new context name: ${filename}`)
 		event.preventDefault()
-		this.props.fileManagerState.setContextMenu(this.props.file.name)
+		contextMenuName.length > 0
+			? ((contextMenuName !== filename) 
+				? fileManagerState.setContextMenu(filename) 
+				: fileManagerState.resetContextMenu())
+			: fileManagerState.setContextMenu(filename)
 	}
 
 	closePopup = () => this.props.fileManagerState.resetContextMenu()
+	disableHover = () => this.setState({hover: false})
+	enableHover = () => this.setState({hover: true})
 
 
 	render() {
@@ -69,18 +79,21 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 
 
 		return(
-			<Fragment>
-				<Popup open={file.name === FileManagerState.contextMenuName} position='top center'
-					onClose={this.closePopup}
-					context={this.contextRef}>
-					THIS IS A TEST FOR {file.name}
-				</Popup>
-				<div style={styles.cardSize} ref={this.contextRef}>
-					<Card onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} onContextMenu={(event) => this.handleRightClick(event)} onClick={(event) => this.handleClick(event)} style={(hover) ? styles.cardSize : Object.assign(styles.noBorder, styles.cardSize)}>
-	
+			<div style={styles.cardSize}>
+				<FileItemContextMenuPopup
+				disabled={file.name !== FileManagerState.contextMenuName}
+				open={file.name === FileManagerState.contextMenuName}
+				onClose={this.closePopup}
+				filename={file.name}
+				trigger={(
+					<Card onMouseEnter={this.enableHover} 
+					onMouseLeave={this.disableHover} 
+					onContextMenu={(event) => this.handleRightClick(event)} 
+					onClick={(event) => this.handleClick(event)} 
+					style={(hover) ? styles.cardSize : Object.assign(styles.noBorder, styles.cardSize)}>
 						<Card.Content>
-							<div style={styles.centeredContentFlexDiv}>
-								<Icon size="huge" name={file.icon} color={file.color || 'grey'} />
+							<div style={styles.centeredContentFlexDiv} >
+								<Icon size='huge' name={file.icon} color={file.color || 'grey'} />
 							</div>
 							<Card.Header style={{width: '100%', wordWrap: 'break-word'}}>{fileName}</Card.Header>
 							{ !isDirectory &&
@@ -88,8 +101,42 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 							}
 						</Card.Content>
 					</Card>
-				</div>
-			</Fragment>
+				)}>
+					<FileContextMenu />
+				</FileItemContextMenuPopup>
+			</div>
 		)
 	}
 }))
+
+class FileItemContextMenuPopup extends Component {
+
+	render() {
+		const { disabled, open, onClose, children, filename, trigger, } = this.props
+		return (
+			<Popup 
+			position='right center'
+			disabled={disabled}
+			open={open} 
+			onClose={onClose}
+			onUnmount={onClose}
+			trigger={trigger}
+			hoverable={true}>
+				<Header as='h3'>{filename}</Header>
+				<Divider fitted />
+				{children}
+				
+			</Popup>
+		)
+	}
+}
+
+class FileContextMenu extends Component {
+	render() {
+		return (
+			<Menu vertical text size="big">
+				<Menu.Item link>Rename...</Menu.Item>
+			</Menu>
+		)
+	}
+}

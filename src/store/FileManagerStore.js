@@ -37,12 +37,10 @@ class FileManagerStore {
 			this.setReloadFilesPending(true)
 		})
 
-		//socket.on('fileAdded', (file) => this.addFile(file))
-		//socket.on('fileRemoved', (file) => this.removeFile(file))
-
 		this.directory.observe((change) => {
 			this.getFileListing()
 		})
+		
 	}
 
 	dispatchGetFileListingSocketMessage(fileDir, callback) {
@@ -81,6 +79,12 @@ class FileManagerStore {
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
 
 	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending
+
+	toggleDirectoriesFirst = () => {
+		this.directoriesFirst = !this.directoriesFirst
+		this.replaceFilesList(this.fileListing)
+	}
+
 
 	sortFiles = (files) => {
 		//Apply a reduction to the sortType list
@@ -196,12 +200,14 @@ export default decorate(FileManagerStore, {
 	directoriesFirst: observable,
 	sortTypes: observable,
 	contextMenu: observable,
+	directoriesFirst: observable,
 	getFileListing: action,
 	replaceFilesList: action,
 	replaceWithSortedFilesList: action,
 	clearFilesList: action,
 	setFilesLoaded: action,
 	setReloadFilesPending: action,
+	toggleDirectoriesFirst: action,
 	setDirectory: action,
 	resetDirectory: action,
 	setContextMenu: action,

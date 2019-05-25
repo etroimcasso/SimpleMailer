@@ -12,12 +12,13 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 	sortNewest = () => this.props.fileManagerState.setSortType('NEWEST')
 	sortLargest = () => this.props.fileManagerState.setSortType('LARGEST')
 	sortSmallest = () => this.props.fileManagerState.setSortType('SMALLEST')
+	toggleDirectoriesFirst = () => this.props.fileManagerState.toggleDirectoriesFirst()
 
 
 
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
-		const { pathArray, currentDirectory } = FileManagerState
+		const { pathArray, currentDirectory, directoriesFirst } = FileManagerState
 		const inRootDirectory = pathArray.length === 0
 		const sortType = FileManagerState.sortTypes[0]
 
@@ -29,7 +30,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 					onClick={FileManagerState.openParentDirectory}>
 						<Icon name='chevron left' /> 
 					</Menu.Item>
-					
+
 					<Menu.Item
 					disabled={inRootDirectory}
 					onClick={FileManagerState.resetDirectory}>
@@ -55,7 +56,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 					onClick={(sortType !== 'OLDEST') ? this.sortOldest : null}
 					>
 						<Icon name='clock outline' />
-						<Icon name='sort up' />
+						<Icon name='long arrow alternate up' />
 					</Menu.Item>
 
 					<Menu.Item
@@ -63,7 +64,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 					onClick={(sortType !== 'NEWEST') ? this.sortNewest : null}
 					>
 						<Icon name='clock outline' />
-						<Icon name='sort down' />
+						<Icon name='long arrow alternate down' />
 					</Menu.Item>
 
 					<Menu.Item
@@ -78,7 +79,15 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 					onClick={(sortType !== 'LARGEST') ? this.sortLargest : null}
 					>
 						<Icon name='sort numeric up' />
-					</Menu.Item>					
+					</Menu.Item>			
+					<Menu.Item
+					active={directoriesFirst} 
+					onClick={this.toggleDirectoriesFirst}
+					>
+						<Icon name='folder outline' />
+						<Icon name='long arrow alternate down' />
+					</Menu.Item>	
+
 
 					<Menu.Item>
 						<Input disabled>{currentDirectory}</Input>

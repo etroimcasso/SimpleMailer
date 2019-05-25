@@ -22,6 +22,7 @@ export default inject("mailerHistoryState")(observer(class MailerHistory extends
 		const mailerHistoryCount = MailerHistoryState.mailerHistoryCount
 
 		return(
+			<Container>
 			<Segment basic>
 				<Dimmer inverted active={!historyLoaded}>
 					<Loader active={!mailerHistoryLoaded} inline>{UIStrings.MailerHistory.Loading}</Loader>
@@ -33,6 +34,7 @@ export default inject("mailerHistoryState")(observer(class MailerHistory extends
 					</ItemsPlaceholderSegment>
 				</Container>
 			</Segment>
+			</Container>
 		)
 	}
 }))

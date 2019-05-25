@@ -21,6 +21,10 @@ const styles = {
 
 export default inject("fileManagerState")(observer(class FileList extends Component {
 
+
+	handleClick = () => {
+	}
+
 	render() {
 
 		const { fileManagerState: FileManagerState } = this.props
@@ -34,7 +38,7 @@ export default inject("fileManagerState")(observer(class FileList extends Compon
 						</div>
 					)
 				}) : (
-				<div style={styles.centeredDivContainer}>
+				<div style={styles.centeredDivContainer} onClick={this.handleClick} onContextMenu={(event) => event.preventDefault()}>
 					<ItemsPlaceholderSegment 
 							itemCount={0}
 							noItemsText={UIStrings.FileManager.EmptyDirectory}
