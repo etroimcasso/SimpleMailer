@@ -27,7 +27,7 @@ export default class SubscriptionsPanelTable extends Component {
 		const { activeId } = this.state
 		const { subscribers, subscribersLoaded, handleSubscriberDeleteButtonClick } = this.props
 		return(
-			<Table striped celled>
+			<Table sortable striped celled>
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell fullWidth >{UIStrings.SubscriptionsPanel.Table.Header.Email}</Table.HeaderCell>

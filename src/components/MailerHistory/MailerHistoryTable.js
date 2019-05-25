@@ -34,7 +34,7 @@ export default inject("mailerHistoryState")(observer(class MailerHistoryTable ex
 		const structuredMailerHistoryResults = this.structuredMailerHistoryResults()
 
 		return(
-			<Table striped celled>
+			<Table sortable striped celled>
 				<Table.Header>
 					<Table.Row>
 						<Table.HeaderCell>{UIStrings.MailerHistory.Table.Header.Subject}</Table.HeaderCell>
