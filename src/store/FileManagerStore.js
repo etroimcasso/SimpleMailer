@@ -140,8 +140,7 @@ class FileManagerStore {
 
 	addCurrentFilterType = (filterType) => {
 		//Concat the new filterType to the array if it cannot be found in the array
-		if (this.currentFilterTypes.find(item => 
-			item.type === filterType.type) === undefined) 
+		if (!this.currentFilterTypes.find(item => item.type === filterType.type)) 
 				this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically))
 		//Get new file listing
 		this.setReplaceFilesListPending(true)
