@@ -24,6 +24,7 @@ const sortAlphabetically = (a, b) => {
 
 class FileManagerStore {
 	fileListing = []
+	fileListingStorage = []
 	fileListingLoaded = false
 	reloadFileListingPending = true
 	directory = observable.box('/')
@@ -48,13 +49,6 @@ class FileManagerStore {
 		this.directory.observe((change) => {
 			this.getFileListing()
 		})
-
-		this.allFilterTypes.observe((change) => {
-			if (this.fileListing.length > 0)
-				this.replaceFilesList(this.filterFiles(this.fileListing))
-		})
-
-
 		
 	}
 
@@ -71,8 +65,8 @@ class FileManagerStore {
 					//This is done because otherwise, the currentFilterTypes list will be empty when the interface loads, showing no files.
 					if (this.allFilterTypes.length === 0) this.getAllFilterTypes(() => this.replaceFilesList(files))
 					else this.replaceFilesList(files)
-
 					this.setReplaceFilesListPending(false)
+					this.fileListingStorage = files
 					this.resetContextMenu()
 				}
 			}
@@ -105,6 +99,7 @@ class FileManagerStore {
 		this.replaceFilesList(this.fileListing)
 	}
 
+
 	//Get all filter types using a socket mssage
 	//is also used to reset filter types back to all 
 	getAllFilterTypes = (callback) => {
@@ -117,6 +112,7 @@ class FileManagerStore {
 
 	}
 
+
 	//Get filter types by inspecting each file
 	//Using a reduce, add each { typeName: typeName, type: type } to the accumulator if its 
 	//  type value cannot be found in the accumulator array
@@ -125,10 +121,22 @@ class FileManagerStore {
 
 	replaceAllFilterTypes = (filterTypes) => this.allFilterTypes = filterTypes.sort(sortAlphabetically)
 
-
 	changeCurrentFilterTypes = (filterTypes) => this.currentFilterTypes = filterTypes
 
-	resetCurrentFilterTypes = () => this.currentFilterTypes = []
+	resetFilesFromStorage = () => {
+		this.replaceFilesList(this.fileListingStorage)
+	}
+
+	resetCurrentFilterTypes = () => {
+		this.currentFilterTypes = this.allFilterTypes
+		this.replaceFilesList(this.fileListingStorage)
+	}
+
+	filterOutAll = () => {
+		this.currentFilterTypes = []
+		this.replaceFilesList(this.fileListing)
+
+	}
 
 	addCurrentFilterType = (filterType) => {
 		//Concat the new filterType to the array if it cannot be found in the array
@@ -139,7 +147,7 @@ class FileManagerStore {
 				this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically))
 		//Get new file listing
 		this.setReplaceFilesListPending(true)
-		this.getFileListing()
+		this.replaceFilesList(this.fileListingStorage)
 	}
 
 
@@ -235,7 +243,6 @@ class FileManagerStore {
 
 	get contextMenuName() { return this.contextMenu.get()}
 
-
 	openDirectory(filename) {
 		this.setReloadFilesPending(true)
 		const currentDirectory = this.directory.get()
@@ -272,7 +279,8 @@ export default decorate(FileManagerStore, {
 	getFileListing: action,
 	getAllFilterTypes: action,
 	replaceFilesList: action,
-	//resetAllFilterTypes: action,
+	resetFilesFromStorage: action,
+	filterOutAll: action,
 	resetCurrentFilterTypes: action,
 	changeCurrentFilterTypes: action,
 	replaceAllFilterTypes: action,

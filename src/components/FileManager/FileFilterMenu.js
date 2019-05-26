@@ -10,7 +10,8 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 	isFilterTypeEnabled = (filterType) => this.props.fileManagerState.currentFilterTypes.find((item) => item.type === filterType.type) 
 	addFilter = (filterType) =>  this.props.fileManagerState.addCurrentFilterType(filterType)
 	removeFilter = (filterType) => this.props.fileManagerState.removeCurrentFilterType(filterType)
-	resetFilters = () => this.props.fileManagerState.getAllFilterTypes(() => null)
+	resetFilters = () => this.props.fileManagerState.resetCurrentFilterTypes()
+	filterOutAll = () => this.props.fileManagerState.filterOutAll()
 
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
@@ -43,6 +44,9 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 				<Divider horizontal />
 				<Menu.Item onClick={this.resetFilters}>
 					{UIStrings.FileManager.FilterMenu.ResetFiltersText}
+				</Menu.Item>
+				<Menu.Item onClick={this.filterOutAll}>
+					{UIStrings.FileManager.FilterMenu.FilterOutAllText}
 				</Menu.Item>
 			</Menu>
 		)

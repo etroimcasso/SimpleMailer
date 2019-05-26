@@ -7,7 +7,6 @@ module.exports = [
 		icon: IconNames.Images,
 		color: GroupColors.Images,
 		extensions: ['.jpg','.jpeg','.jfif','.png','.gif','.bmp'],
-
 	},
 	{
 		name: GroupNames.Videos,
@@ -23,7 +22,6 @@ module.exports = [
 		icon: IconNames.PDF,
 		color: GroupColors.PDF,
 		extensions:['.pdf'],
-
 	},
 	{
 		name: GroupNames.Word,
@@ -31,7 +29,6 @@ module.exports = [
 		icon: IconNames.Word,
 		color: GroupColors.Word,
 		extensions: ['.doc','.docx'],
-
 	},
 	{
 		name: GroupNames.Excel,
@@ -39,7 +36,6 @@ module.exports = [
 		icon: IconNames.Excel,
 		color: GroupColors.Excel,
 		extensions: ['.xls','.xlsx'],
-
 	},
 	{
 		name: GroupNames.Powerpoint,
@@ -47,7 +43,6 @@ module.exports = [
 		icon: IconNames.Powerpoint,
 		color: GroupColors.Powerpoint,
 		extensions: ['.ppt','.pps'],
-
 	},
 	{
 		name: GroupNames.Text,
@@ -55,7 +50,6 @@ module.exports = [
 		icon: IconNames.Text,
 		color: GroupColors.Text,
 		extensions: ['.txt','.rtf'],
-
 	},
 	{
 		name: GroupNames.NoExtension,
@@ -63,7 +57,6 @@ module.exports = [
 		icon: IconNames.NoExtension,
 		color: GroupColors.NoExtension,
 	 	extensions: [''],
-
 	},
 	{ 
 		name: GroupNames.Directories,
@@ -71,7 +64,6 @@ module.exports = [
 		icon: IconNames.Directories,
 		color: GroupColors.Directories,
 		extensions: [''],
-
 	},
 	{
 		name: GroupNames.Coding,
@@ -79,7 +71,6 @@ module.exports = [
 		icon: IconNames.Coding,
 		color: GroupColors.Coding,
 		extensions: ['.js','.jsx','.css','.html','.cpp','.h','.c','.php','.py','.json','.md'],
-
 	},
 	{
 		name: GroupNames.Executables,
@@ -87,7 +78,6 @@ module.exports = [
 		icon: IconNames.Executables,
 		color: GroupColors.Executables,
 		extensions: ['.exe','.app','.vb','.elf'],
-
 	},
 	{
 		name: GroupNames.Archives,
@@ -95,7 +85,12 @@ module.exports = [
 		icon: IconNames.Archives,
 		color: GroupColors.Archives,
 		extensions:['.zip', '.rar','.tgz','.7z','.tar','.gz','.bz2'],
-
 	},
-
+	{
+		name: GroupNames.Other,
+		type: 'other',
+		icon: IconNames.Other,
+		color: GroupColors.Other,
+		extensions:[''],
+	},
 ]

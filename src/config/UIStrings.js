@@ -96,6 +96,7 @@ module.exports = {
 		FilterMenu: {
 			MenuHeader: 'Hide:',
 			ResetFiltersText: 'Show All',
+			FilterOutAllText: 'Hide All',
 		}
 	}
 }

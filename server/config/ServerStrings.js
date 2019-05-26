@@ -36,7 +36,7 @@ module.exports = {
 			Excel: 'green',
 			Powerpoint: 'orange',
 			Text: null,
-			NoExtension: 'black',
+			NoExtension: null,
 			Directories: 'yellow',
 			Coding: 'purple',
 			Executables: null,
