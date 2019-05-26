@@ -14,6 +14,7 @@ const MailerController = require('./lib/controllers/MailerController')
 const MailerResultController = require('./lib/controllers/MailerResultController')
 const FileSystemController = require('./lib/controllers/FileSystemController')
 const ServerStrings = require('./config/ServerStrings')
+const FileFilterTypes = require('./config/FileTypeGroups')
 
 app.set('forceSSLOptions', {
   httpsPort: process.env.HTTPS_PORT
@@ -362,6 +363,10 @@ io.on('connection', (client) => {
 
 		
 
+	})
+
+	client.on('getAllFilterTypes', () => {
+		client.emit('getAllFilterTypesResults', FileFilterTypes.map(item => { return {type: item.type, name: item.name}}))
 	})
 		
 });

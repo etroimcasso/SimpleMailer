@@ -16,6 +16,12 @@ const socket = openSocket(hostname.opensocket);
 //EVERY PRESS OF BACK BUTTON REMOVES ONE SECTION OF LIST and adds that full path to history array
 //EVERY PRESS OF FORWARD BUTTON removes most recent history array item and changes directory to that full path
 
+const sortAlphabetically = (a, b) => {
+	const aName = a.name.toLowerCase()
+	const bName = b.name.toLowerCase()
+	return (aName > bName) ? 1 : (bName > aName) ? -1 : 0
+}		
+
 class FileManagerStore {
 	fileListing = []
 	fileListingLoaded = false
@@ -26,8 +32,8 @@ class FileManagerStore {
 	sortTypes = ['ABC']
 	directoriesFirst = true
 	contextMenu = observable.box('')
-	allFilterTypes = ['']
-	currentFilterTypes = ['']
+	allFilterTypes = []
+	currentFilterTypes = []
 
 
 	constructor() {
@@ -42,6 +48,13 @@ class FileManagerStore {
 		this.directory.observe((change) => {
 			this.getFileListing()
 		})
+
+		this.allFilterTypes.observe((change) => {
+			if (this.fileListing.length > 0)
+				this.replaceFilesList(this.filterFiles(this.fileListing))
+		})
+
+
 		
 	}
 
@@ -54,8 +67,11 @@ class FileManagerStore {
 		this.dispatchGetFileListingSocketMessage(this.directory.get(), (error, files) => {
 			if (!error) {
 				if (this.replaceFilesListPending === true) {
-					this.replaceAllFilterTypes(this.getAllFilterTypes(files))
-					this.replaceFilesList(files)
+					//The below is done so that the files list isn't replaced until the filters list is loaded.
+					//This is done because otherwise, the currentFilterTypes list will be empty when the interface loads, showing no files.
+					if (this.allFilterTypes.length === 0) this.getAllFilterTypes(() => this.replaceFilesList(files))
+					else this.replaceFilesList(files)
+
 					this.setReplaceFilesListPending(false)
 					this.resetContextMenu()
 				}
@@ -71,7 +87,7 @@ class FileManagerStore {
 
 	setReplaceFilesListPending = (pending) => this.replaceFilesListPending = pending
 
-	replaceFilesList = (newList) => this.fileListing = this.filterFiles(this.sortFiles(newList))
+	replaceFilesList = (newList) => this.fileListing = this.sortFiles(this.filterFiles(newList))
 	
 	clearFilesList = () => this.fileListing = this.fileListing.filter((item) => null)
 
@@ -89,53 +105,65 @@ class FileManagerStore {
 		this.replaceFilesList(this.fileListing)
 	}
 
-	getAllFilterTypes = () => {
-		//Get filter types by inspecting each file
-		//Using a reduce, add each { typeName: typeName, type: type } to the accumulator if its 
-		//  type value cannot be found in the accumulator array
+	//Get all filter types using a socket mssage
+	//is also used to reset filter types back to all 
+	getAllFilterTypes = (callback) => {
+		socket.on('getAllFilterTypesResults', (results) => { 
+			this.replaceAllFilterTypes(results)
+			this.changeCurrentFilterTypes(results)
+			callback()
+		})
+		socket.emit('getAllFilterTypes')
+
 	}
+
+	//Get filter types by inspecting each file
+	//Using a reduce, add each { typeName: typeName, type: type } to the accumulator if its 
+	//  type value cannot be found in the accumulator array
+	//SORTS ALPHABETICALLY
+	//getAllFilterTypes = (files) => files.reduce((acc, cv, index, array) => (acc.find(element => element.type === cv.type) === undefined) ? acc.concat({ type: cv.type, name: cv.typeName}) : acc, []).sort(sortAlphabetically)
 
 	replaceAllFilterTypes = (filterTypes) => this.allFilterTypes = filterTypes
 
-	resetAllFilterTypes = () => this.allFilterTypes = ['']
+	//resetAllFilterTypes = () => this.allFilterTypes = 
 
-	resetCurrentFilterTypes = () => {
+	changeCurrentFilterTypes = (filterTypes) => this.currentFilterTypes = filterTypes
 
-
-	}
+	resetCurrentFilterTypes = () => this.currentFilterTypes = []
 
 	addCurrentFilterType = (filterType) => {
 		//Concat the new filterType to the array if it cannot be found in the array
+		//console.log("ADD")
+		//console.log(this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically)))
+		if (this.currentFilterTypes.find(item => 
+			item.type === filterType.type) === undefined) 
+				this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically))
+		//Get new file listing
+		this.setReplaceFilesListPending(true)
+		this.getFileListing()
+	}
 
+
+	removeCurrentFilterType (filterType) {
+		//Filter out the item that matches filterType
+		this.changeCurrentFilterTypes(this.currentFilterTypes.filter((item) => item.name != filterType.name ).sort(sortAlphabetically))
 		//Update file listing
 		this.replaceFilesList(this.fileListing)
 	}
 
+	//Create an array for each filterType (file.type === filterType)
+	//Combine these arrays into a single object array and return it
+	filterFiles = (files) => this.currentFilterTypes.reduce((filterFiles, filterType) => 
+				filterFiles.concat(files.filter(item => 
+					item.type === filterType.type)), [])
 
-	removeCurrentFilterType = (filterType) => {
-		//Find the index of the filter type and remove the object at that index
-
-		//Update file listing
-		this.replaceFilesList(this.fileListing)
-	}
-
-	filterFiles = (files) => {
-		//Create an array for each filterType (file.type === filterType)
-		//Combine these arrays into a single object array and return it
-
-	}
+	
 
 	sortFiles = (files) => {
 		//Apply a reduction to the sortType list
 		//For each sortType, apply the sort then return the value to the accumlator
 		//The resulting array should be sorted with the filter types
 
-
-		const sortAlphabetically = (a, b) => {
-			const aName = a.name.toLowerCase()
-			const bName = b.name.toLowerCase()
-			return (aName > bName) ? 1 : (bName > aName) ? -1 : 0
-		}		
 		const sortAlphabeticallyReverse = (a, b) => {
 			const aName = a.name.toLowerCase()
 			const bName = b.name.toLowerCase()
@@ -243,8 +271,11 @@ export default decorate(FileManagerStore, {
 	allFilterTypes: observable,
 	currentFilterTypes: observable,
 	getFileListing: action,
+	getAllFilterTypes: action,
 	replaceFilesList: action,
-	resetAllFilterTypes: action,
+	//resetAllFilterTypes: action,
+	resetCurrentFilterTypes: action,
+	changeCurrentFilterTypes: action,
 	replaceAllFilterTypes: action,
 	replaceWithSortedFilesList: action,
 	clearFilesList: action,
@@ -264,4 +295,6 @@ export default decorate(FileManagerStore, {
 	openDirectory: action,
 	setReplaceFilesListPending: action,
 	setSortType: action,
+	addCurrentFilterType: action,
+	removeCurrentFilterType: action
 })

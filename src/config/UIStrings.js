@@ -11,7 +11,6 @@ module.exports = {
 	SubjectNoun: "Subject",
 	ContentNoun: "Content",
 	EmailNoun: "Email",
-	
 	UnsubscribeError: (email) => `${email} is not subscribed to our mailing list`,
 	UnSubscribeSuccess: (email) => `${email} has been removed from our mailing list`,
 	SubscribeSuccess: (email) => `${email} has been added to our mailing list`,
@@ -81,18 +80,21 @@ module.exports = {
 		SortMenu: {
 			MenuHeader: 'Sort:',
 			MenuNames: {
-				Abc: 'A to Z',
-				Zyx: 'Z to A',
-				Newest: 'Newest First',
-				Oldest: 'Oldest First',
-				Largest: 'Largest First',
-				Smallest: 'Smallest First',
+				Abc: 'A - Z',
+				Zyx: 'Z - A',
+				Newest: 'Newest',
+				Oldest: 'Oldest',
+				Largest: 'Largest',
+				Smallest: 'Smallest',
 				DirectoriesFirst: {
 					Name: "Directories First",
 					Yes: "Yes",
 					No: "No",
 				}
 			}
+		},
+		FilterMenu: {
+			MenuHeader: 'Filters:',
 		}
 	}
 }

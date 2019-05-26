@@ -31,7 +31,7 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 						<Loader active={!filesLoaded} inline></Loader>
 					</Dimmer>
 					<ConnectionPlaceholder>
-						<ItemsPlaceholderSegment itemCount={(reloadFileListingPending) ? 1 : itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
+						<ItemsPlaceholderSegment itemCount={(filesLoaded) ? 1 : itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
 							<FileListToolbar />
 							<FileListContainer />
 						</ItemsPlaceholderSegment>
@@ -41,5 +41,5 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 	}
 }))
 
-//USING reloadFileListingPending in the ItemsPlaceholdeSegment ensures that the placeholder doesn't flash the "no files" screen for a split second as the next batch of new files loads.
+//USING filesLoaded in the ItemsPlaceholdeSegment ensures that the placeholder doesn't flash the "no files" screen for a split second as the next batch of new files loads.
 // it does this by ensuring that, as long as the files have been loaded once, the filemanager will act as though it has files even when it briefly does not

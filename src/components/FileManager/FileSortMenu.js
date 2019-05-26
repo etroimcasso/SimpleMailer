@@ -57,7 +57,14 @@ export default inject('fileManagerState')(observer(class FileSortMenu extends Co
 				expectedSortType='OLDEST' 
 				sortFunction={this.sortOldest}
 				itemText={UIStrings.FileManager.SortMenu.MenuNames.Oldest}
-				activeItemSize={activeItemSize} />
+				activeItemSize={activeItemSize} />				
+
+				<TextMenuSortTypeToggleItem 
+				sortType={sortType} 
+				expectedSortType='LARGEST' 
+				sortFunction={this.sortLargest}
+				itemText={UIStrings.FileManager.SortMenu.MenuNames.Largest}
+				activeItemSize={activeItemSize} />	
 
 				<TextMenuSortTypeToggleItem 
 				sortType={sortType} 
@@ -66,12 +73,6 @@ export default inject('fileManagerState')(observer(class FileSortMenu extends Co
 				itemText={UIStrings.FileManager.SortMenu.MenuNames.Smallest}
 				activeItemSize={activeItemSize} />
 
-				<TextMenuSortTypeToggleItem 
-				sortType={sortType} 
-				expectedSortType='LARGEST' 
-				sortFunction={this.sortLargest}
-				itemText={UIStrings.FileManager.SortMenu.MenuNames.Largest}
-				activeItemSize={activeItemSize} />	
 
 				<Divider horizontal />
 
