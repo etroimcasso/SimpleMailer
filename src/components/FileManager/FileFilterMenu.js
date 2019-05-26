@@ -43,28 +43,34 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 					})
 					: null}
 				<Divider horizontal />
-				<Menu.Item active={showAllActive} onClick={this.resetFilters}>
-				{ showAllActive &&
-					<Header as={activeItemSize}>{UIStrings.FileManager.FilterMenu.ResetFiltersText}</Header>
-				}
-				{ !showAllActive &&
-					<Fragment>
-						{UIStrings.FileManager.FilterMenu.ResetFiltersText}
-					</Fragment>
-				}
-				</Menu.Item>
-				<Menu.Item active={hideAllActive} onClick={this.filterOutAll}>
-				{ hideAllActive &&
-					<Header as={activeItemSize}>{UIStrings.FileManager.FilterMenu.FilterOutAllText}</Header>
-				}
-				{ !hideAllActive &&
-					<Fragment>
-						{UIStrings.FileManager.FilterMenu.FilterOutAllText}
-					</Fragment>
-				}
+				
+				<ShowOrHideMenuItem 
+				active={showAllActive} 
+				activeItemSize={activeItemSize}
+				onClick={this.resetFilters} 
+				text={UIStrings.FileManager.FilterMenu.ResetFiltersText}
+				/>
 
-				</Menu.Item>
+				<ShowOrHideMenuItem 
+				active={hideAllActive} 
+				activeItemSize={activeItemSize}
+				onClick={this.filterOutAll} 
+				text={UIStrings.FileManager.FilterMenu.FilterOutAllText}
+				/>
 			</Menu>
 		)
 	}
 }))
+
+const ShowOrHideMenuItem = (props) => (
+	<Menu.Item active={props.active} onClick={props.onClick}>
+	{ props.active &&
+		<Header as={props.activeItemSize}>{props.text}</Header>
+	}
+	{ !props.active &&
+		<Fragment>
+			{props.text}
+		</Fragment>
+	}
+	</Menu.Item>
+)
