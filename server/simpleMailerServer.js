@@ -301,10 +301,8 @@ io.on('connection', (client) => {
 								}
 
 							sendEmail(emailMessage,(error, info) => {
-									var resultError = ""
 									if (error) {
 										console.error(`Could not send email - error: ${error}`)
-										resultError = "Count not send email"
 									} else {
 										//console.log("Successfully sent Unsubscribe alert email")
 										resultError = false
