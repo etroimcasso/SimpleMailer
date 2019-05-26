@@ -16,6 +16,10 @@ SimpleMailer uses Node, Express, React, React Router, MobX, MongoDB, Mongoose, D
 * Mailer History Viewer
 * Subscribers Viewer
 * File Manager with file type identification, filtration, and sorting
+* TODO:    
+    * File Uploads
+    * Admin user account
+    * Eventually, general user accounts
 
 
 # Installation
