@@ -140,8 +140,6 @@ class FileManagerStore {
 
 	addCurrentFilterType = (filterType) => {
 		//Concat the new filterType to the array if it cannot be found in the array
-		//console.log("ADD")
-		//console.log(this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically)))
 		if (this.currentFilterTypes.find(item => 
 			item.type === filterType.type) === undefined) 
 				this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically))
