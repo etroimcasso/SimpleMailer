@@ -16,6 +16,8 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
 		const { allFilterTypes, currentFilterTypes } = FileManagerState
+		const showAllActive = currentFilterTypes.length === allFilterTypes.length
+		const hideAllActive = currentFilterTypes.length === 0
 
 		const headerSize = 'h4'
 		const activeItemSize = 'h3'
@@ -34,7 +36,6 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 								onClick={null}
 								filterType={item}
 								activeItemSize={activeItemSize}
-								fileManagerState={FileManagerState}
 								addFilterFunction={() => this.addFilter(item)}
 								removeFilterFunction={() => this.removeFilter(item)}
 							/>
@@ -42,11 +43,26 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 					})
 					: null}
 				<Divider horizontal />
-				<Menu.Item onClick={this.resetFilters}>
-					{UIStrings.FileManager.FilterMenu.ResetFiltersText}
+				<Menu.Item active={showAllActive} onClick={this.resetFilters}>
+				{ showAllActive &&
+					<Header as={activeItemSize}>{UIStrings.FileManager.FilterMenu.ResetFiltersText}</Header>
+				}
+				{ !showAllActive &&
+					<Fragment>
+						{UIStrings.FileManager.FilterMenu.ResetFiltersText}
+					</Fragment>
+				}
 				</Menu.Item>
-				<Menu.Item onClick={this.filterOutAll}>
-					{UIStrings.FileManager.FilterMenu.FilterOutAllText}
+				<Menu.Item active={hideAllActive} onClick={this.filterOutAll}>
+				{ hideAllActive &&
+					<Header as={activeItemSize}>{UIStrings.FileManager.FilterMenu.FilterOutAllText}</Header>
+				}
+				{ !hideAllActive &&
+					<Fragment>
+						{UIStrings.FileManager.FilterMenu.FilterOutAllText}
+					</Fragment>
+				}
+
 				</Menu.Item>
 			</Menu>
 		)
