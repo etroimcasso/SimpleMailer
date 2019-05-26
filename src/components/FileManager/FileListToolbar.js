@@ -16,6 +16,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 		const inRootDirectory = pathArray.length === 0
 		const sortType = FileManagerState.sortTypes[0]
 		const noFilterTypes = allFilterTypes.length < 1
+		const currentFiltersCount = FileManagerState.currentFilterTypes.length
 
 		return (
 			<Menu icon attached='top' size='large' compact>
@@ -47,9 +48,9 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 					hoverable
 					hideOnScroll
 					disabled={noFilterTypes}
-					wide='very'
+					wide
 					trigger={(
-						<Menu.Item disabled={noFilterTypes}>
+						<Menu.Item active={currentFiltersCount !== allFilterTypes.length} disabled={noFilterTypes}>
 							<Icon name='filter' />
 						</Menu.Item> 
 						)}>

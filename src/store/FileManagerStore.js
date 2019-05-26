@@ -123,9 +123,8 @@ class FileManagerStore {
 	//SORTS ALPHABETICALLY
 	//getAllFilterTypes = (files) => files.reduce((acc, cv, index, array) => (acc.find(element => element.type === cv.type) === undefined) ? acc.concat({ type: cv.type, name: cv.typeName}) : acc, []).sort(sortAlphabetically)
 
-	replaceAllFilterTypes = (filterTypes) => this.allFilterTypes = filterTypes
+	replaceAllFilterTypes = (filterTypes) => this.allFilterTypes = filterTypes.sort(sortAlphabetically)
 
-	//resetAllFilterTypes = () => this.allFilterTypes = 
 
 	changeCurrentFilterTypes = (filterTypes) => this.currentFilterTypes = filterTypes
 

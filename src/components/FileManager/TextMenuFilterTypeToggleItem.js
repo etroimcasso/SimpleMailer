@@ -5,19 +5,19 @@ import { Menu, Header } from 'semantic-ui-react';
 export default observer(class TextMenuFilterTypeToggleItem extends Component {
 
 	render() {
-		const { active, filterType, activeItemSize, addFilterFunction, removeFilterFunction } = this.props
+		const { filterActive, filterType, activeItemSize, addFilterFunction, removeFilterFunction } = this.props
 		const itemText = filterType.name
 		return (
 			<Menu.Item
 			link
-			active={active}
-			onClick={(!active) ? addFilterFunction : removeFilterFunction}>
-				{active &&
+			active={!filterActive}
+			onClick={(!filterActive) ? addFilterFunction : removeFilterFunction}>
+				{!filterActive &&
 					<Header as={activeItemSize}>
 						{itemText}
 					</Header>
 				}
-				{ !active &&
+				{ filterActive &&
 					<Fragment>
 						{itemText}
 					</Fragment>

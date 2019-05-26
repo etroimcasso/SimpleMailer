@@ -20,7 +20,7 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 		const activeItemSize = 'h3'
 
 		return(
-			<Menu fluid text vertical >
+			<Menu text vertical >
 				<Menu.Header as={headerSize}>
 					{UIStrings.FileManager.FilterMenu.MenuHeader}
 				</Menu.Header>
@@ -29,7 +29,7 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 						return (
 							<TextMenuFilterTypeToggleItem 
 								key={item}
-								active={this.isFilterTypeEnabled(item)}
+								filterActive={this.isFilterTypeEnabled(item)}
 								onClick={null}
 								filterType={item}
 								activeItemSize={activeItemSize}
@@ -42,7 +42,7 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 					: null}
 				<Divider horizontal />
 				<Menu.Item onClick={this.resetFilters}>
-					Reset Filters
+					{UIStrings.FileManager.FilterMenu.ResetFiltersText}
 				</Menu.Item>
 			</Menu>
 		)
