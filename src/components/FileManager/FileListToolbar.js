@@ -1,12 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
-import { Menu, Icon, Input, Popup, Divider } from 'semantic-ui-react';
+import { Menu, Icon, Input, Popup, Divider, Modal } from 'semantic-ui-react';
 import FileSortMenu from './FileSortMenu'
 import FileFilterMenu from './FileFilterMenu'
 const UIStrings = require('../../config/UIStrings')
 
 
 export default inject('fileManagerState')(observer(class FileListToolbar extends Component {
+	state = {
+		newDirectoryModalOpen: false,
+		newDirectoryName: ''
+	}
 
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
@@ -64,12 +68,13 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 						)}>
 						<FileFilterMenu />
 					</Popup>
-
-					<Menu.Item onClick={() => FileManagerState.createNewDirectory('testname')}>
-						<Icon.Group size='large'>
-							<Icon name='plus' />
-						</Icon.Group>
-					</Menu.Item>
+						<Modal
+						trigger={(
+							<Menu.Item onClick={() => FileManagerState.createNewDirectory('testname')}>
+								<Icon name='plus' />
+							</Menu.Item>
+						)}>
+						</Modal>
 				</Menu>
 			</Fragment>
 		)

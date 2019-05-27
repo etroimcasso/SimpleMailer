@@ -10,14 +10,14 @@ export default observer(class TextMenuFilterTypeToggleItem extends Component {
 		return (
 			<Menu.Item
 			link
-			active={!filterActive}
+			active={filterActive}
 			onClick={(!filterActive) ? addFilterFunction : removeFilterFunction}>
-				{!filterActive &&
-					<Header as={activeItemSize}>
+				{filterActive &&
+					<b>
 						{itemText}
-					</Header>
+					</b>
 				}
-				{ filterActive &&
+				{ !filterActive &&
 					<Fragment>
 						{itemText}
 					</Fragment>

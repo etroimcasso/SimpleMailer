@@ -118,9 +118,10 @@ const TextMenuSortTypeToggleItem = (props) => (
 	active={props.sortType === props.expectedSortType}
 	onClick={(props.sortType !== props.expectedSortType) ? props.sortFunction : null}>
 		{props.sortType === props.expectedSortType &&
-			<Header as={props.activeItemSize}>
+			<b>
 				{props.itemText}
-			</Header>
+			</b>
+			
 		}
 		{ props.sortType !== props.expectedSortType &&
 			<Fragment>

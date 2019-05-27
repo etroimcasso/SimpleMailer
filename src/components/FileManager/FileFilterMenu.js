@@ -66,7 +66,7 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 const ShowOrHideMenuItem = (props) => (
 	<Menu.Item active={props.active} onClick={props.onClick}>
 	{ props.active &&
-		<Header as={props.activeItemSize}>{props.text}</Header>
+		<b>{props.text}</b>
 	}
 	{ !props.active &&
 		<Fragment>
