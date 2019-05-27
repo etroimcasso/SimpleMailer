@@ -33,6 +33,7 @@ const determineErrorMessage = (error, filename) => {
 			return error.code
 	}
 } 
+const maximumFileNameLength = 100
 
 class FileManagerStore {
 	fileListing = []
@@ -109,15 +110,16 @@ class FileManagerStore {
 	}
 
 	createNewDirectory = (directoryName) => {
-		this.dispatchCreateNewDirectorySocketMessage(directoryName, (error) => {
-			if (!error) {
-				console.log('NEW DIRECTORY CREATED')
-				this.setReplaceFilesListPending(true)
-				this.getFileListing()
-			} else {
-				this.setErrorMessage(determineErrorMessage(error, directoryName))
-			}
-		})
+		if (directoryName.length < maximumFileNameLength) {		
+			this.dispatchCreateNewDirectorySocketMessage(directoryName, (error) => {
+				if (!error) {
+					this.setReplaceFilesListPending(true)
+					this.getFileListing()
+				} else {
+					this.setErrorMessage(determineErrorMessage(error, directoryName))
+				}
+			})
+		} else this.setErrorMessage(UIStrings.FileManager.FSErrorMessages.NameTooLong)
 	}
 
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded

@@ -101,6 +101,12 @@ module.exports = {
 		FSErrorMessages: {
 			FileExists: (file) => `${file} already exists`,
 			NameTooLong: 'The filename is too long',
+		},
+		NewDirectoryModal: {
+			Header: 'New Directory',
+			InputPlaceholder: 'New directory name',
+			OKButtonText: 'Create Directory',
+			CancelButtonText: 'Cancel',
 		}
 	}
 }

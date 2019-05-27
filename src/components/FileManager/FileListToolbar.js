@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
-import { Menu, Icon, Input, Popup, Divider, Modal } from 'semantic-ui-react';
+import { Menu, Icon, Input, Popup, Divider, Modal, Button } from 'semantic-ui-react';
 import FileSortMenu from './FileSortMenu'
 import FileFilterMenu from './FileFilterMenu'
 const UIStrings = require('../../config/UIStrings')
@@ -12,7 +12,26 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 		newDirectoryName: ''
 	}
 
+	handleNewDirectoryAddClick = () => {
+		this.props.fileManagerState.createNewDirectory(this.state.newDirectoryName)
+		this.closeNewDirectoryModal()
+	}
+	handleNewDirectoryNameChange = value => this.setState({newDirectoryName: value})
+	openNewDirectoryModal = () => this.setState({newDirectoryModalOpen: true})
+	closeNewDirectoryModal = () =>  {
+		this.setState({
+			newDirectoryModalOpen: false,
+			newDirectoryName: ''
+		})
+
+	}
+
+	handleKeyPress = (key) => {
+		if (key === 'Enter') this.handleNewDirectoryAddClick()
+	}
+
 	render() {
+		const { newDirectoryName, newDirectoryModalOpen } = this.state
 		const { fileManagerState: FileManagerState } = this.props
 		const { pathArray, currentDirectory, directoriesFirst, allFilterTypes } = FileManagerState
 		const inRootDirectory = pathArray.length === 0
@@ -23,6 +42,34 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 
 		return (
 			<Fragment>
+				<Modal
+				size='mini'
+				onClose={this.closeNewDirectoryModal}
+				open={newDirectoryModalOpen}>
+					<Modal.Header>{UIStrings.FileManager.NewDirectoryModal.Header}</Modal.Header>
+					<Modal.Content>
+						<Input fluid
+						value={newDirectoryName} 
+						onChange={(event) => this.handleNewDirectoryNameChange(event.target.value)} 
+						onKeyPress={(event) => this.handleKeyPress(event.key)}
+						autoFocus
+						placeholder={UIStrings.FileManager.NewDirectoryModal.InputPlaceholder}
+						/>
+
+					</Modal.Content>						
+					<Modal.Actions>
+						<Button negative
+							content={UIStrings.FileManager.NewDirectoryModal.CancelButtonText}
+							onClick={this.closeNewDirectoryModal}
+							/>
+						<Button
+							positive
+							content={UIStrings.FileManager.NewDirectoryModal.OKButtonText}
+							onClick={this.handleNewDirectoryAddClick}
+							disabled={newDirectoryName.length < 3}
+							/>
+					</Modal.Actions>
+				</Modal>
 				<Menu fluid icon size='large' compact>
 					<Menu.Item>
 						<Input>{currentDirectory}</Input>
@@ -68,13 +115,10 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 						)}>
 						<FileFilterMenu />
 					</Popup>
-						<Modal
-						trigger={(
-							<Menu.Item onClick={() => FileManagerState.createNewDirectory('testname')}>
-								<Icon name='plus' />
-							</Menu.Item>
-						)}>
-						</Modal>
+					<Menu.Item onClick={this.openNewDirectoryModal}>
+						<Icon name='plus' />
+					</Menu.Item>
+
 				</Menu>
 			</Fragment>
 		)
