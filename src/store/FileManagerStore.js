@@ -2,6 +2,7 @@ import { decorate, observable, action, computed } from "mobx"
 import openSocket from 'socket.io-client';
 const hostname = require('../config/hostname.js');
 const socket = openSocket(hostname.opensocket);
+const UIStrings = require('../config/UIStrings')
 
 //Needs to store an array of the file contents of the mailerContent directory.
 //Should respond to events 'mailerContentFileAdded' and 'mailerContentFileRemoved' to change contents of list
@@ -21,6 +22,17 @@ const sortAlphabetically = (a, b) => {
 	const bName = b.name.toLowerCase()
 	return (aName > bName) ? 1 : (bName > aName) ? -1 : 0
 }		
+
+const determineErrorMessage = (error, filename) => {
+	switch (error.code) {
+		case 'EEXIST':
+			return UIStrings.FileManager.FSErrorMessages.FileExists(filename)
+		case 'ENAMETOOLONG':
+			return UIStrings.FileManager.FSErrorMessages.NameTooLong(filename)
+		default:
+			return error.code
+	}
+} 
 
 class FileManagerStore {
 	fileListing = []
@@ -92,17 +104,18 @@ class FileManagerStore {
 
 	dispatchCreateNewDirectorySocketMessage = (directoryName, callback) => {
 		socket.on('createNewDirectoryResults', error => callback(error))
-		socket.emit(this.currentDirectory, directoryName)
+		socket.emit('createNewDirectory', this.currentDirectory, directoryName)
 
 	}
 
 	createNewDirectory = (directoryName) => {
 		this.dispatchCreateNewDirectorySocketMessage(directoryName, (error) => {
 			if (!error) {
+				console.log('NEW DIRECTORY CREATED')
 				this.setReplaceFilesListPending(true)
 				this.getFileListing()
 			} else {
-
+				this.setErrorMessage(determineErrorMessage(error, directoryName))
 			}
 		})
 	}
@@ -278,15 +291,14 @@ class FileManagerStore {
 	}
 
 	resetErrorMessage = () => {
-		this.errorMessage.setErrorMessage('')
+		this.setErrorMessage('')
 	}
 
 	setErrorMessage = (message) => {
-		this.errorMessage.set(message)
+		this.errorMessage.set(`${message}`)
 	}
 
 	get currentErrorMessage() {	return this.errorMessage.get() }
-
 
 }
 
@@ -330,5 +342,8 @@ export default decorate(FileManagerStore, {
 	setReplaceFilesListPending: action,
 	setSortType: action,
 	addCurrentFilterType: action,
-	removeCurrentFilterType: action
+	removeCurrentFilterType: action,
+	currentErrorMessage: computed,
+	setErrorMessage: action,
+	resetErrorMessage: action,
 })

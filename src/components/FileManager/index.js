@@ -1,7 +1,7 @@
 //FileManager
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from "mobx-react"
-import { Container, Segment, Dimmer, Loader } from 'semantic-ui-react';
+import { Container, Segment, Dimmer, Loader, Message } from 'semantic-ui-react';
 import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import ConnectionPlaceholder from '../bits/ConnectionPlaceholder'
 import FileListContainer from './FileListContainer'
@@ -22,8 +22,8 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
-		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray, reloadFileListingPending } = FileManagerState
-		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1
+		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray, reloadFileListingPending, currentErrorMessage } = FileManagerState
+		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1 //Makes the 'Empty Directory' placeholder appear for empty directories
 
 		return (
 				<Segment basic>
@@ -32,6 +32,11 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 					</Dimmer>
 					<ConnectionPlaceholder>
 						<ItemsPlaceholderSegment itemCount={(filesLoaded) ? 1 : itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
+							{currentErrorMessage &&
+								<Message negative onDismiss={FileManagerState.resetErrorMessage}>
+									{currentErrorMessage}
+								</Message>
+							}
 							<FileListToolbar />
 							<FileListContainer />
 						</ItemsPlaceholderSegment>

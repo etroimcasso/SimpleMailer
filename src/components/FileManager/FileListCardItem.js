@@ -140,6 +140,8 @@ class FileContextMenu extends Component {
 				<Menu.Item link>Get Info...</Menu.Item>
 				<Divider horizontal />
 				<Menu.Item link>Rename...</Menu.Item>
+				<Divider horizontal />
+				<Menu.Item link>Delete...</Menu.Item>
 			</Menu>
 		)
 	}

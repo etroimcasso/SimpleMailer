@@ -97,6 +97,10 @@ module.exports = {
 			MenuHeader: 'Hide:',
 			ResetFiltersText: 'Show All',
 			FilterOutAllText: 'Hide All',
+		},
+		FSErrorMessages: {
+			FileExists: (file) => `${file} already exists`,
+			NameTooLong: 'The filename is too long',
 		}
 	}
 }

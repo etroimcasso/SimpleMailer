@@ -368,8 +368,8 @@ io.on('connection', (client) => {
 	})
 
 	client.on('createNewDirectory', (path, directory) => {
-		FileSystemController.createNewDirectory(path, directory, (error) => {
-			client.emit('createNewDirectoryResults', (error) ? true : false)
+		FileSystemController.createDirectory(path, directory, (error) => {
+			client.emit('createNewDirectoryResults', (error))
 		})
 	})
 		

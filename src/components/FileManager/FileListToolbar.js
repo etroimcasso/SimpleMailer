@@ -65,7 +65,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 						<FileFilterMenu />
 					</Popup>
 
-					<Menu.Item>
+					<Menu.Item onClick={() => FileManagerState.createNewDirectory('testname')}>
 						<Icon.Group size='large'>
 							<Icon name='plus' />
 						</Icon.Group>
