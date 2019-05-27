@@ -44,7 +44,6 @@ const formatFileSize = (fileSizeObject) =>{
 	
 		Divide by 1024
 		Return this number unless its results have 4 or more digits before the decimal
-
 		Index will track the unit:
 		0: B , for when the initial value is > 4 digits - bytes has no decimal
 		1: KB
@@ -97,33 +96,42 @@ const createGroupedFileTypeArray = fileList => {
 		}
 
 	}
+
+	const groupedFilesWithoutOthers = FileTypeGroups.map(sortGroup => {
+		return { 
+			name: sortGroup.name,
+			type: sortGroup.type, 
+			icon: sortGroup.icon,
+			color: sortGroup.color,
+			files: sortGroup.extensions.map(fileExtension => 
+				fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortGroup))).reduce((acc, cv)=> acc.concat(cv))
+		}
+	})
+
 	const flatItemAddition = (type, name, icon, color) => { return { type: type, typeName: name, icon: icon, color: color }}
-	const filterOutEmptyFileTypeObjects = (item) => (!item.name) ? false : (item.name.length === 0) ? false : true
+	const flattenListFunc = (flattenedList, sortGroup) => 
+		flattenedList.concat(sortGroup.files.map(currentFile => 
+			Object.assign(currentFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
 
-	const flatFilesWithoutOthers = FileTypeGroups.map(sortGroup => {
-		return sortGroup.extensions.map(fileExtension => { 
-			const filterFile = fileList.filter(currentFile => fileTypeGroupingFilter(currentFile, fileExtension, sortGroup)) 
-			if (filterFile) return Object.assign(...filterFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))
-				else return null
-		}).filter(filterOutEmptyFileTypeObjects)
-	}).reduce((acc, cv) => acc.concat(cv), [])
+	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
-	//combine flatFilesWithoutOthers with fileList
+	//combine flattenedSortGroup with fileList
 	//filter out all that have a non-null type property
-	const combinedList = flatFilesWithoutOthers.concat(fileList)
+	const combinedList = flattenedSortGroup.concat(fileList)
 	const otherFiles = { 
 		name: ServerStrings.FileSorting.GroupNames.Other,
 		type: 'other',
 		color: ServerStrings.FileSorting.GroupColors.Other,
 		files: combinedList.filter(item => !item.type).map(file => file)
 	}
+
 	
 	const flattenedOthers = otherFiles.files.map((currentFile) => 
 		Object.assign(currentFile, flatItemAddition('other', ServerStrings.FileSorting.GroupNames.Other, ServerStrings.FileSorting.IconNames.Other, ServerStrings.FileSorting.GroupColors.Other))
 	)
 
 	const excludeSpecialFiles = (item) => item.name !== '.DS_Store' && item.name !== 'Thumbs.db'
-	return flatFilesWithoutOthers.concat(flattenedOthers).filter(excludeSpecialFiles)
+	return flattenedSortGroup.concat(flattenedOthers).filter(excludeSpecialFiles)
 
 }
 
@@ -170,5 +178,3 @@ module.exports =  {
 
 	}
 } 
-
-
