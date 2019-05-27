@@ -35,6 +35,7 @@ class FileManagerStore {
 	contextMenu = observable.box('')
 	allFilterTypes = []
 	currentFilterTypes = []
+	errorMessage = observable.box('')
 
 
 	constructor() {
@@ -88,6 +89,23 @@ class FileManagerStore {
 	addFile = (file) => this.fileListing = this.fileListing.concat(file)
 
 	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item.name !== file.name)
+
+	dispatchCreateNewDirectorySocketMessage = (directoryName, callback) => {
+		socket.on('createNewDirectoryResults', error => callback(error))
+		socket.emit(this.currentDirectory, directoryName)
+
+	}
+
+	createNewDirectory = (directoryName) => {
+		this.dispatchCreateNewDirectorySocketMessage(directoryName, (error) => {
+			if (!error) {
+				this.setReplaceFilesListPending(true)
+				this.getFileListing()
+			} else {
+
+			}
+		})
+	}
 
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
 
@@ -259,6 +277,16 @@ class FileManagerStore {
 		this.replaceFilesList(this.fileListing)
 	}
 
+	resetErrorMessage = () => {
+		this.errorMessage.setErrorMessage('')
+	}
+
+	setErrorMessage = (message) => {
+		this.errorMessage.set(message)
+	}
+
+	get currentErrorMessage() {	return this.errorMessage.get() }
+
 
 }
 
@@ -273,9 +301,11 @@ export default decorate(FileManagerStore, {
 	directoriesFirst: observable,
 	allFilterTypes: observable,
 	currentFilterTypes: observable,
+	errorMessage: observable,
 	getFileListing: action,
 	getAllFilterTypes: action,
 	replaceFilesList: action,
+	createNewDirectory: action,
 	resetFilesFromStorage: action,
 	filterOutAll: action,
 	resetCurrentFilterTypes: action,

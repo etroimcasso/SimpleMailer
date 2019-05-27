@@ -366,6 +366,12 @@ io.on('connection', (client) => {
 	client.on('getAllFilterTypes', () => {
 		client.emit('getAllFilterTypesResults', FileFilterTypes.map(item => { return {type: item.type, name: item.name}}))
 	})
+
+	client.on('createNewDirectory', (path, directory) => {
+		FileSystemController.createNewDirectory(path, directory, (error) => {
+			client.emit('createNewDirectoryResults', (error) ? true : false)
+		})
+	})
 		
 });
 

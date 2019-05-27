@@ -169,6 +169,14 @@ module.exports =  {
 			console.log(`Cannot retrieve file information: ${error}`)
 		})
 
+	},
+
+	createDirectory: (path, directory, callback) => {
+		const newDirectoryPath = addFilePath(contentDirectory,addFilePath(path, directory))
+		fs.mkdir(newDirectoryPath, error => {
+			callback(error)
+		})
+
 	}
 } 
 
