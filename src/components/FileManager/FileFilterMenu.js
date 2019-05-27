@@ -19,8 +19,8 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 		const showAllActive = currentFilterTypes.length === allFilterTypes.length
 		const hideAllActive = currentFilterTypes.length === 0
 
-		const headerSize = 'h4'
-		const activeItemSize = 'h3'
+		const headerSize = 'h5'
+		const activeItemSize = 'h4'
 
 		return(
 			<Menu text vertical >
@@ -42,8 +42,9 @@ export default inject('fileManagerState')(observer(class FileFilterMenu extends 
 						)
 					})
 					: null}
-				<Divider horizontal />
-				
+
+				<Divider fitted horizontal />
+
 				<ShowOrHideMenuItem 
 				active={showAllActive} 
 				activeItemSize={activeItemSize}
@@ -74,3 +75,46 @@ const ShowOrHideMenuItem = (props) => (
 	}
 	</Menu.Item>
 )
+
+//Keep in mind that this function requires an "extra props" function to also be passed to the AutomaticGrid component this is passed to
+/*
+const generateTextMenuFilterTypeToggleItem = (props) => {
+
+	return (
+		<TextMenuFilterTypeToggleItem 
+			key={props.key}
+			filterActive={props.filterActive}
+			onClick={props.onClick}
+			filterType={props.filterType}
+			activeItemSize={props.activeItemSize}
+			addFilterFunction={props.addFilter}
+			removeFilterFunction={props.removeFilter}
+		/>
+	)
+}
+*/
+//This will take an array of items, a 'number of items per column' value, and a function for creating an element from the array of items given to it
+//For every 'number of items per column' items, create another column
+////Extra Props function should be a function that can be passed in a map that will return a props object that contains the props needed for making the componentFunction work
+////These extra props will combined with the generated propsObject inside each items.map function to provide the componentFunction with its props
+//<AutomaticGrid items={allFilterTypes} contentFunction={generateTextMenuFilterTypeToggleItem} extraPropsFunction={() => generateExtraPropsForTextMenuFilterTypeToggleItem(currentFilterTypes)}
+/*
+const AutomaticGrid = (props) => {
+	const { items, extraPropsFunction, componentFunction } = this.props
+
+	return (
+		<Fragment>
+		{items.map((item) => {
+
+		})}
+		</Fragment>
+
+
+	)
+	(allFilterTypes.length > 0) 
+						? allFilterTypes.map((item) => {
+							return ()
+						})
+						: null}
+}
+*/

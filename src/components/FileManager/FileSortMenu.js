@@ -22,11 +22,12 @@ export default inject('fileManagerState')(observer(class FileSortMenu extends Co
 		const { directoriesFirst } = FileManagerState
 		const sortType = FileManagerState.sortTypes[0]
 
-		const headerSize = 'h4'
-		const activeItemSize = 'h3'
+		const headerSize = 'h5'
+		const activeItemSize = 'h4'
 
 		return(
 			<Menu text vertical >
+
 				<Menu.Header as={headerSize}>
 					{UIStrings.FileManager.SortMenu.MenuHeader}
 				</Menu.Header>
@@ -73,7 +74,6 @@ export default inject('fileManagerState')(observer(class FileSortMenu extends Co
 				itemText={UIStrings.FileManager.SortMenu.MenuNames.Smallest}
 				activeItemSize={activeItemSize} />
 
-
 				<Divider horizontal />
 
 				<Menu.Header as={headerSize}>
@@ -107,6 +107,7 @@ export default inject('fileManagerState')(observer(class FileSortMenu extends Co
 						</Fragment>
 					}
 				</Menu.Item>
+
 			</Menu>
 		)
 	}
