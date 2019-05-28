@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react'
 import { Menu, Icon, Input, Popup, Divider, Modal, Button } from 'semantic-ui-react';
 import FileSortMenu from './FileSortMenu'
 import FileFilterMenu from './FileFilterMenu'
+import FilePathBreadcrumb from './FilePathBreadcrumb'
 const UIStrings = require('../../config/UIStrings')
 
 
@@ -66,58 +67,70 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 							positive
 							content={UIStrings.FileManager.NewDirectoryModal.OKButtonText}
 							onClick={this.handleNewDirectoryAddClick}
-							disabled={newDirectoryName.length < 3}
+							disabled={newDirectoryName.length === 0}
 							/>
 					</Modal.Actions>
 				</Modal>
-				<Menu fluid icon size='large' compact>
-					<Menu.Item>
-						<Input>{currentDirectory}</Input>
-					</Menu.Item>
-				</Menu>
-				<br />
 				<Menu fluid icon size='large' compact>
 					<Menu.Item 
 					disabled={inRootDirectory} 
 					onClick={FileManagerState.openParentDirectory}>
 						<Icon name='chevron left' /> 
 					</Menu.Item>
-	
+					
 					<Menu.Item
 					disabled={inRootDirectory}
 					onClick={FileManagerState.resetDirectory}>
 						<Icon name='home' />
 					</Menu.Item>
-					<Popup
-					on='click'
-					hoverable
-					hideOnScroll
-					position={popupPosition}
-					trigger={(
-						<Menu.Item>
-							<Icon name='sort' />
-						</Menu.Item> 
-						)}>
-						<FileSortMenu />
-					</Popup>
-	
-					<Popup
-					on='click'
-					hoverable
-					hideOnScroll
-					disabled={noFilterTypes}
-					position={popupPosition}
-					wide
-					trigger={(
-						<Menu.Item active={currentFiltersCount !== allFilterTypes.length} disabled={noFilterTypes}>
-							<Icon name='filter' />
-						</Menu.Item> 
-						)}>
-						<FileFilterMenu />
-					</Popup>
-					<Menu.Item onClick={this.openNewDirectoryModal}>
-						<Icon name='plus' />
+
+					<Menu.Item>
+						<FilePathBreadcrumb />
 					</Menu.Item>
+				</Menu>
+				<br />
+				<Menu fluid icon size='large' compact>
+
+					<Menu.Menu position='left'>
+						<Menu.Item onClick={this.openNewDirectoryModal}>
+							<Icon name='plus' />
+						</Menu.Item>
+
+						<Menu.Item disabled>
+							<Icon name='upload' />
+						</Menu.Item>
+					</Menu.Menu>
+
+					<Menu.Menu position='right'>
+						<Popup
+						on='click'
+						hoverable
+						hideOnScroll
+						position={popupPosition}
+						trigger={(
+							<Menu.Item>
+								<Icon name='sort' />
+							</Menu.Item> 
+							)}>
+							<FileSortMenu />
+						</Popup>
+		
+						<Popup
+						on='click'
+						hoverable
+						hideOnScroll
+						disabled={noFilterTypes}
+						position={popupPosition}
+						wide
+						trigger={(
+							<Menu.Item active={currentFiltersCount !== allFilterTypes.length} disabled={noFilterTypes}>
+								<Icon name='filter' />
+							</Menu.Item> 
+							)}>
+							<FileFilterMenu />
+						</Popup>
+					</Menu.Menu>
+
 
 				</Menu>
 			</Fragment>

@@ -172,9 +172,6 @@ module.exports =  {
 
 	createDirectory: (path, directory, callback) => {
 		const newDirectoryPath = addFilePath(contentDirectory,addFilePath(path, directory))
-		fs.mkdir(newDirectoryPath, error => {
-			callback(error)
-		})
-
+		fs.mkdir(newDirectoryPath, error => callback(error))
 	}
 } 

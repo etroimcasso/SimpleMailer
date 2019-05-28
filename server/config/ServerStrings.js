@@ -16,7 +16,7 @@ module.exports = {
 		GroupNames: {
 			Images: 'Images',
 			Videos: 'Videos',
-			PDF: 'Documents',
+			PDF: 'PDF',
 			Word: 'Word Documents',
 			Excel: 'Spreadsheets',
 			Powerpoint: 'Presentations',
@@ -40,7 +40,7 @@ module.exports = {
 			Directories: 'yellow',
 			Coding: 'purple',
 			Executables: null,
-			Archives: null,
+			Archives: 'pink',
 			Other: null,
 		},
 		IconNames: {

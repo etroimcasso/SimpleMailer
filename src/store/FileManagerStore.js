@@ -36,8 +36,8 @@ const determineErrorMessage = (error, filename) => {
 const maximumFileNameLength = 100
 
 class FileManagerStore {
-	fileListing = []
-	fileListingStorage = []
+	fileListing = [] //Is filtered, use fileListingStorage to consistently get ALL files for current directory
+	fileListingStorage = [] //Retains the unfiltered file listing, to be called upon when needed
 	fileListingLoaded = false
 	reloadFileListingPending = true
 	directory = observable.box('/')
@@ -81,6 +81,7 @@ class FileManagerStore {
 					else this.replaceFilesList(files)
 					this.setReplaceFilesListPending(false)
 					this.fileListingStorage = files
+					//console.log(files)
 					this.resetContextMenu()
 				}
 			}
@@ -129,7 +130,8 @@ class FileManagerStore {
 	toggleDirectoriesFirst = () => {
 		this.directoriesFirst = !this.directoriesFirst
 		//Update file listing
-		this.replaceFilesList(this.fileListing)
+		this.resetFilesFromStorage()
+		//this.replaceFilesList(this.fileListing)
 	}
 
 
@@ -177,7 +179,7 @@ class FileManagerStore {
 				this.changeCurrentFilterTypes(this.currentFilterTypes.concat(filterType).sort(sortAlphabetically))
 		//Get new file listing
 		this.setReplaceFilesListPending(true)
-		this.replaceFilesList(this.fileListingStorage)
+		this.resetFilesFromStorage()
 	}
 
 
@@ -289,7 +291,8 @@ class FileManagerStore {
 
 	setSortType = (newSortType) => {
 		this.sortTypes = [newSortType]
-		this.replaceFilesList(this.fileListing)
+		this.resetFilesFromStorage()
+		//this.replaceFilesList(this.fileListing)
 	}
 
 	resetErrorMessage = () => {

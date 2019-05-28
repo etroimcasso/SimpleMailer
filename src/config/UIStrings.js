@@ -72,6 +72,7 @@ module.exports = {
 		NotAllEmailsSent: "Not all emails could be sent"
 	},
 	FileManager: {
+		RootDirectoryBreadcrumbName: 'Home',
 		EmptyDirectory: "This directory is empty",
 		Toolbar: {
 			PreviousDirectory: "Back",

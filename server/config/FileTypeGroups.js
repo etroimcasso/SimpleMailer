@@ -84,7 +84,7 @@ module.exports = [
 		type: 'archives',
 		icon: IconNames.Archives,
 		color: GroupColors.Archives,
-		extensions:['.zip', '.rar','.tgz','.7z','.tar','.gz','.bz2'],
+		extensions:['.zip', '.rar','.tgz','.7z','.tar','.gz','.bz2','.ace','.deb','.rpm'],
 	},
 	{
 		name: GroupNames.Other,
