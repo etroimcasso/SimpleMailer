@@ -46,7 +46,7 @@ class FileManagerStore {
 	sortTypes = ['ABC']
 	directoriesFirst = true
 	contextMenu = observable.box('')
-	allFilterTypes = []
+	allFilterTypes = [] //Retrieved from the server at start
 	currentFilterTypes = []
 	errorMessage = observable.box('')
 
@@ -137,6 +137,7 @@ class FileManagerStore {
 
 	//Get all filter types using a socket mssage
 	//is also used to reset filter types back to all 
+	//Uses a callback instead of returning a value to better control UI flow
 	getAllFilterTypes = (callback) => {
 		socket.on('getAllFilterTypesResults', (results) => { 
 			this.replaceAllFilterTypes(results)

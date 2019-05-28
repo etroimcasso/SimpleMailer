@@ -7,6 +7,11 @@ import FilePathBreadcrumb from './FilePathBreadcrumb'
 const UIStrings = require('../../config/UIStrings')
 
 
+const styles = {
+	fullWidth: {
+		width: '100%'
+	}
+}
 export default inject('fileManagerState')(observer(class FileListToolbar extends Component {
 	state = {
 		newDirectoryModalOpen: false,
@@ -71,7 +76,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 							/>
 					</Modal.Actions>
 				</Modal>
-				<Menu fluid icon size='large' compact>
+				<Menu fluid icon size='huge' compact>
 					<Menu.Item 
 					disabled={inRootDirectory} 
 					onClick={FileManagerState.openParentDirectory}>
@@ -83,13 +88,12 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 					onClick={FileManagerState.resetDirectory}>
 						<Icon name='home' />
 					</Menu.Item>
-
-					<Menu.Item>
+					<Menu.Item style={styles.fullWidth}>
 						<FilePathBreadcrumb />
 					</Menu.Item>
 				</Menu>
 				<br />
-				<Menu fluid icon size='large' compact>
+				<Menu fluid icon  size='mini' compact>
 
 					<Menu.Menu position='left'>
 						<Menu.Item onClick={this.openNewDirectoryModal}>
