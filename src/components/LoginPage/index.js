@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
 import { Input, Button, Form, Divider, Label, Segment } from 'semantic-ui-react';
+import axios from 'axios';
 
 const UIStrings = require('../../config/UIStrings')
 
@@ -48,6 +49,22 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 	}
 	setErrorState = (errorState) => {
 	    this.setState({ login_error: errorState })
+	}
+
+	handleSubmitClick = () => {
+	    axios.post('/util/login',{
+	        username: this.state.username,
+	        password: this.state.password
+	    }).then((response) => {
+	        if (response.data.error) {
+	            this.setErrorState(false);
+	            this.props.handleSubmit();
+	        } else {
+	            this.setErrorState(true);
+	        }
+	    }).catch((error) => {
+	        this.setErrorState(true)
+	    });
 	}
 
 	onCreateAccountClick = () => {}
