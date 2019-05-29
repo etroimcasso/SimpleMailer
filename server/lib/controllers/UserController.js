@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt')
 module.exports = {
 	//callback(error, userObject)
 
-/*	insertUser: (username, password, isUserAdmin, callback) => {
+	insertUser: (username, password, isUserAdmin, callback) => {
 		//console.log("ADDING USER")
 		const normalizedUsename = username.toLowerCase()
 		bcrypt.hash(password, 10, (error, hashedPassword) => {
@@ -34,7 +34,7 @@ module.exports = {
 			}
 				
 		})
-	}*/
+	},
 
 	//Compares the hash of 'password' with the password hash associatated with 'username'
     authenticateUser(username, password, callback) {

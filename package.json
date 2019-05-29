@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "bcrypt": "^3.0.6",
     "connect-mongo": "^2.0.3",
+    "cookie-parser": "^1.4.4",
     "dotenv": "^7.0.0",
     "draft-js": "^0.10.5",
     "draftjs-to-html": "^0.8.4",

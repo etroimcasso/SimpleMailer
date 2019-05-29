@@ -12,11 +12,11 @@ mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
 
 const validatorSettings = {
 	username: {
-		minLength: 6,
+		minLength: 5,
 		maxLength: 24
 	},
 	password: {
-		minLength: 12,
+		minLength: 10,
 		maxLength: 32
 
 	},

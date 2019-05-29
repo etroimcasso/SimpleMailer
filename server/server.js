@@ -7,6 +7,8 @@ const http = require('https');
 const https = require('https');
 const app = express();
 const port = process.env.S_PORT;
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose')
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -19,6 +21,10 @@ const ServerStrings = require('./config/ServerStrings')
 const FileFilterTypes = require('./config/FileTypeGroups')
 const FrontendRoutes = require('../src/config/Routes')
 const UserController = require('./lib/controllers/UserController')
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.set('forceSSLOptions', {
   httpsPort: process.env.HTTPS_PORT
@@ -34,6 +40,22 @@ const ssl_options = {
   	cert: fs.readFileSync(path.join(__dirname,'../certs/server.crt')),
 }
 app.use(forceSsl)
+
+//MongoDBURL Helper
+const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
+mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
+const db = mongoose.connection
+
+//Sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db
+  })
+}))
+
 
 const root = require('path').join(__dirname, '..', 'build')
 const staticRoot = require('path').join(__dirname, '..', 'build/static')
@@ -53,20 +75,22 @@ app.get('/unsubscribe/*', (req, res) => renderRoot(res))
 
 app.get('/subscribeResults/*', (req, res) => renderRoot(res))
 
-app.get('/util/login', (req, res) => {
+app.post('/util/login', (req, res, next) => {
+	console.log(req.body)
 	if (req.body) {
-		const user = req.body.username || null
-		const password = req.body.password || null
+		const user = req.body.username 
+		const password = req.body.password 
 		 if (user && password) {	
 			UserController.authenticateUser(user, password, (error, user) => {
 				if (error) { 
 					res.json({
 						error: error,
-						success: false
 					})
 				} else {
 					req.session.userId = user._id
-					renderRoot(res)
+					res.json({
+						error: null
+					})
 				}
 			})
 		}
@@ -77,19 +101,22 @@ app.get('/util/login', (req, res) => {
 
 //Route for everything else
 app.get("*", (req, res) => {
-
 		const protectedRouteKeys = Object.keys(FrontendRoutes.ProtectedRoutes)
 		const protectedRoutes = protectedRouteKeys.map(item => FrontendRoutes.ProtectedRoutes[item])
 		const isRouteProtected = protectedRoutes.filter(item => item === req.url).length > 0
+		const userLoggedIn = req.session.userId !== null || req.session.userId !== undefined
 
 		if (req.url !== '/login')
 			if (isRouteProtected) {
 				if (req.session) //There is a session
-					if (!req.session.userId) res.redirect('/login')
+					if (!userLoggedIn) res.redirect('/login')
 					else renderRoot(res)  //User is logged in
 				else res.redirect('/login') // There is no session
 			} else res.sendFile(path.join(root, req.url ))
-		else renderRoot(res)
+		else {
+			if (userLoggedIn) res.redirect('/')
+			else renderRoot(res)
+		}
 })
 
 
@@ -102,22 +129,6 @@ http.createServer(app).listen(process.env.HTTP_PORT)
 server.listen(process.env.HTTPS_PORT,() => {
 	console.log(`Listening on port ${process.env.HTTPS_PORT}`)
 })
-
-
-//MongoDBURL Helper
-const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
-mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
-const db = mongoose.connection
-
-//Sessions
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: db
-  })
-}))
 
 const sendEmail = (message, subscriberId, callback) => {
 	const subscriberEmail = message.receiverEmails

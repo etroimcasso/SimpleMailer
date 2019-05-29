@@ -56,9 +56,9 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 	        username: this.state.username,
 	        password: this.state.password
 	    }).then((response) => {
-	        if (response.data.error) {
-	            this.setErrorState(false);
-	            this.props.handleSubmit();
+	        if (!response.data.error) {
+	            //this.setErrorState(false);
+	            document.location('/')
 	        } else {
 	            this.setErrorState(true);
 	        }
