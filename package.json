@@ -3,6 +3,7 @@
   "version": "1.3.3",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "bcrypt": "^3.0.6",
     "connect-mongo": "^2.0.3",
     "dotenv": "^7.0.0",
@@ -10,6 +11,7 @@
     "draftjs-to-html": "^0.8.4",
     "express": "^4.17.0",
     "express-force-ssl": "^0.3.2",
+    "express-session": "^1.16.1",
     "html-to-react": "^1.3.4",
     "inquirer": "^6.3.1",
     "mobx": "^5.9.4",
@@ -39,7 +41,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "production": "pm2 start server/simpleMailerServer.js --watch",
+    "production": "pm2 start server/server.js --watch",
     "addAdminUser": "node cli/createAdminUser.js"
   },
   "eslintConfig": {

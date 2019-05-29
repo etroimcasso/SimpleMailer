@@ -109,5 +109,11 @@ module.exports = {
 			OKButtonText: 'Create Directory',
 			CancelButtonText: 'Cancel',
 		}
+	},
+	LoginPage: {
+		UsernameText: 'Username',
+		PasswordText: 'Password',
+		SignInButtonText: 'Sign In',
+		NewAccountButtonText: 'Create Account',
 	}
 }

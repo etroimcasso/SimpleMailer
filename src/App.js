@@ -11,6 +11,7 @@ import MailerHistory from './components/MailerHistory/MailerHistory'
 import SubscriptionsPanel from './components/SubscriptionsPanel/SubscriptionsPanel'
 import TopBar from './components/TopBar'
 import FileManager from './components/FileManager'
+import LoginPage from './components/LoginPage'
 import FileManagerStore from './store/FileManagerStore'
 import AppStateStore from './store/AppStateStore'
 import MailerHistoryStore from './store/MailerHistoryStore'
@@ -25,6 +26,7 @@ const hostname = require('./config/hostname.js');
 const socket = openSocket(hostname.opensocket);
 const UIStrings = require('./config/UIStrings');
 const ReconnectionTimer = require('./helpers/ReconnectionTimer');
+const Routes = require('./config/Routes')
 
 
 
@@ -116,14 +118,7 @@ export default observer(class App extends Component {
  
 	render() {
     
-    const protectedRoutes = {
-      root: "/",
-      history: "/history",
-      subscriptions:  "/subscriptions",
-      fileManager: "/files"
-    }
-
-    
+  
 
   	return (
       <Provider fileManagerState={FileManagerState} 
@@ -134,12 +129,13 @@ export default observer(class App extends Component {
       >
         <BrowserRouter>
   			   <div className="App">
-              <Route exact path={[protectedRoutes.root, protectedRoutes.history, protectedRoutes.subscriptions, protectedRoutes.fileManager]} component={TopBar} />
+              <Route exact path={[Routes.ProtectedRoutes.Root, Routes.ProtectedRoutes.History, Routes.ProtectedRoutes.Subscriptions, Routes.ProtectedRoutes.FileManager]} component={TopBar} />
   				    <Container style={{height: '100%'}}>
-                <Route exact path={protectedRoutes.root} component={MailerEditor} />
-                <Route exact path={protectedRoutes.history} component={MailerHistory} />
-  				      <Route exact path={protectedRoutes.subscriptions} component={SubscriptionsPanel} />
-                <Route exact path={protectedRoutes.fileManager} component={FileManager} />
+                <Route exact path={Routes.ProtectedRoutes.Root} component={MailerEditor} />
+                <Route exact path={Routes.ProtectedRoutes.History} component={MailerHistory} />
+  				      <Route exact path={Routes.ProtectedRoutes.Subscriptions} component={SubscriptionsPanel} />
+                <Route exact path={Routes.ProtectedRoutes.FileManager} component={FileManager} />
+                <Route exact path={Routes.Login} component={LoginPage} />
                 <Route path="/subscribe/:email" component={this.AddSubscriberBridge} />
                 <Route path="/unsubscribe/:email/:id" component={this.RemoveSubscriberBridge} />
                 <Route path="/subscribeResults" component={this.subscriptionChangeResults} />
@@ -159,3 +155,4 @@ const redirectAwayFromMailer = () => {
     <Redirect to='/subscribeResults' />
   )
 }
+

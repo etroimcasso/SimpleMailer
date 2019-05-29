@@ -8,6 +8,8 @@ const https = require('https');
 const app = express();
 const port = process.env.S_PORT;
 const mongoose = require('mongoose')
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const Emailer = require('./lib/Emailer')
 const SubscriberController = require('./lib/controllers/SubscriberController')
 const MailerController = require('./lib/controllers/MailerController')
@@ -15,13 +17,14 @@ const MailerResultController = require('./lib/controllers/MailerResultController
 const FileSystemController = require('./lib/controllers/FileSystemController')
 const ServerStrings = require('./config/ServerStrings')
 const FileFilterTypes = require('./config/FileTypeGroups')
+const FrontendRoutes = require('../src/config/Routes')
 
 app.set('forceSSLOptions', {
   httpsPort: process.env.HTTPS_PORT
 });
 
 //Force SSL
-var forceSsl = require('express-force-ssl');
+const forceSsl = require('express-force-ssl');
 
 
 const ssl_options = {
@@ -32,20 +35,41 @@ const ssl_options = {
 app.use(forceSsl)
 
 const root = require('path').join(__dirname, '..', 'build')
+const staticRoot = require('path').join(__dirname, '..', 'build/static')
 const mailerContentRoot = require('path').join(__dirname, '..', 'mailerContent')
 console.log(`MailerContent root: ${mailerContentRoot}`)
-app.use(express.static(root));
+app.use('/static', express.static(staticRoot, { redirect: false }));
 
+const renderRoot = (res) => res.sendFile('index.html', { root })
 
 //Route for mailer content
 app.get("/mailerContent/:fileName(*)", (req, res, next) => res.sendFile(path.join(mailerContentRoot, `${req.params.fileName}`)))
 
+//Subscriber Routes
+app.get('/subscribe/*', (req, res) => renderRoot(res))
+
+app.get('/unsubscribe/*', (req, res) => renderRoot(res))
+
+app.get('/subscribeResults/*', (req, res) => renderRoot(res))
+
 
 //Route for everything else
-
 app.get("*", (req, res) => {
-	res.sendFile('index.html', { root })
+
+		const protectedRouteKeys = Object.keys(FrontendRoutes.ProtectedRoutes)
+		const protectedRoutes = protectedRouteKeys.map(item => FrontendRoutes.ProtectedRoutes[item])
+		const isRouteProtected = protectedRoutes.filter(item => item === req.url).length > 0
+
+		if (req.url !== '/login')
+			if (isRouteProtected) {
+				if (req.session) //There is a session
+					if (!req.session.userId) res.redirect('/login')
+					else renderRoot(res)  //User is logged in
+				else res.redirect('/login') // There is no session
+			} else res.sendFile(path.join(root, req.url ))
+		else renderRoot(res)
 })
+
 
 const server = https.createServer(ssl_options, app);
 
@@ -62,6 +86,16 @@ server.listen(process.env.HTTPS_PORT,() => {
 const __MONGO_URI__ = require('./lib/helpers/MongoDBConnectionURI')
 mongoose.connect(__MONGO_URI__, {useNewUrlParser: true, useCreateIndex: true });
 const db = mongoose.connection
+
+//Sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: db
+  })
+}))
 
 const sendEmail = (message, subscriberId, callback) => {
 	const subscriberEmail = message.receiverEmails
