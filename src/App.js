@@ -117,9 +117,11 @@ export default observer(class App extends Component {
 
  
 	render() {
+
+    const protectedRouteKeys = Object.keys(Routes.ProtectedRoutes)
+    const protectedRoutes = protectedRouteKeys.map(item => Routes.ProtectedRoutes[item])
     
   
-
   	return (
       <Provider fileManagerState={FileManagerState} 
       appState={AppState} 
@@ -129,7 +131,7 @@ export default observer(class App extends Component {
       >
         <BrowserRouter>
   			   <div className="App">
-              <Route exact path={[Routes.ProtectedRoutes.Root, Routes.ProtectedRoutes.History, Routes.ProtectedRoutes.Subscriptions, Routes.ProtectedRoutes.FileManager]} component={TopBar} />
+              <Route exact path={protectedRoutes} component={TopBar} />
   				    <Container style={{height: '100%'}}>
                 <Route exact path={Routes.ProtectedRoutes.Root} component={MailerEditor} />
                 <Route exact path={Routes.ProtectedRoutes.History} component={MailerHistory} />

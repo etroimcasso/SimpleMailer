@@ -18,6 +18,7 @@ const FileSystemController = require('./lib/controllers/FileSystemController')
 const ServerStrings = require('./config/ServerStrings')
 const FileFilterTypes = require('./config/FileTypeGroups')
 const FrontendRoutes = require('../src/config/Routes')
+const UserController = require('./lib/controllers/UserController')
 
 app.set('forceSSLOptions', {
   httpsPort: process.env.HTTPS_PORT
@@ -51,6 +52,27 @@ app.get('/subscribe/*', (req, res) => renderRoot(res))
 app.get('/unsubscribe/*', (req, res) => renderRoot(res))
 
 app.get('/subscribeResults/*', (req, res) => renderRoot(res))
+
+app.get('/util/login', (req, res) => {
+	if (req.body) {
+		const user = req.body.username || null
+		const password = req.body.password || null
+		 if (user && password) {	
+			UserController.authenticateUser(user, password, (error, user) => {
+				if (error) { 
+					res.json({
+						error: error,
+						success: false
+					})
+				} else {
+					req.session.userId = user._id
+					renderRoot(res)
+				}
+			})
+		}
+	} else res.redirect('/')
+
+})
 
 
 //Route for everything else
