@@ -101,7 +101,6 @@ app.post('/util/login', (req, res, next) => {
 
 
 app.post('/util/logout', function (req, res, next) {
-	console.log(req.session)
     if (req.session.userId) {
         req.session.destroy((error) => {
             if (error) {
