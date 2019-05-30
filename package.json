@@ -22,6 +22,7 @@
     "mongoose": "^5.5.11",
     "nodemailer": "^6.2.1",
     "react": "^16.8.6",
+    "react-cristal": "0.0.12",
     "react-dnd": "^7.4.5",
     "react-dnd-html5-backend": "^7.4.4",
     "react-dom": "^16.8.6",

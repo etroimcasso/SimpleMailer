@@ -100,7 +100,7 @@ app.post('/util/login', (req, res, next) => {
 })
 
 
-app.post('/util/logout', function (req, res, next) {
+app.post('/util/logout', (req, res, next) => {
     if (req.session.userId) {
         req.session.destroy((error) => {
             if (error) {
@@ -117,6 +117,9 @@ app.post('/util/logout', function (req, res, next) {
     }
 })
 
+//File uploads route
+//Requires a user session to work
+app.post('/util/fileupload', (req, res, next) => {})
 
 //Route for everything else
 app.get("*", (req, res) => {
