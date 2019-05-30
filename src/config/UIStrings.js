@@ -111,6 +111,7 @@ module.exports = {
 		}
 	},
 	LoginPage: {
+		Header: 'You must sign in to use SimpleMailer',
 		UsernameText: 'Username',
 		PasswordText: 'Password',
 		SignInButtonText: 'Sign In',

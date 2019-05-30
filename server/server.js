@@ -62,6 +62,8 @@ const staticRoot = require('path').join(__dirname, '..', 'build/static')
 const mailerContentRoot = require('path').join(__dirname, '..', 'mailerContent')
 console.log(`MailerContent root: ${mailerContentRoot}`)
 app.use('/static', express.static(staticRoot, { redirect: false }));
+//app.set('views', path.join(__dirname, './views'));
+//app.set('view engine', 'pug');
 
 const renderRoot = (res) => res.sendFile('index.html', { root })
 
@@ -76,7 +78,6 @@ app.get('/unsubscribe/*', (req, res) => renderRoot(res))
 app.get('/subscribeResults/*', (req, res) => renderRoot(res))
 
 app.post('/util/login', (req, res, next) => {
-	console.log(req.body)
 	if (req.body) {
 		const user = req.body.username 
 		const password = req.body.password 
@@ -99,13 +100,31 @@ app.post('/util/login', (req, res, next) => {
 })
 
 
+app.post('/util/logout', function (req, res, next) {
+	console.log(req.session)
+    if (req.session.userId) {
+        req.session.destroy((error) => {
+            if (error) {
+            	console.error(`Error removing session: ${error}`)
+            	res.json({
+            		error: error
+            	})
+            } else {
+            	res.json({
+            		error: null
+            	})
+            }
+        })
+    }
+})
+
+
 //Route for everything else
 app.get("*", (req, res) => {
 		const protectedRouteKeys = Object.keys(FrontendRoutes.ProtectedRoutes)
 		const protectedRoutes = protectedRouteKeys.map(item => FrontendRoutes.ProtectedRoutes[item])
 		const isRouteProtected = protectedRoutes.filter(item => item === req.url).length > 0
-		const userLoggedIn = req.session.userId !== null || req.session.userId !== undefined
-
+		const userLoggedIn = req.session.userId !== null && req.session.userId !== undefined
 		if (req.url !== '/login')
 			if (isRouteProtected) {
 				if (req.session) //There is a session

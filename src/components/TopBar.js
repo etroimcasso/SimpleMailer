@@ -3,6 +3,7 @@ import { Menu, Icon, Popup, Label } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { observer, inject } from "mobx-react"
 const UIStrings = require('../config/UIStrings')
+const axios = require('axios')
 
 const styles = {
 	appTitleText: {
@@ -24,6 +25,13 @@ const styles = {
 
 
 export default inject("fileManagerState", "connectionState", "subscriberState", "mailerHistoryState")(observer(class TopBar extends Component {
+
+	logOut = () => {
+		axios.post('/util/logout').then((response) => {
+			if (!response.data.error) this.props.history.push('/login')
+		}).catch((error) => {});
+		
+	}
 
 	render() {
 		const { fileManagerState: FileManagerState, connectionState: ConnectionState, subscriberState: SubscribersState, mailerHistoryState: MailerHistoryState } = this.props
@@ -93,6 +101,11 @@ export default inject("fileManagerState", "connectionState", "subscriberState", 
 						</div>
 					}
 				</Menu.Item>
+				<Menu.Menu icon position='right'>
+					<Menu.Item onClick={this.logOut}>
+						<Icon name='log out' />
+					</Menu.Item>
+				</Menu.Menu>
 			</Menu>
 		)
 	}

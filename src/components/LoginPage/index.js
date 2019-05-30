@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
-import { Input, Button, Form, Divider, Label, Segment } from 'semantic-ui-react';
+import { Input, Button, Form, Divider, Label, Segment, Header } from 'semantic-ui-react';
 import axios from 'axios';
 
 const UIStrings = require('../../config/UIStrings')
@@ -57,8 +57,7 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 	        password: this.state.password
 	    }).then((response) => {
 	        if (!response.data.error) {
-	            //this.setErrorState(false);
-	            document.location('/')
+	            this.props.history.push('/')
 	        } else {
 	            this.setErrorState(true);
 	        }
@@ -78,6 +77,7 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 		return(
 			<div style={Object.assign(styles.flex, styles.centeredContainer, styles.flexColumn)}>
 				<div style={styles.formContainer}>
+				<Header as='h3'>{UIStrings.LoginPage.Header}</Header>
 					<Segment>
 					    <Form>
 					        <Form.Field error={login_error}>
