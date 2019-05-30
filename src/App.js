@@ -118,9 +118,7 @@ export default observer(class App extends Component {
  
 	render() {
 
-    const protectedRouteKeys = Object.keys(Routes.ProtectedRoutes)
-    const protectedRoutes = protectedRouteKeys.map(item => Routes.ProtectedRoutes[item])
-    
+    const protectedRoutes = Object.keys(Routes.ProtectedRoutes).map(item => Routes.ProtectedRoutes[item])
   
   	return (
       <Provider fileManagerState={FileManagerState} 
