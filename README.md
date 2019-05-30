@@ -96,9 +96,14 @@ The Let's Encrypt tool will generate a number of files, but the important ones a
 
 >npm run build    
 
-2. Run the production server    
+2. Create an admin account    
+>npm run addAdminUser
+
+3. Run the production server    
 
 >npm run production    
+
+4. Sign in using the account you created earlier
 
 # Using the Subscriber Links
 SimpleMailer provides links for adding and removing subscribers. These links are:
