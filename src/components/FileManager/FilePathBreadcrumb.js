@@ -10,7 +10,7 @@ const styles = {
 		display: 'flex !important',
 		alignContent: 'center',
 		justifyContent: 'center',
-		width: '78%',
+		width: '50vw',
 	}
 }
 
@@ -24,7 +24,6 @@ export default inject('fileManagerState')(observer(class FilePathBreadcrumb exte
 	breadcrumbSection = (item, index) => {
 		const fileManagerState = this.props.fileManagerState
 		const pathArray = fileManagerState.pathArray
-		const currentDirectory = fileManagerState.currentDirectory.split('/')
 		const slicedPath = pathArray.slice(0, index + 1)
 		const active = fileManagerState.currentDirectory === constructPathFromArray(slicedPath) 
 		

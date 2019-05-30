@@ -26,9 +26,9 @@ const styles = {
 	},
 	formContainer: {
 		position: 'absolute',
-		top: '40vh',
-		bottom: '50vh',
-		width: '35%'
+		top: '30vh',
+		bottom: '40vh',
+		width: '80%'
 	}
 }
 
