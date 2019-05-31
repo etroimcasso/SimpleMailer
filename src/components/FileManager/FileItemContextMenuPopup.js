@@ -9,7 +9,7 @@ export default class FileItemContextMenuPopup extends Component {
 			<Popup 
 			position='right center'
 			flowing
-			inverted
+			
 			disabled={disabled}
 			open={open} 
 			onClose={onClose}

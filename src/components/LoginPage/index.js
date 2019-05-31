@@ -76,10 +76,12 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 
 		return(
 			<div style={Object.assign(styles.flex, styles.centeredContainer, styles.flexColumn)}>
-				<div style={styles.formContainer}>
-				{ false &&
+				<div style={styles.formContainer}>					
+				<Segment raised>
+				{ true &&
 					<Header as='h3'>{UIStrings.LoginPage.Header}</Header>
 				}
+
 					    <Form>
 					        <Form.Field error={login_error}>
 					            <Input name='username' 
@@ -109,6 +111,7 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 					   			<Button fluid id="createAccountButton" color='grey' onClick={this.onCreateAccountClick}> Create Account </Button>
 					   		</Fragment>
 						}
+					</Segment>
 				</div>
 			</div>
 		)

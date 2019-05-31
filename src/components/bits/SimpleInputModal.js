@@ -23,7 +23,7 @@ export default class SimpleInputModal extends Component {
 	}
 
 	handleKeyPress = (key) => {
-		if (key === 'Enter') this.props.submitButtonFunction(this.state.value)
+		if (key === 'Enter') this.handleSubmit()
 	}
 
 	handleCancel = () => {

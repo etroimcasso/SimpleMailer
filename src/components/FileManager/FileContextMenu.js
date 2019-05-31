@@ -9,7 +9,7 @@ export default inject('fileManagerState')(observer(class FileContextMenu extends
 	render() {
 		const { fileManagerState: FileManagerState, onRenameClick } = this.props
 		return (
-				<Menu inverted vertical text size="big">
+				<Menu  vertical text size="big">
 
 					{/* Get Info */}
 					<Menu.Item disabled link>
