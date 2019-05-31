@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
-import { Input, Button, Form, Divider, Label, Segment, Header } from 'semantic-ui-react';
+import { Input, Button, Form, Divider, Label, Segment, Header, Container } from 'semantic-ui-react';
 import axios from 'axios';
 
 const UIStrings = require('../../config/UIStrings')
@@ -28,7 +28,7 @@ const styles = {
 		position: 'absolute',
 		top: '30vh',
 		bottom: '40vh',
-		width: '80%'
+		width: '80vw'
 	}
 }
 
@@ -75,10 +75,11 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 		const { username, password, login_error, createAccount_open } = this.state;
 
 		return(
-			<div style={Object.assign(styles.flex, styles.centeredContainer, styles.flexColumn)}>
-				<div style={styles.formContainer}>
-				<Header as='h3'>{UIStrings.LoginPage.Header}</Header>
-					<Segment>
+			<Container style={Object.assign(styles.flex, styles.centeredContainer, styles.flexColumn)}>
+				<Container style={styles.formContainer}>
+				{ false &&
+					<Header as='h3'>{UIStrings.LoginPage.Header}</Header>
+				}
 					    <Form>
 					        <Form.Field error={login_error}>
 					            <label>{UIStrings.LoginPage.UsernameText}</label>
@@ -110,9 +111,8 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 					   			<Button fluid id="createAccountButton" color='grey' onClick={this.onCreateAccountClick}> Create Account </Button>
 					   		</Fragment>
 						}
-					</Segment>
-				</div>
-			</div>
+				</Container>
+			</Container>
 		)
 	}
 }))
