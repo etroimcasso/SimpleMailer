@@ -94,6 +94,11 @@ module.exports = {
 				}
 			}
 		},
+		ContextMenu: {
+			Information: 'Get Info...',
+			Rename: 'Rename...',
+			Delete: 'Delete...',
+		},
 		FilterMenu: {
 			MenuHeader: 'Show:',
 			ResetFiltersText: 'Show All',
@@ -107,6 +112,12 @@ module.exports = {
 			Header: 'New Directory',
 			InputPlaceholder: 'New directory name',
 			OKButtonText: 'Create Directory',
+			CancelButtonText: 'Cancel',
+		},
+		RenameFileModal: {
+			Header: (filename) => `Rename ${filename}`,
+			InputPlaceholder: 'New name',
+			OKButtonText: 'Rename file',
 			CancelButtonText: 'Cancel',
 		}
 	},

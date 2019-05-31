@@ -123,6 +123,23 @@ class FileManagerStore {
 		} else this.setErrorMessage(UIStrings.FileManager.FSErrorMessages.NameTooLong)
 	}
 
+	dispatchRenameFileSocketMessage = (oldFileWithPath, newFileWithPath, callback) => {
+		socket.on('renameFileResults', error => callback(error))
+		socket.emit('renameFile', oldFileWithPath, newFileWithPath)
+	}
+
+	renameItem = (filePath, oldName, newName) => {
+		this.dispatchRenameFileSocketMessage(`${filePath}${oldName}`,`${filePath}${newName}`, (error) => {
+			if (!error) {
+				this.setReplaceFilesListPending(true)
+				this.getFileListing()
+			} else {
+				this.setErrorMessage(determineErrorMessage(error, newName))
+			}
+		})
+
+	}
+
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
 
 	setReloadFilesPending = (pending) => this.reloadFileListingPending = pending

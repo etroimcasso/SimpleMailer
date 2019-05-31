@@ -1,6 +1,6 @@
 {
   "name": "simple-mailer",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",

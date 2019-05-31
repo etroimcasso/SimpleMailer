@@ -460,6 +460,12 @@ io.on('connection', (client) => {
 			client.emit('createNewDirectoryResults', (error))
 		})
 	})
+
+	client.on('renameFile', (file, newName) => {
+		FileSystemController.renameFile(file, newName, (error) => {
+			client.emit('renameFileResults', error)
+		})
+	})
 		
 });
 

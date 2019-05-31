@@ -4,6 +4,7 @@ import { Menu, Icon, Input, Popup, Divider, Modal, Button } from 'semantic-ui-re
 import FileSortMenu from './FileSortMenu'
 import FileFilterMenu from './FileFilterMenu'
 import FilePathBreadcrumb from './FilePathBreadcrumb'
+import SimpleInputModal from '../bits/SimpleInputModal'
 const UIStrings = require('../../config/UIStrings')
 
 
@@ -15,11 +16,10 @@ const styles = {
 export default inject('fileManagerState')(observer(class FileListToolbar extends Component {
 	state = {
 		newDirectoryModalOpen: false,
-		newDirectoryName: ''
 	}
 
-	handleNewDirectoryAddClick = () => {
-		this.props.fileManagerState.createNewDirectory(this.state.newDirectoryName)
+	handleNewDirectoryAddClick = (name) => {
+		this.props.fileManagerState.createNewDirectory(name)
 		this.closeNewDirectoryModal()
 	}
 	handleNewDirectoryNameChange = value => this.setState({newDirectoryName: value})
@@ -27,7 +27,6 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 	closeNewDirectoryModal = () =>  {
 		this.setState({
 			newDirectoryModalOpen: false,
-			newDirectoryName: ''
 		})
 
 	}
@@ -37,7 +36,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 	}
 
 	render() {
-		const { newDirectoryName, newDirectoryModalOpen } = this.state
+		const { newDirectoryModalOpen } = this.state
 		const { fileManagerState: FileManagerState } = this.props
 		const { pathArray, currentDirectory, directoriesFirst, allFilterTypes } = FileManagerState
 		const inRootDirectory = pathArray.length === 0
@@ -48,34 +47,18 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 
 		return (
 			<Fragment>
-				<Modal
+				<SimpleInputModal
 				size='mini'
 				onClose={this.closeNewDirectoryModal}
-				open={newDirectoryModalOpen}>
-					<Modal.Header>{UIStrings.FileManager.NewDirectoryModal.Header}</Modal.Header>
-					<Modal.Content>
-						<Input fluid
-						value={newDirectoryName} 
-						onChange={(event) => this.handleNewDirectoryNameChange(event.target.value)} 
-						onKeyPress={(event) => this.handleKeyPress(event.key)}
-						autoFocus
-						placeholder={UIStrings.FileManager.NewDirectoryModal.InputPlaceholder}
-						/>
-
-					</Modal.Content>						
-					<Modal.Actions>
-						<Button negative
-							content={UIStrings.FileManager.NewDirectoryModal.CancelButtonText}
-							onClick={this.closeNewDirectoryModal}
-							/>
-						<Button
-							positive
-							content={UIStrings.FileManager.NewDirectoryModal.OKButtonText}
-							onClick={this.handleNewDirectoryAddClick}
-							disabled={newDirectoryName.length === 0}
-							/>
-					</Modal.Actions>
-				</Modal>
+				open={newDirectoryModalOpen}
+				headerText={UIStrings.FileManager.NewDirectoryModal.Header}
+				inputPlaceholder={UIStrings.FileManager.NewDirectoryModal.InputPlaceholder}
+				submitButtonText={UIStrings.FileManager.NewDirectoryModal.OKButtonText}
+				submitButtonFunction={this.handleNewDirectoryAddClick}
+				cancelButtonText={UIStrings.FileManager.NewDirectoryModal.CancelButtonText}
+				minLength={1}
+				maxLength={100}
+				/>
 				<Menu fluid icon size='huge' compact>
 					<Menu.Item 
 					disabled={inRootDirectory} 
