@@ -26,9 +26,9 @@ const styles = {
 	},
 	formContainer: {
 		position: 'absolute',
-		top: '30vh',
-		bottom: '40vh',
-		width: '80vw'
+		top: '35vh',
+		bottom: '45vh',
+		width: '300px'
 	}
 }
 
@@ -75,14 +75,13 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 		const { username, password, login_error, createAccount_open } = this.state;
 
 		return(
-			<Container style={Object.assign(styles.flex, styles.centeredContainer, styles.flexColumn)}>
-				<Container style={styles.formContainer}>
+			<div style={Object.assign(styles.flex, styles.centeredContainer, styles.flexColumn)}>
+				<div style={styles.formContainer}>
 				{ false &&
 					<Header as='h3'>{UIStrings.LoginPage.Header}</Header>
 				}
 					    <Form>
 					        <Form.Field error={login_error}>
-					            <label>{UIStrings.LoginPage.UsernameText}</label>
 					            <Input name='username' 
 					                placeholder={UIStrings.LoginPage.UsernameText}
 					                value={username} 
@@ -91,7 +90,6 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 					            />
 					        </Form.Field>
 					        <Form.Field error={login_error}>
-					            <label>{UIStrings.LoginPage.PasswordText}</label>
 					            <Input name="password" 
 					                placeholder={UIStrings.LoginPage.PasswordText}
 					                type='password' 
@@ -111,8 +109,8 @@ export default inject('connectionState')(observer(class LoginPage extends Compon
 					   			<Button fluid id="createAccountButton" color='grey' onClick={this.onCreateAccountClick}> Create Account </Button>
 					   		</Fragment>
 						}
-				</Container>
-			</Container>
+				</div>
+			</div>
 		)
 	}
 }))
