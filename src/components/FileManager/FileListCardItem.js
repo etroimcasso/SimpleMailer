@@ -47,8 +47,9 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 		this.setState({ renameModalOpen: false })
 	}
 
-	renameItem = (filepath, oldName, newName) => {
-		this.props.fileManagerState.renameItem(filepath, oldName, newName)
+	renameItem = (newName) => {
+		const file = this.props.file
+		this.props.fileManagerState.renameItem(file.path, file.name, newName)
 	}
 
 
@@ -93,19 +94,27 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 		const isDirectory = file.isDir
 		const fileNameTooLong = file.name.length > maxCharactersToDisplayInFileName
 		const fileName = (fileNameTooLong) ? `${file.name.slice(0,maxCharactersToDisplayInFileName)}...` : file.name
+		const renameModalTitle = UIStrings.FileManager.RenameFileModal.Header(file.name)
 
 
 		return(
 			<Fragment>
+				{/* Rename Modal */}
 				<SimpleInputModal
-				size='fullscreen'
+				size='mini'
 				open={renameModalOpen}
 				onClose={this.closeRenameModal}
-				headerText={UIStrings.FileManager.RenameFileModal.Header}
+				headerText={renameModalTitle}
+				inputPlaceholder={UIStrings.FileManager.RenameFileModal.InputPlaceholder}
 				style={styles.topLayer}
+				submitButtonText={UIStrings.FileManager.RenameFileModal.OKButtonText}
 				submitButtonFunction={this.renameItem}
-
+				cancelButtonText={UIStrings.FileManager.RenameFileModal.CancelButtonText}
+				minLength={1}
+				maxLength={100}
 				/>
+
+
 				<div style={styles.cardSize}>
 					<FileItemContextMenuPopup
 					disabled={file.name !== FileManagerState.contextMenuName}
@@ -130,8 +139,6 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 						</Card>
 					)}>
 						<FileContextMenu 
-						fileName={file.name} 
-						filePath={file.path} 
 						onRenameClick={this.openRenameModal}
 						/>
 					</FileItemContextMenuPopup>

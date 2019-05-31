@@ -115,7 +115,7 @@ module.exports = {
 			CancelButtonText: 'Cancel',
 		},
 		RenameFileModal: {
-			Header: (filename) => `Rename ${filename}`,
+			Header: (filename) => `Rename (${filename})`,
 			InputPlaceholder: 'New name',
 			OKButtonText: 'Rename file',
 			CancelButtonText: 'Cancel',
