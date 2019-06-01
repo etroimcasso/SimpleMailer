@@ -35,7 +35,7 @@ export default inject("fileManagerState")(observer(class FileListContainer exten
 		return(
 			<Container>
 				{ infoWindows.map(file => 
-					<FileInfoWindow onClose={() => this.closeInfoWindow(file)} file={file} />)
+					<FileInfoWindow onClose={() => this.closeInfoWindow(file)} file={file} initialPosition="top-left" />)
 				}
 				<Segment style={styles.fileListFlex}>
 					<FileList />

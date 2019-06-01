@@ -324,7 +324,7 @@ class FileManagerStore {
 
 	get currentErrorMessage() {	return this.errorMessage.get() }
 
-	openInfoWindow = (file) => (!this.infoWindows.find(item => item === file )) ? this.infoWindows = this.infoWindows.concat(file) : null
+	openInfoWindow = (file) => (this.infoWindows.find(item => item.name === file.name && item.localPath === file.localPath ) === undefined) ? this.infoWindows = this.infoWindows.concat(file) : null
 	closeInfoWindow = (file) => this.infoWindows = this.infoWindows.filter(item => item !== file )
 	closeAllInfoWindows = () => this.infoWindows = []
 
