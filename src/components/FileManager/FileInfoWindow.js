@@ -12,10 +12,8 @@ const inputSize = 'mini'
 export default class FileInfoWindow extends Component {
 
 	render() {
-		const { file, onClose, open, path } = this.props
-		const { name, icon, typeName, size, color, created, accessed, modified } = file
-		const localPath = `${path}${file.name}`
-		const absolutePath = file.path
+		const { file, onClose, open } = this.props
+		const { name, icon, typeName, size, color, created, accessed, modified, localPath } = file
 		const titlebarText = `${name} Info`
 
 
@@ -35,7 +33,7 @@ export default class FileInfoWindow extends Component {
 					<Input size={inputSize} fluid label="Size:" value={size} />					
 
 					{/* File Path */}
-					<Input size={inputSize} fluid label="Path:" value={path} />
+					<Input size={inputSize} fluid label="Path:" value={localPath} />
 
 					{/* File Type */}
 					<Input size={inputSize} fluid label="Type:" value={typeName} />

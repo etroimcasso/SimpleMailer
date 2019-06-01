@@ -4,8 +4,6 @@ import { Card, Icon, Image } from 'semantic-ui-react'
 import FileItemContextMenuPopup from './FileItemContextMenuPopup'
 import FileContextMenu from './FileContextMenu'
 import SimpleInputModal from '../bits/SimpleInputModal'
-import FileInfoWindow from './FileInfoWindow'
-import Cristal from 'react-cristal'
 const UIStrings = require('../../config/UIStrings')
 const ConstructPathFromArray = require('../../helpers/ConstructPathFromArray')
 
@@ -89,11 +87,11 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 	enableHover = () => this.setState({hover: true})
 
 	openInfoWindow = () => { 
-		this.setState({infoWindowOpen: true})
+		this.props.fileManagerState.openInfoWindow(Object.assign(this.props.file, { localPath: ConstructPathFromArray(this.props.fileManagerState.pathArray)}))
 		this.closePopup()
 	}
 
-	closeInfoWindow = () => this.setState({infoWindowOpen: false})
+
 
 	render() {
 		const { fileManagerState: FileManagerState, file } = this.props
@@ -120,11 +118,6 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 				minLength={1}
 				maxLength={100}
 				/>
-
-				{/* Information Window */}
-				{ infoWindowOpen &&
-					<FileInfoWindow onClose={this.closeInfoWindow} file={file} path={ConstructPathFromArray(FileManagerState.pathArray)} />
-				}
 
 				<div style={styles.cardSize}>
 					<FileItemContextMenuPopup

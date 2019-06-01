@@ -7,10 +7,13 @@
  	- This component's parent will handle addition of files / or the Drag and drop component will, when it is implemented
  */
 import React, { Component, Fragment } from 'react'
+import { observer, inject } from "mobx-react"
 import { Container, Segment } from 'semantic-ui-react'
 import FileList from './FileList'
+import FileInfoWindow from './FileInfoWindow'
 
 const UIStrings = require('../../config/UIStrings')
+const ConstructPathFromArray = require('../../helpers/ConstructPathFromArray')
 
 const styles = {
 	fileListFlex: {
@@ -22,11 +25,18 @@ const styles = {
 }
 
 
-export default class FileListContainer extends Component {
+export default inject("fileManagerState")(observer(class FileListContainer extends Component {
+
+	closeInfoWindow = (file) => this.props.fileManagerState.closeInfoWindow(file)
 
 	render() {
+		const { fileManagerState } = this.props
+		const { infoWindows } = fileManagerState
 		return(
 			<Container>
+				{ infoWindows.map(file => 
+					<FileInfoWindow onClose={() => this.closeInfoWindow(file)} file={file} />)
+				}
 				<Segment style={styles.fileListFlex}>
 					<FileList />
 				</Segment>
@@ -34,4 +44,4 @@ export default class FileListContainer extends Component {
 		)
 	}
 
-}
+}))

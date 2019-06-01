@@ -49,6 +49,7 @@ class FileManagerStore {
 	allFilterTypes = [] //Retrieved from the server at start
 	currentFilterTypes = []
 	errorMessage = observable.box('')
+	infoWindows = []
 
 
 	constructor() {
@@ -81,7 +82,7 @@ class FileManagerStore {
 					else this.replaceFilesList(files)
 					this.setReplaceFilesListPending(false)
 					this.fileListingStorage = files
-					console.log(files)
+					//console.log(files)
 					this.resetContextMenu()
 				}
 			}
@@ -323,6 +324,10 @@ class FileManagerStore {
 
 	get currentErrorMessage() {	return this.errorMessage.get() }
 
+	openInfoWindow = (file) => (!this.infoWindows.find(item => item === file )) ? this.infoWindows = this.infoWindows.concat(file) : null
+	closeInfoWindow = (file) => this.infoWindows = this.infoWindows.filter(item => item !== file )
+	closeAllInfoWindows = () => this.infoWindows = []
+
 }
 
 export default decorate(FileManagerStore, {
@@ -337,6 +342,7 @@ export default decorate(FileManagerStore, {
 	allFilterTypes: observable,
 	currentFilterTypes: observable,
 	errorMessage: observable,
+	infoWindows: observable,
 	getFileListing: action,
 	getAllFilterTypes: action,
 	replaceFilesList: action,
@@ -369,4 +375,7 @@ export default decorate(FileManagerStore, {
 	currentErrorMessage: computed,
 	setErrorMessage: action,
 	resetErrorMessage: action,
+	openInfoWindow: action,
+	closeInfoWindow: action,
+	closeAllInfoWindows: action
 })
