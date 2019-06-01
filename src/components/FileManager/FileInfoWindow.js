@@ -2,13 +2,18 @@ import React, { Component, Fragment } from 'react';
 import { Form, Label, Input, Icon, Statistic, Divider } from 'semantic-ui-react';
 import Cristal from 'react-cristal';
 
-const inputSize = 'small'
+const convertUTCTimeToLocalTime = require('../../helpers/ConvertUTCTimeToLocalTime')
+const formatDate = 'MMMM Do YYYY'
+const formatTime = 'h:mm:ss A'
+const timeFormatString = `${formatDate}[, ]${formatTime}`
+
+const inputSize = 'mini'
 
 export default class FileInfoWindow extends Component {
 
 	render() {
 		const { file, onClose, open, path } = this.props
-		const { name, icon, typeName, size } = file
+		const { name, icon, typeName, size, color, created, accessed, modified } = file
 		const localPath = `${path}${file.name}`
 		const absolutePath = file.path
 		const titlebarText = `${name} Info`
@@ -18,19 +23,34 @@ export default class FileInfoWindow extends Component {
 			<Fragment>
 				<Cristal title={(
 					<Fragment>
-						<Icon name={icon} />
+						<Icon name={icon} color={color}/>
 						{titlebarText}
 					</Fragment>		
 					)}
-				isResizeable={false}
-				onClose={onClose}>
+				isResizable={false}
+				onClose={onClose}
+				className='fileInfoWindow'
+				>
 					{/* File Size */}
-					<Input size={inputSize} fluid label="Size::" value={size} />
+					<Input size={inputSize} fluid label="Size:" value={size} />					
+
 					{/* File Path */}
 					<Input size={inputSize} fluid label="Path:" value={path} />
+
 					{/* File Type */}
 					<Input size={inputSize} fluid label="Type:" value={typeName} />
 
+					<Divider fitted />
+
+					{/* Created: */}
+					<Input size={inputSize} fluid label="Created:" value={convertUTCTimeToLocalTime(created, timeFormatString)} />
+
+					{/* Last Accessed: */}
+					<Input size={inputSize} fluid label="Accessed:" value={convertUTCTimeToLocalTime(accessed, timeFormatString)} />
+
+					{/* Last Modified: */}
+					<Input size={inputSize} fluid label="Modified:" value={convertUTCTimeToLocalTime(modified, timeFormatString)} />
+					
 				</Cristal>
 			</Fragment>
 		)

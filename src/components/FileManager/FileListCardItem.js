@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { observer, inject } from "mobx-react"
-import { Card, Icon, Image, Popup, Menu, Header, Divider } from 'semantic-ui-react'
+import { Card, Icon, Image } from 'semantic-ui-react'
 import FileItemContextMenuPopup from './FileItemContextMenuPopup'
 import FileContextMenu from './FileContextMenu'
 import SimpleInputModal from '../bits/SimpleInputModal'
@@ -12,10 +12,6 @@ const ConstructPathFromArray = require('../../helpers/ConstructPathFromArray')
 const maxCharactersToDisplayInFileName = 32
 const styles = {
 	centeredContentFlexDiv: {
-		display: '-webkit-box',
-	    display: '-moz-box',
-	    display: '-ms-flexbox',
-	    display: '-webkit-flex',
 	    display: 'flex',
 	    alignItems: 'center',
 	    justifyContent: 'center',

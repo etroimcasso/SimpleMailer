@@ -81,7 +81,7 @@ class FileManagerStore {
 					else this.replaceFilesList(files)
 					this.setReplaceFilesListPending(false)
 					this.fileListingStorage = files
-					//console.log(files)
+					console.log(files)
 					this.resetContextMenu()
 				}
 			}

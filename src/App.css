@@ -55,3 +55,8 @@ body {
   height: 75vh;
 }
 
+
+.fileInfoWindow: {
+  height: 10px !important;
+  width: 10px !important;
+}

@@ -79,7 +79,6 @@ const convertRawEditorContentToHTML = (rawContent) => draftToHtml(rawContent)
 
       get plainTextContent() {
         const currentContent = this.editorState.get().getCurrentContent()
-        const rawContent = convertToRaw(currentContent)
         return currentContent.getPlainText()
 
       }

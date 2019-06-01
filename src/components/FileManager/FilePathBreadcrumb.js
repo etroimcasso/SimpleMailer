@@ -2,8 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react'
 import { Breadcrumb } from 'semantic-ui-react';
 const UIStrings = require('../../config/UIStrings')
-
-const constructPathFromArray = (pathArray) => pathArray.reduce((acc, cv) =>  `${acc}${cv}/`, '/')
+const ConstructPathFromArray = require('../../helpers/ConstructPathFromArray')
 
 const styles = {
 	container: {
@@ -25,7 +24,7 @@ export default inject('fileManagerState')(observer(class FilePathBreadcrumb exte
 		const fileManagerState = this.props.fileManagerState
 		const pathArray = fileManagerState.pathArray
 		const slicedPath = pathArray.slice(0, index + 1)
-		const active = fileManagerState.currentDirectory === constructPathFromArray(slicedPath) 
+		const active = fileManagerState.currentDirectory === ConstructPathFromArray(slicedPath) 
 		
 		return (
 			<Fragment key={pathArray[index]}>
@@ -33,7 +32,7 @@ export default inject('fileManagerState')(observer(class FilePathBreadcrumb exte
 				active={active}
 				onClick={(active) 
 					? null 
-					: () => fileManagerState.setDirectory(constructPathFromArray(slicedPath))}
+					: () => fileManagerState.setDirectory(ConstructPathFromArray(slicedPath))}
 
 				>
 					{pathArray[index]}
