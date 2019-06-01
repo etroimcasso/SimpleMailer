@@ -7,30 +7,27 @@ const UIStrings = require('../../config/UIStrings')
 export default inject('fileManagerState')(observer(class FileContextMenu extends Component {
 
 	render() {
-		const { fileManagerState: FileManagerState, onRenameClick } = this.props
+		const { fileManagerState: FileManagerState, onRenameClick, onInfoClick } = this.props
 		return (
-				<Menu  vertical text size="big">
+				<Menu vertical text >
 
 					{/* Get Info */}
-					<Menu.Item disabled link>
+					<Menu.Item onClick={onInfoClick}>
 						{UIStrings.FileManager.ContextMenu.Information}
 					</Menu.Item>
 					
-					<Divider horizontal />
 
 					{/* Rename File */}
 					<Menu.Item onClick={onRenameClick}>
 						{UIStrings.FileManager.ContextMenu.Rename}
 					</Menu.Item>
 
-					<Divider horizontal />
 
 					{/* Delete File */}
 					<Menu.Item disabled link>
 						{UIStrings.FileManager.ContextMenu.Delete}
 					</Menu.Item>
 
-					<Divider horizontal />
 				</Menu>
 		)
 	}

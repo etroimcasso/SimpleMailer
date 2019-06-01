@@ -4,7 +4,10 @@ import { Card, Icon, Image, Popup, Menu, Header, Divider } from 'semantic-ui-rea
 import FileItemContextMenuPopup from './FileItemContextMenuPopup'
 import FileContextMenu from './FileContextMenu'
 import SimpleInputModal from '../bits/SimpleInputModal'
+import FileInfoWindow from './FileInfoWindow'
+import Cristal from 'react-cristal'
 const UIStrings = require('../../config/UIStrings')
+const ConstructPathFromArray = require('../../helpers/ConstructPathFromArray')
 
 const maxCharactersToDisplayInFileName = 32
 const styles = {
@@ -36,7 +39,8 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 	state = {
 		hover: false,
 		selected: false,
-		renameModalOpen: false
+		renameModalOpen: false,
+		infoWindowOpen: false
 	}
 
 	openRenameModal = () => {
@@ -88,9 +92,16 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 	disableHover = () => this.setState({hover: false})
 	enableHover = () => this.setState({hover: true})
 
+	openInfoWindow = () => { 
+		this.setState({infoWindowOpen: true})
+		this.closePopup()
+	}
+
+	closeInfoWindow = () => this.setState({infoWindowOpen: false})
+
 	render() {
 		const { fileManagerState: FileManagerState, file } = this.props
-		const { hover, selected, renameModalOpen } = this.state
+		const { hover, selected, renameModalOpen, infoWindowOpen } = this.state
 		const isDirectory = file.isDir
 		const fileNameTooLong = file.name.length > maxCharactersToDisplayInFileName
 		const fileName = (fileNameTooLong) ? `${file.name.slice(0,maxCharactersToDisplayInFileName)}...` : file.name
@@ -114,6 +125,10 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 				maxLength={100}
 				/>
 
+				{/* Information Window */}
+				{ infoWindowOpen &&
+					<FileInfoWindow onClose={this.closeInfoWindow} file={file} path={ConstructPathFromArray(FileManagerState.pathArray)} />
+				}
 
 				<div style={styles.cardSize}>
 					<FileItemContextMenuPopup
@@ -140,6 +155,7 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 					)}>
 						<FileContextMenu 
 						onRenameClick={this.openRenameModal}
+						onInfoClick={this.openInfoWindow}
 						/>
 					</FileItemContextMenuPopup>
 				</div>

@@ -27,7 +27,7 @@ export default class FileListContainer extends Component {
 	render() {
 		return(
 			<Container>
-				<Segment style={styles.fileListFlex }>
+				<Segment style={styles.fileListFlex}>
 					<FileList />
 				</Segment>
 			</Container>
