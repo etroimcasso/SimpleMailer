@@ -119,6 +119,22 @@ module.exports = {
 			InputPlaceholder: 'New name',
 			OKButtonText: 'Rename file',
 			CancelButtonText: 'Cancel',
+		},
+		FileInfoWindow: {
+			Headers: {
+				GeneralInfo: 'General Information',
+				TimeInfo: 'Time Information'
+			},
+			Fields: {
+				Name: 'Name',
+				Size: 'Size',
+				Path: 'Path',
+				Type: 'Type',
+				Created: 'Created',
+				Accessed: 'Accessed',
+				Modified:	'Modified'
+			}
+			
 		}
 	},
 	LoginPage: {

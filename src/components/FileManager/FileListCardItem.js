@@ -7,7 +7,7 @@ import SimpleInputModal from '../bits/SimpleInputModal'
 const UIStrings = require('../../config/UIStrings')
 const ConstructPathFromArray = require('../../helpers/ConstructPathFromArray')
 
-const maxCharactersToDisplayInFileName = 32
+const maxCharactersToDisplayInFileName = 30
 const styles = {
 	centeredContentFlexDiv: {
 	    display: 'flex',
