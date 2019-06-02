@@ -19,6 +19,7 @@ module.exports = {
 					//console.log("Adding mailerResult")
 					mailerResultsDocument.push(item._id)
 					if (mailerResultsDocument.length === mailerResults.length) {
+
 						callback(null, mailerResultsDocument)
 					}
 				}

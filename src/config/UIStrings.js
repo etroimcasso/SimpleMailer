@@ -126,13 +126,13 @@ module.exports = {
 				TimeInfo: 'Time Information'
 			},
 			Fields: {
-				Name: 'Name',
-				Size: 'Size',
-				Path: 'Path',
-				Type: 'Type',
-				Created: 'Created',
-				Accessed: 'Accessed',
-				Modified:	'Modified'
+				Name: 'Name:',
+				Size: 'Size:',
+				Path: 'Path:',
+				Type: 'Type:',
+				Created: 'Created:',
+				Accessed: 'Accessed:',
+				Modified:	'Modified:'
 			}
 			
 		}

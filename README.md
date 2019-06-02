@@ -5,6 +5,7 @@ SimpleMailer is an easy-to-use Mailing List application that adds mailing list f
 SimpleMailer uses Node, Express, React, React Router, MobX, MongoDB, Mongoose, DraftJS, Nodemailer, Socket.IO, and Semantic-UI.
 
 # Requirements
+* POSIX host (Linux, Unix, macOS)
 * Node 10.15.3+
 * MongoDB 3.6.3+
 * SSL Certificate and Key

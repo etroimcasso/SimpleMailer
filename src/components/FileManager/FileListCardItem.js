@@ -143,6 +143,7 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 						</Card>
 					)}>
 						<FileContextMenu 
+						isDirectory={isDirectory}
 						onRenameClick={this.openRenameModal}
 						onInfoClick={this.openInfoWindow}
 						/>

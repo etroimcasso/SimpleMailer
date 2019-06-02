@@ -7,7 +7,7 @@ const UIStrings = require('../../config/UIStrings')
 export default inject('fileManagerState')(observer(class FileContextMenu extends Component {
 
 	render() {
-		const { fileManagerState: FileManagerState, onRenameClick, onInfoClick } = this.props
+		const { fileManagerState: FileManagerState, onRenameClick, onInfoClick, isDirectory } = this.props
 		return (
 				<Menu vertical text >
 
@@ -24,9 +24,12 @@ export default inject('fileManagerState')(observer(class FileContextMenu extends
 
 
 					{/* Delete File */}
-					<Menu.Item disabled link>
-						{UIStrings.FileManager.ContextMenu.Delete}
-					</Menu.Item>
+
+					{ !isDirectory &&
+						<Menu.Item disabled link>
+							{UIStrings.FileManager.ContextMenu.Delete}
+						</Menu.Item>
+					}
 
 				</Menu>
 		)
