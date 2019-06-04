@@ -24,9 +24,12 @@ export default inject('fileManagerState')(observer(class FileContextMenu extends
 
 
 					{/* Delete File */}
-					<Menu.Item onClick={() => onDeleteClick(isDirectory)}>
+
+					{ !isDirectory &&			
+					<Menu.Item onClick={onDeleteClick}>
 						{UIStrings.FileManager.ContextMenu.Delete}
 					</Menu.Item>
+					}
 
 				</Menu>
 		)
