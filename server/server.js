@@ -466,6 +466,12 @@ io.on('connection', (client) => {
 			client.emit('renameFileResults', error)
 		})
 	})
+
+	client.on('removeFile', (file) => {
+		FileSystemController.removeFile(file, (error) => {
+			client.emit('removeFileResult', error)
+		})
+	})
 		
 });
 

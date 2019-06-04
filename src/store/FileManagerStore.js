@@ -22,6 +22,7 @@ const sortAlphabetically = (a, b) => {
 	const bName = b.name.toLowerCase()
 	return (aName > bName) ? 1 : (bName > aName) ? -1 : 0
 }		
+const fullPath = (path, name) => `${path}${name}`
 
 const determineErrorMessage = (error, filename) => {
 	switch (error.code) {
@@ -50,6 +51,7 @@ class FileManagerStore {
 	currentFilterTypes = []
 	errorMessage = observable.box('')
 	infoWindows = []
+	uploadFileModalOpen = false
 
 
 	constructor() {
@@ -91,6 +93,11 @@ class FileManagerStore {
 		})
 	}
 
+	reloadFiles = () => {
+		this.setReplaceFilesListPending(true)
+		this.getFileListing()
+	}
+
 	resetContextMenu = () => this.contextMenu.set('')
 
 	setContextMenu = (filename) => this.contextMenu.set(filename)
@@ -103,7 +110,7 @@ class FileManagerStore {
 
 	addFile = (file) => this.fileListing = this.fileListing.concat(file)
 
-	removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item.name !== file.name)
+	//removeFile = (file) => this.fileListing = this.fileListing.filter((item) => item.name !== file.name)
 
 	dispatchCreateNewDirectorySocketMessage = (directoryName, callback) => {
 		socket.on('createNewDirectoryResults', error => callback(error))
@@ -111,13 +118,13 @@ class FileManagerStore {
 
 	}
 
+
+
 	createNewDirectory = (directoryName) => {
 		if (directoryName.length < maximumFileNameLength) {		
 			this.dispatchCreateNewDirectorySocketMessage(directoryName, (error) => {
-				if (!error) {
-					this.setReplaceFilesListPending(true)
-					this.getFileListing()
-				} else {
+				if (!error) this.reloadFiles()
+				else {
 					this.setErrorMessage(determineErrorMessage(error, directoryName))
 				}
 			})
@@ -130,15 +137,25 @@ class FileManagerStore {
 	}
 
 	renameItem = (filePath, oldName, newName) => {
-		this.dispatchRenameFileSocketMessage(`${filePath}${oldName}`,`${filePath}${newName}`, (error) => {
-			if (!error) {
-				this.setReplaceFilesListPending(true)
-				this.getFileListing()
-			} else {
+		this.dispatchRenameFileSocketMessage(fullPath(filePath,oldName),fullPath(filePath,newName), (error) => {
+			if (!error) this.reloadFiles() 
+			else {
 				this.setErrorMessage(determineErrorMessage(error, newName))
 			}
 		})
 
+	}
+
+	dispatchRemoveFileSocketMessage = (filePath, callback) => {
+		socket.on('removeFileResult', error => callback(error))
+		socket.emit('removeFile', filePath)
+	}
+
+	deleteFile = (file) => {
+		this.dispatchRemoveFileSocketMessage(fullPath(file.path,file.name), error => {
+			if (!error) this.reloadFiles()
+			else this.setErrorMessage(determineErrorMessage(error))
+		})
 	}
 
 	setFilesLoaded = (loaded) => this.fileListingLoaded = loaded
@@ -319,7 +336,7 @@ class FileManagerStore {
 	}
 
 	setErrorMessage = (message) => {
-		this.errorMessage.set(`${message}`)
+		this.errorMessage.set(message)
 	}
 
 	get currentErrorMessage() {	return this.errorMessage.get() }
@@ -327,6 +344,9 @@ class FileManagerStore {
 	openInfoWindow = (file) => (this.infoWindows.find(item => item.name === file.name && item.localPath === file.localPath ) === undefined) ? this.infoWindows = this.infoWindows.concat(file) : null
 	closeInfoWindow = (file) => this.infoWindows = this.infoWindows.filter(item => item !== file )
 	closeAllInfoWindows = () => this.infoWindows = []
+
+	openUploadFileModal = () => this.uploadFileModalOpen = true
+	closeUploadFileModal = () => this.uploadFileModalOpen = false
 
 }
 
@@ -343,6 +363,7 @@ export default decorate(FileManagerStore, {
 	currentFilterTypes: observable,
 	errorMessage: observable,
 	infoWindows: observable,
+	uploadFileModalOpen: observable,
 	getFileListing: action,
 	getAllFilterTypes: action,
 	replaceFilesList: action,
@@ -377,5 +398,7 @@ export default decorate(FileManagerStore, {
 	resetErrorMessage: action,
 	openInfoWindow: action,
 	closeInfoWindow: action,
-	closeAllInfoWindows: action
+	closeAllInfoWindows: action,
+	openUploadFileModal: action,
+	closeUploadFileModal: action
 })

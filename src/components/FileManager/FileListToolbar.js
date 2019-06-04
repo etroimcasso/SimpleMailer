@@ -83,7 +83,7 @@ export default inject('fileManagerState')(observer(class FileListToolbar extends
 							<Icon name='plus' />
 						</Menu.Item>
 
-						<Menu.Item disabled>
+						<Menu.Item onClick={FileManagerState.openUploadFileModal}>
 							<Icon name='upload' />
 						</Menu.Item>
 					</Menu.Menu>

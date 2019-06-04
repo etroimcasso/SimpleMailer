@@ -175,6 +175,8 @@ module.exports =  {
 		fs.mkdir(newDirectoryPath, error => callback(error))
 	},
 
-	renameFile: (file, newName, callback) => fs.rename(file, newName, (error) => callback(error))
+	renameFile: (file, newName, callback) => fs.rename(file, newName, (error) => callback(error)),
+	
+	removeFile: (file, callback) => fs.unlink(file, (error) => callback(error))
 	
 } 

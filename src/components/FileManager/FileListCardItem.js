@@ -82,6 +82,13 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 			: fileManagerState.setContextMenu(filename)
 	}
 
+	handleDeleteClick = () => {
+		const FileManagerState = this.props.fileManagerState
+		if (!this.props.file.isDir) {
+			FileManagerState.deleteFile(this.props.file)
+		}
+	}
+
 	closePopup = () => this.props.fileManagerState.resetContextMenu()
 	disableHover = () => this.setState({hover: false})
 	enableHover = () => this.setState({hover: true})
@@ -146,6 +153,7 @@ export default inject("fileManagerState")(observer(class FileListCardItem extend
 						isDirectory={isDirectory}
 						onRenameClick={this.openRenameModal}
 						onInfoClick={this.openInfoWindow}
+						onDeleteClick={this.handleDeleteClick}
 						/>
 					</FileItemContextMenuPopup>
 				</div>

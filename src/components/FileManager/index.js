@@ -6,6 +6,8 @@ import ItemsPlaceholderSegment from '../bits/ItemsPlaceholderSegment'
 import ConnectionPlaceholder from '../bits/ConnectionPlaceholder'
 import FileListContainer from './FileListContainer'
 import FileListToolbar from './FileListToolbar'
+import UploadFileModal from './UploadFileModal'
+
 const UIStrings = require('../../config/UIStrings')
 const pageTitle = require('../../helpers/pageTitleFormatter')(UIStrings.PageTitles.FileManager);
 
@@ -22,7 +24,7 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 
 	render() {
 		const { fileManagerState: FileManagerState } = this.props
-		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray, reloadFileListingPending, currentErrorMessage } = FileManagerState
+		const { fileListingLoaded: filesLoaded, filesCount: numberOfFiles, pathArray, reloadFileListingPending, currentErrorMessage, uploadFileModalOpen } = FileManagerState
 		const itemCount = (numberOfFiles > 0 ) ? numberOfFiles : (pathArray.length === 0) ? 0 : 1 //Makes the 'Empty Directory' placeholder appear for empty directories
 
 		return (
@@ -30,6 +32,7 @@ export default inject("fileManagerState")(observer(class FileManager extends Com
 					<Dimmer inverted active={!filesLoaded}>
 						<Loader active={!filesLoaded} inline></Loader>
 					</Dimmer>
+					<UploadFileModal open={uploadFileModalOpen} />
 					<ConnectionPlaceholder>
 						<ItemsPlaceholderSegment itemCount={(filesLoaded) ? 1 : itemCount} itemsLoaded={filesLoaded} noItemsText={UIStrings.NoFiles} iconName="file alternate">
 							{currentErrorMessage &&
