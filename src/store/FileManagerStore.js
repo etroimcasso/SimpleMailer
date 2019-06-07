@@ -284,7 +284,7 @@ class FileManagerStore {
 
 		const preProcessedSort = this.sortTypes.reduce(sortListReduceFunc, files)
 		const onlyDirectoryFiles = (this.directoriesFirst) ? preProcessedSort.filter(onlyDirectories) : []
-		const sortedFiles = (this.directoriesFirst && onlyDirectoryFiles.length > 1) 
+		const sortedFiles = (this.directoriesFirst && onlyDirectoryFiles.length > 0) 
 			? this.sortTypes.reduce(sortListReduceFunc, onlyDirectoryFiles).concat(preProcessedSort.filter(noDirectories))
 			: preProcessedSort
 

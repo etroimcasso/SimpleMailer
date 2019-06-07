@@ -53,43 +53,23 @@ export default observer(class App extends Component {
 
   AddSubscriberBridge = ({ match }) => {
     const email = match.params.email
-    /*
-      socket.on('subscriberAdded', (error) => {
-        if (error) {
-          this.setState({
-            subscriberInfoMessage: UIStrings.SubscribeError(email)
-          })
-        }
-        else {
-          this.setState({
-            subscriberInfoMessage: UIStrings.SubscribeSuccess(email)
-          })
-        }
+
+    socket.on('subscriberAdded', error => {
+        if (!error) {
+          return (
+            <SubscriptionConfirmation email={email} />
+          )
+        } else return null
     })
-    */
     addSubscriber(email)
+    
     return redirectAwayFromMailer()
   } 
 
   RemoveSubscriberBridge = ({match}) => {
     const email = match.params.email
-    /*
-    socket.on('subscriberRemoved', (error, subscriber) => {
-      if (error) {
-        this.setState({
-          subscriberInfoMessage: UIStrings.UnsubscribeError(email)
-        })
-      } else {
-        this.setState({
-          subscriberInfoMessage: UIStrings.UnsubscribeSuccess(email)
-        })
-      } 
-    })
-    */
     removeSubscriber({email: email, id: match.params.id}, (error, subscriber) => {})
 
-
-    
     return redirectAwayFromMailer()
 
   }
@@ -147,6 +127,9 @@ export default observer(class App extends Component {
   }
 })
 
+const SubscriptionConfirmation = (props) => (
+    <div>{props.email} has been added</div>
+)
 
 
 

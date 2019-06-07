@@ -472,6 +472,9 @@ io.on('connection', (client) => {
 			client.emit('removeFileResult', error)
 		})
 	})
+	client.on('removeDirectory', (file) => {
+		
+	})
 		
 });
 
