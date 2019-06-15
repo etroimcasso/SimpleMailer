@@ -29,7 +29,7 @@ module.exports = {
 	},
 
 	removeSubscriber: (subscriberId, callback) => {
-		Subscriber.remove({ _id: subscriberId }, (error, item) => {
+		Subscriber.deleteOne({ _id: subscriberId }, (error, item) => {
 			if (error) return (error, false)
 			return callback(null, item)
 		})
