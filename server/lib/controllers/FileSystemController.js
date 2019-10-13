@@ -29,6 +29,7 @@ const getFileName =  (filename) => {
 	return filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
 }
 
+//Combines the unit and file size into a single string
 const formatFileSize = (fileSizeObject) =>{ 
 	const splitSize = fileSizeObject.size.toString().split('.')
 	const digits = splitSize[0]
