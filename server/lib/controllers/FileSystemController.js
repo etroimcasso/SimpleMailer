@@ -114,11 +114,11 @@ const createGroupedFileTypeArray = fileList => {
 		flattenedList.concat(sortGroup.files.map(currentFile => 
 			Object.assign(currentFile, flatItemAddition(sortGroup.type, sortGroup.name, sortGroup.icon, sortGroup.color))))
 
-	const flattenedSortGroup = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
+	const flattenedSortedGroups = groupedFilesWithoutOthers.reduce(flattenListFunc, [])
 
-	//combine flattenedSortGroup with fileList
+	//combine flattenedSortedGroups with fileList
 	//filter out all that have a non-null type property
-	const combinedList = flattenedSortGroup.concat(fileList)
+	const combinedList = flattenedSortedGroups.concat(fileList)
 	const otherFiles = { 
 		name: ServerStrings.FileSorting.GroupNames.Other,
 		type: 'other',
@@ -132,7 +132,7 @@ const createGroupedFileTypeArray = fileList => {
 	)
 
 	const excludeSpecialFiles = (item) => item.name !== '.DS_Store' && item.name !== 'Thumbs.db'
-	return flattenedSortGroup.concat(flattenedOthers).filter(excludeSpecialFiles)
+	return flattenedSortedGroups.concat(flattenedOthers).filter(excludeSpecialFiles)
 
 }
 
