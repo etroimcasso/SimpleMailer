@@ -24,10 +24,9 @@ const getFileExtension = (filename) => {
 	return (splitLength === 1) ? "" : `.${splitName[splitLength - 1]}`
 }
 
-//Collect all but the last item in the array
-const getFileName =  (filename) => {
-	return filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
-}
+//Collect all but the last 2 items in the array (which would file extension and the delimeter), 
+// will return '' if there is no filename, just an extension
+const getFileName =  (filename) => filename.split('.').reduce((accumulator, currentValue, index, array) => (index >= array.length - 2) ? accumulator : accumulator.concat(currentValue))
 
 //Combines the unit and file size into a single string
 const formatFileSize = (fileSizeObject) =>{ 

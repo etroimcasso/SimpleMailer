@@ -50,7 +50,7 @@ class FileManagerStore {
 	allFilterTypes = [] //Retrieved from the server at start
 	currentFilterTypes = []
 	errorMessage = observable.box('')
-	infoWindows = []
+	infoWindows = [] //Array of open information windows. Stores file paths, windows are constructed from contents of this array.
 	uploadFileModalOpen = false
 
 
@@ -228,9 +228,7 @@ class FileManagerStore {
 
 	//Create an array for each filterType (file.type === filterType)
 	//Combine these arrays into a single object array and return it
-	filterFiles = (files) => this.currentFilterTypes.reduce((filterFiles, filterType) => 
-				filterFiles.concat(files.filter(item => 
-					item.type === filterType.type)), [])
+	filterFiles = (files) => this.currentFilterTypes.reduce((filterFiles, filterType) => filterFiles.concat(files.filter(item => item.type === filterType.type)), [])
 
 	
 
@@ -364,6 +362,11 @@ export default decorate(FileManagerStore, {
 	errorMessage: observable,
 	infoWindows: observable,
 	uploadFileModalOpen: observable,
+	filesCount: computed,
+	currentDirectory: computed,
+	contextMenuName: computed,
+	pathArray: computed,
+	currentErrorMessage: computed,
 	getFileListing: action,
 	getAllFilterTypes: action,
 	replaceFilesList: action,
@@ -384,16 +387,11 @@ export default decorate(FileManagerStore, {
 	resetContextMenu: action,
 	addFile: action,
 	removeFile: action,
-	filesCount: computed,
-	currentDirectory: computed,
-	contextMenuName: computed,
-	pathArray: computed,
 	openDirectory: action,
 	setReplaceFilesListPending: action,
 	setSortType: action,
 	addCurrentFilterType: action,
 	removeCurrentFilterType: action,
-	currentErrorMessage: computed,
 	setErrorMessage: action,
 	resetErrorMessage: action,
 	openInfoWindow: action,

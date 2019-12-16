@@ -157,7 +157,6 @@ const sendEmail = (message, subscriberId, callback) => {
 		//True signifies an error
 		client.emit('sendEmailResults', true)
 	} else {
-		//Inject unsubscribe link into message before sending 
 		Emailer.sendEmail(message, (error, info) => {
 			var resultError = ""
 			if (error) {
@@ -249,6 +248,7 @@ io.on('connection', (client) => {
 						ccReceivers: null,
 						bccReceivers: null,
 						subject: message.subject,
+						//Inject unsubscribe link into message before sending 
 						messageText: `${message.messageText} \n\n\n ${ServerStrings.UnsubScribePlainText(subscriber.email, subscriber._id)}`,
 						html: `${message.html} ${ServerStrings.UnsubscribeHTML(subscriber.email, subscriber._id)}`,
 						attachments: message.attachments

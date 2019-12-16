@@ -41,9 +41,7 @@ const returnEmailArray = (inputString) => {
 //Easier way
 
 
-const generateEmailsArray = (emailsString) => {
-	return emailsString.split(/,| /)
-}
+const generateEmailsArray = (emailsString) => emailsString.split(/,| /)
 
 export default inject("connectionState")(observer(class AddSubscriberForm extends Component {
 	state = {
