@@ -36,11 +36,11 @@ SimpleMailer uses Node, Express, React, React Router, MobX, MongoDB, Mongoose, D
 
 3. Install dependencies
 
-> npm install
+> yarn install
 
 4. Install pm2
 
-> npm install pm2 -g
+> yarn global add pm2
 
 ### Configure Project Settings
 The .env file is used to configure the application's ports, email settings, and database settings.
@@ -95,15 +95,15 @@ The Let's Encrypt tool will generate a number of files, but the important ones a
 
 1. Build the project    
 
->npm run build    
+>yarn run build    
 
 2. Create an admin account    
 
->npm run addAdminUser
+>yarn run addAdminUser
 
 3. Run the production server    
 
->npm run production    
+>yarn run production    
 
 4. Sign in using the account you created earlier
 
