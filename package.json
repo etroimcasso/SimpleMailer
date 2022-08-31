@@ -18,7 +18,7 @@
     "mobx": "^5.9.4",
     "mobx-react": "^5.4.4",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.25",
+    "moment-timezone": "^0.5.35",
     "mongoose": "^5.5.11",
     "nodemailer": "^6.2.1",
     "react": "^16.8.6",
